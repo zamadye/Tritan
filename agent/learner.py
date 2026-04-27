@@ -97,73 +97,89 @@ def _generate_evolution_lessons(trades: list, mode: str = "demo"):
         "total_resolved": len(resolved),
         "overall_win_rate": sum(1 for t in resolved if t.get("prediction_correct")) / len(resolved),
         "category_bias": {},       # categories where agent is systematically wrong
-        "overconfidence_patterns": [],  # cases where high confidence was wrong
-        "underconfidence_patterns": [], # cases where low confidence was right
-        "recent_mistakes": [],     # last 5 wrong predictions with details
-        "calibration_adjustments": {},  # per-category confidence adjustment
+        "overconfidence_patterns": [],
+        "underconfidence_patterns": [],
+        "recent_mistakes": [],
+        "calibration_adjustments": {},
+        "edge_reality": {},       # claimed edge vs actual WR — key insight
+        "sports_signal_required": True,  # flag: sports needs hard data
     }
 
     # Category analysis
-    cat_stats = defaultdict(lambda: {"bets": 0, "wins": 0, "avg_edge_claimed": 0.0, "avg_confidence": 0.0})
+    cat_stats = defaultdict(lambda: {"bets":0,"wins":0,"conf_sum":0.0,"edge_sum":0.0})
     for t in resolved:
         cat = _infer_category(t)
         cat_stats[cat]["bets"] += 1
         cat_stats[cat]["wins"] += 1 if t.get("prediction_correct") else 0
-        cat_stats[cat]["avg_edge_claimed"] += abs(t.get("edge_at_bet", 0))
-        cat_stats[cat]["avg_confidence"] += t.get("confidence_at_bet", 0.6)
+        cat_stats[cat]["conf_sum"] += t.get("confidence_at_bet", 0.6)
+        cat_stats[cat]["edge_sum"] += abs(t.get("edge_at_bet", 0))
 
     for cat, s in cat_stats.items():
-        n = s["bets"]
-        win_rate = s["wins"] / n
-        avg_edge = s["avg_edge_claimed"] / n
-        avg_conf = s["avg_confidence"] / n
+        n = s["bets"]; win_rate = s["wins"]/n
+        avg_conf = s["conf_sum"]/n; avg_edge = s["edge_sum"]/n
+        conf_gap = avg_conf - win_rate
 
-        # Detect systematic bias
         if n >= 3:
             if win_rate < 0.40:
                 lessons["category_bias"][cat] = {
                     "status": "AVOID",
                     "win_rate": round(win_rate, 2),
-                    "note": f"Only {win_rate:.0%} win rate in {n} bets — agent consistently wrong here",
+                    "conf_gap": round(conf_gap, 2),
+                    "note": f"WR={win_rate:.0%} but claimed conf={avg_conf:.0%} — overconfident by {conf_gap:.0%}. Need hard data only.",
                 }
             elif win_rate < 0.50:
                 lessons["category_bias"][cat] = {
                     "status": "CAUTION",
                     "win_rate": round(win_rate, 2),
-                    "note": f"Below 50% win rate — reduce confidence in {cat} markets",
+                    "conf_gap": round(conf_gap, 2),
+                    "note": f"WR={win_rate:.0%} below 50% — reduce confidence, require stronger evidence",
                 }
 
-            # Calibration adjustment: if claimed high edge but losing, reduce confidence
-            if avg_edge > 0.15 and win_rate < 0.45:
-                lessons["calibration_adjustments"][cat] = round(-0.10, 2)  # reduce p_true by 10%
-            elif avg_conf > 0.75 and win_rate < 0.50:
-                lessons["calibration_adjustments"][cat] = round(-0.08, 2)
+            # Calibration: scale penalty to actual gap
+            if conf_gap > 0.30:
+                lessons["calibration_adjustments"][cat] = round(-0.15, 2)
+            elif conf_gap > 0.20:
+                lessons["calibration_adjustments"][cat] = round(-0.10, 2)
+            elif conf_gap > 0.10:
+                lessons["calibration_adjustments"][cat] = round(-0.05, 2)
 
-    # Recent mistakes (last 5 wrong predictions)
+    # Edge reality: claimed edge bucket vs actual WR
+    edge_buckets = defaultdict(lambda: {"n":0,"w":0})
+    for t in resolved:
+        e = abs(t.get("edge_at_bet") or 0)
+        b = f"{round(e*10)*10:.0f}%"
+        edge_buckets[b]["n"]+=1
+        edge_buckets[b]["w"]+=int(bool(t.get("prediction_correct")))
+    for b, s in edge_buckets.items():
+        wr = s["w"]/s["n"]
+        lessons["edge_reality"][b] = {"claimed_edge": b, "actual_wr": round(wr,2), "n": s["n"]}
+
+    # Recent mistakes (last 5)
     mistakes = [t for t in reversed(resolved) if not t.get("prediction_correct")][:5]
     for t in mistakes:
         lessons["recent_mistakes"].append({
-            "question": t.get("market_question", "")[:80],
+            "question": t.get("market_question","")[:80],
             "category": _infer_category(t),
             "predicted_side": t.get("side"),
             "actual_outcome": t.get("actual_outcome"),
-            "p_true_claimed": t.get("p_true_estimated", "?"),
-            "confidence": t.get("confidence_at_bet", "?"),
+            "p_true_claimed": t.get("p_true_estimated","?"),
+            "confidence": t.get("confidence_at_bet","?"),
+            "data_quality": t.get("data_quality","unknown"),
             "lesson": _infer_lesson(t),
         })
 
     # Overconfidence: high confidence + wrong
     for t in resolved:
-        if not t.get("prediction_correct") and t.get("confidence_at_bet", 0) >= 0.75:
+        if not t.get("prediction_correct") and t.get("confidence_at_bet",0) >= 0.70:
             lessons["overconfidence_patterns"].append({
                 "category": _infer_category(t),
                 "confidence_claimed": t.get("confidence_at_bet"),
-                "question_snippet": t.get("market_question", "")[:60],
+                "question_snippet": t.get("market_question","")[:60],
             })
 
-    # Underconfidence: low confidence + right (missed opportunity)
+    # Underconfidence: low confidence + right
     for t in resolved:
-        if t.get("prediction_correct") and t.get("confidence_at_bet", 1) <= 0.65:
+        if t.get("prediction_correct") and t.get("confidence_at_bet",1) <= 0.65:
             lessons["underconfidence_patterns"].append({
                 "category": _infer_category(t),
                 "confidence_claimed": t.get("confidence_at_bet"),
@@ -210,14 +226,19 @@ def get_evolution_context(mode: str = "demo") -> str:
         return ""
 
     lines = [
-        f"AGENT SELF-LEARNING CONTEXT ({lessons['total_resolved']} resolved trades, "
-        f"overall win rate: {lessons['overall_win_rate']:.0%}):",
+        f"AGENT PERFORMANCE DATA ({lessons['total_resolved']} resolved, WR={lessons['overall_win_rate']:.0%}):",
+        "⚠️  CRITICAL: Base rates and Vegas odds are NOT valid evidence. Only cite verifiable facts.",
     ]
 
+    if lessons.get("edge_reality"):
+        lines.append("Edge reality (claimed edge → actual WR from our history):")
+        for b, d in sorted(lessons["edge_reality"].items()):
+            lines.append(f"  claimed {b} edge → actual WR={d['actual_wr']:.0%} (n={d['n']}) {'⚠️ OVERESTIMATED' if float(b.strip('%'))/100 - d['actual_wr'] > 0.15 else ''}")
+
     if lessons.get("category_bias"):
-        lines.append("Category performance warnings:")
+        lines.append("Category performance (MUST follow these):")
         for cat, info in lessons["category_bias"].items():
-            lines.append(f"  - {cat}: {info['status']} ({info['note']})")
+            lines.append(f"  {cat}: {info['status']} WR={info['win_rate']:.0%} conf_gap={info.get('conf_gap',0):+.0%} — {info.get('note','')[:80]}")
 
     if lessons.get("calibration_adjustments"):
         lines.append("Calibration adjustments (apply to p_true estimates):")

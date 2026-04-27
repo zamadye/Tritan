@@ -2903,7 +2903,7 @@
     "end_date": "2026-05-04T09:00:00Z",
     "category": "sports",
     "side": "NO",
-    "size_usd": 3.0,
+    "size_usd": 1.5,
     "price_at_entry": 0.57,
     "status": "DEMO_FILLED",
     "actual_outcome": null,
@@ -2914,7 +2914,9 @@
     "base_rate": 0.42,
     "resolution_clarity": "high",
     "reasoning_summary": "Base rate ~42 % for qualifier vs unseeded former top-10 on clay in Madrid; current form (-2 %) and fatigue (-2 %) shave to 38 %; calibration -10 % \u2192 40 % true probability, 17 % edge to NO",
-    "peak_price": 0.815
+    "peak_price": 0.925,
+    "partial_exited": true,
+    "partial_pnl": 0.93
   },
   {
     "trade_id": "ecdab01b-b958-4f28-b467-4267dd2488f3",

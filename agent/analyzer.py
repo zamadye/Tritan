@@ -28,7 +28,7 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         if prev_loss else ""
     )
 
-    prompt = f"""You are an elite superforecaster. Your job: find markets where you have STRONG evidence the market price is WRONG.
+    prompt = f"""You are a disciplined quantitative analyst. Your ONLY job: find markets where VERIFIABLE FACTS prove the price is wrong.
 
 ━━━ MARKET ━━━
 QUESTION: {market['question']}
@@ -36,45 +36,58 @@ MARKET PRICE (YES): {market['price']:.2%}
 RESOLVES: {market['end_date']}
 CATEGORY: {market.get('category', 'unknown')}
 
-━━━ REAL-TIME EVIDENCE ━━━
-{full_context if full_context else 'No data found — rely on base rates only, lower confidence.'}
+━━━ REAL-TIME DATA ━━━
+{full_context if full_context else '[NO DATA AVAILABLE]'}
 
-━━━ YOUR PAST MISTAKES (learn from these) ━━━
+━━━ AGENT PERFORMANCE HISTORY ━━━
 {evolution_context if evolution_context else 'No history yet.'}
 {prev_loss_note}{f"CALIBRATION: Apply {cal_adj:+.0%} to p_true for this category." if cal_adj else ""}
 
-━━━ REASONING STEPS (be explicit) ━━━
-1. BASE RATE: What % of identical historical situations resolved YES?
-2. NEWS IMPACT: Does the news STRONGLY shift the base rate? By how much?
-3. RESOLUTION CLARITY: Is the resolution criteria 100% objective? (high/medium/low)
-4. MARKET MISPRICING: WHY is the market price wrong? What are other traders missing?
-5. CONFIDENCE CHECK: Only claim 70%+ confidence if you have CONCRETE evidence, not just base rates.
-   - 80-90%: You have direct verifiable data (price feeds, official announcements, scores)
-   - 70-79%: Strong base rate + supporting news
-   - 60-69%: Base rate only, or conflicting signals
-   - <60%: Uncertain — output SKIP
+━━━ STRICT ANALYSIS RULES ━━━
 
-━━━ CRITICAL RULES ━━━
-- HIGH confidence (≥70%) requires SPECIFIC evidence, not just "historically X tends to happen"
-- If news is absent → cap confidence at 65%
-- If resolution criteria is "low" clarity → cap confidence at 60%
-- Edge must be ≥8% to recommend YES/NO — otherwise SKIP
-- For sports/crypto: you CAN reach 80%+ if you have real-time data from news
+RULE 1 — FACTS ONLY, NO ASSUMPTIONS:
+- Every probability claim MUST cite a specific data point from the context above
+- "Base rate" and "historically" are NOT valid evidence — they are assumptions
+- If you have no verifiable data → output SKIP, confidence=0.50
+- Vegas/market odds are NOT facts — they are other people's guesses
 
+RULE 2 — CONFIDENCE SCALE (be brutally honest):
+- 0.75-0.80: You have DIRECT verifiable data (live score, official result, confirmed announcement)
+- 0.65-0.74: You have strong indirect data (recent form + injury report + odds movement)
+- 0.60-0.64: You have weak signals (1-2 data points, conflicting info)
+- <0.60: No real data → SKIP
+
+RULE 3 — EDGE REALITY CHECK:
+- Our historical data shows: when we claim edge>30%, actual WR is only 13-25%
+- When we claim edge 10-20%, actual WR is 30-58%
+- Therefore: NEVER claim edge >25%. If your analysis gives edge >25%, you are overconfident.
+- Real edge comes from market being WRONG, not from you being right about base rates
+
+RULE 4 — SPORTS MARKETS:
+- We have 38% WR in sports despite claiming 76% confidence — we are systematically wrong
+- For sports: ONLY bet if you have live score data, confirmed injury of key player, or odds movement >10%
+- Without those 3 signals: output SKIP
+
+RULE 5 — SKIP IS CORRECT:
+- Skipping a bad bet is MORE profitable than placing it
+- If uncertain: SKIP. We make money on quality, not quantity.
+
+━━━ OUTPUT FORMAT ━━━
 Output ONLY valid JSON:
 {{
-  "p_true": <float 0-1>,
-  "confidence": <float 0-1>,
+  "p_true": <float 0-1, your honest estimate>,
+  "confidence": <float 0-1, how sure you are about p_true>,
   "edge": <p_true minus {market['price']:.4f}>,
   "recommended_side": "<YES/NO/SKIP>",
   "base_rate": <float 0-1>,
-  "news_adjustment": <float, shift from news>,
-  "key_factors_for": ["<concrete fact>", "<concrete fact>"],
-  "key_factors_against": ["<concrete fact>"],
+  "news_adjustment": <float>,
+  "key_factors_for": ["<SPECIFIC FACT from data above, not assumption>"],
+  "key_factors_against": ["<SPECIFIC FACT>"],
   "resolution_clarity": "<high/medium/low>",
-  "market_efficiency_note": "<why is market price wrong or right?>",
+  "data_quality": "<strong/weak/none — how good is the evidence>",
+  "market_efficiency_note": "<specific reason market price is wrong, or 'market is correct'>"  ,
   "calibration_applied": "<what adjustments applied>",
-  "reasoning_summary": "<base rate X% → news shifts by Y% → final Z% because [specific reason]>"
+  "reasoning_summary": "<DATA: [cite specific facts] → p_true=X% because [specific reason], NOT base rate>"
 }}"""
 
     try:
