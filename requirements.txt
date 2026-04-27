@@ -1,0 +1,8 @@
+py-clob-client
+polymarket-apis
+anthropic
+requests
+python-dotenv
+schedule
+colorama
+rich

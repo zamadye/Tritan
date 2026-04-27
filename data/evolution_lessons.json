@@ -1,0 +1,352 @@
+{
+  "total_resolved": 105,
+  "overall_win_rate": 0.3523809523809524,
+  "category_bias": {
+    "geopolitik": {
+      "status": "AVOID",
+      "win_rate": 0.25,
+      "note": "Only 25% win rate in 8 bets \u2014 agent consistently wrong here"
+    },
+    "sports": {
+      "status": "AVOID",
+      "win_rate": 0.38,
+      "note": "Only 38% win rate in 86 bets \u2014 agent consistently wrong here"
+    },
+    "crypto": {
+      "status": "AVOID",
+      "win_rate": 0.2,
+      "note": "Only 20% win rate in 5 bets \u2014 agent consistently wrong here"
+    },
+    "politics": {
+      "status": "AVOID",
+      "win_rate": 0.25,
+      "note": "Only 25% win rate in 4 bets \u2014 agent consistently wrong here"
+    }
+  },
+  "overconfidence_patterns": [
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.84,
+      "question_snippet": "Trump announces end of military operations against Iran by A"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.78,
+      "question_snippet": "BMW Open: Denis Shapovalov vs Fabian Marozsan"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.95,
+      "question_snippet": "Open Capfinances Rouen Metropole: Elisabetta Cocciaretto vs "
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.78,
+      "question_snippet": "Porsche Tennis Grand Prix: Elena Rybakina vs Diana Shnaider"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.85,
+      "question_snippet": "Kansas City Royals vs. Detroit Tigers"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Los Angeles Angels vs. New York Yankees"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.78,
+      "question_snippet": "Porsche Tennis Grand Prix: Linda Noskova vs Elina Svitolina"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "ODI Series Bangladesh vs New Zealand: Bangladesh vs New Zeal"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.78,
+      "question_snippet": "Porsche Tennis Grand Prix: Iga Swiatek vs Mirra Andreeva"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.82,
+      "question_snippet": "New York Mets vs. Chicago Cubs"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Kansas City Royals vs. New York Yankees"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.8,
+      "question_snippet": "Tallahassee: Daniil Glinka vs Jack Kennedy"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.98,
+      "question_snippet": "Tallahassee: Daniil Glinka vs Jack Kennedy"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.98,
+      "question_snippet": "Kansas City Royals vs. New York Yankees"
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.75,
+      "question_snippet": "US x Iran permanent peace deal by April 30, 2026?"
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.85,
+      "question_snippet": "Iran agrees to surrender enriched uranium stockpile by April"
+    },
+    {
+      "category": "crypto",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Will Bitcoin dip to $65,000 in April?"
+    },
+    {
+      "category": "crypto",
+      "confidence_claimed": 0.88,
+      "question_snippet": "Will WTI Crude Oil (WTI) hit (LOW) $70 in April?"
+    },
+    {
+      "category": "crypto",
+      "confidence_claimed": 0.82,
+      "question_snippet": "Will Bitcoin reach $80,000 in April?"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.98,
+      "question_snippet": "Wuning 2: Sergey Fomin vs Fajing Sun"
+    },
+    {
+      "category": "other",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Strait of Hormuz traffic returns to normal by end of April?"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Indian Premier League: Sunrisers Hyderabad vs Chennai Super "
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Detroit Tigers vs. Boston Red Sox"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "San Francisco Giants vs. Washington Nationals"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Chicago White Sox vs. Athletics"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Texas Rangers vs. Seattle Mariners"
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.8,
+      "question_snippet": "Will Israel conduct military action against Iran by April 21"
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Iran x Israel/US conflict ends by April 30?"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "US x Iran diplomatic meeting by April 30, 2026?"
+    },
+    {
+      "category": "politics",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Will the All India Trinamool Congress (AITC) win the most se"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "New York Yankees vs. Boston Red Sox"
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Israel x Hezbollah Ceasefire extended by April 26, 2026?"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Madrid Open: Gabriela Ruse vs Elena Rybakina"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "US x Iran diplomatic meeting by April 26, 2026?"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "US x Iran diplomatic meeting by April 27, 2026?"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "US x Iran diplomatic meeting by April 28, 2026?"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "US x Iran diplomatic meeting by April 29, 2026?"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "US x Iran diplomatic meeting by May 15, 2026?"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "San Diego Padres vs. Arizona Diamondbacks"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Madrid Open: Sorana Cirstea vs Coco Gauff"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Madrid Open: Katerina Siniakova vs Caty McNally"
+    },
+    {
+      "category": "politics",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Will the All India Trinamool Congress (AITC) win the most se"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Los Angeles Angels vs. Kansas City Royals"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Los Angeles Angels vs. Kansas City Royals"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Los Angeles Angels vs. Kansas City Royals"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Los Angeles Angels vs. Kansas City Royals"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Los Angeles Angels vs. Kansas City Royals"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Los Angeles Angels vs. Kansas City Royals"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Los Angeles Angels vs. Kansas City Royals"
+    }
+  ],
+  "underconfidence_patterns": [
+    {
+      "category": "sports",
+      "confidence_claimed": 0.62
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.65
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.638
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.65
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.6
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.65
+    }
+  ],
+  "recent_mistakes": [
+    {
+      "question": "Madrid Open: Belinda Bencic vs Hailey Baptiste",
+      "category": "sports",
+      "predicted_side": "YES",
+      "actual_outcome": "NO",
+      "p_true_claimed": 0.48,
+      "confidence": 0.65,
+      "lesson": "Overestimated YES probability in sports. Check base rates more carefully."
+    },
+    {
+      "question": "NHL Playoffs: Who Will Win Series? - Ducks vs. Oilers ",
+      "category": "sports",
+      "predicted_side": "NO",
+      "actual_outcome": "EXIT",
+      "p_true_claimed": 0.537,
+      "confidence": 0.65,
+      "lesson": "Prediction incorrect in sports \u2014 review reasoning methodology."
+    },
+    {
+      "question": "Los Angeles Angels vs. Kansas City Royals",
+      "category": "sports",
+      "predicted_side": "NO",
+      "actual_outcome": "EXIT",
+      "p_true_claimed": 0.286,
+      "confidence": 0.75,
+      "lesson": "Prediction incorrect in sports \u2014 review reasoning methodology."
+    },
+    {
+      "question": "Los Angeles Angels vs. Kansas City Royals",
+      "category": "sports",
+      "predicted_side": "NO",
+      "actual_outcome": "EXIT",
+      "p_true_claimed": 0.286,
+      "confidence": 0.75,
+      "lesson": "Prediction incorrect in sports \u2014 review reasoning methodology."
+    },
+    {
+      "question": "Los Angeles Angels vs. Kansas City Royals",
+      "category": "sports",
+      "predicted_side": "NO",
+      "actual_outcome": "EXIT",
+      "p_true_claimed": 0.286,
+      "confidence": 0.75,
+      "lesson": "Prediction incorrect in sports \u2014 review reasoning methodology."
+    }
+  ],
+  "calibration_adjustments": {
+    "geopolitik": -0.1,
+    "sports": -0.1,
+    "crypto": -0.1,
+    "politics": -0.1
+  }
+}

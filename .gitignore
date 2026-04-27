@@ -1,0 +1,6 @@
+.env
+data/live_trades.json
+data/*.log
+__pycache__/
+*.pyc
+.DS_Store
