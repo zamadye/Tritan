@@ -159,11 +159,18 @@ def run_scan_cycle(mode: str, clob_client=None):
         if market["question"][:60] in open_ids:
             continue
 
-        # Fetch news + analyze (single delay after both)
+        # Fetch news + deep research
         news = fetch_news(market)
+        from agent.research import build_research_report, format_research_for_llm
+        research = build_research_report(market)
+        research_ctx = format_research_for_llm(research)
+
+        # Combine: research context is primary, news is supplementary
+        combined_news = "\n".join(filter(None, [research_ctx, news]))
+
         prev_loss = market["question"][:60] in prev_loss_markets
-        analysis = estimate_probability(market, news, evo_context, prev_loss=prev_loss)
-        time.sleep(delay)  # single delay per market (not 2x)
+        analysis = estimate_probability(market, combined_news, evo_context, prev_loss=prev_loss)
+        time.sleep(delay)
 
         confidence = analysis.get("confidence", 0)
         p_true     = analysis.get("p_true", market["price"])

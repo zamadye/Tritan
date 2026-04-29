@@ -1,0 +1,102 @@
+{
+  "market_id": "t2",
+  "question": "NBA Playoffs: Pistons vs Magic series winner",
+  "market_price": 0.35,
+  "generated_at": "2026-04-29T12:37:46.426997+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
+      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        33,
+        47,
+        33,
+        31,
+        39,
+        46
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 77045,
+      "btc_24h": 1.0466635197799725,
+      "risk_signal": "risk-ON"
+    }
+  },
+  "sports": {
+    "todays_games": [
+      "PHI @ BOS | Final",
+      "ATL @ NY | Final",
+      "POR @ SA | Final"
+    ],
+    "injuries": [
+      "?: Keshon Gilbert \u2014 Out (Surgery)",
+      "?: Jock Landale \u2014 Out (Sprain)",
+      "?: Nolan Traore \u2014 Out (Not Specified)",
+      "?: Nic Claxton \u2014 Out (Sprain)",
+      "?: Ziaire Williams \u2014 Out (Inflammation)",
+      "?: PJ Hall \u2014 Out (Surgery)",
+      "?: Rob Dillingham \u2014 Out (Surgery)",
+      "?: Isaac Okoro \u2014 Out (Bruise)",
+      "?: Matas Buzelis \u2014 Out (Sprain)",
+      "?: Cooper Flagg \u2014 Out (Sprain)"
+    ]
+  },
+  "news_articles": [
+    {
+      "source": "NewsAPI",
+      "title": " Y! Sports AM: World Cup roster projections",
+      "description": "The USMNT's World Cup roster reveal is fast approaching. Who's in? Who's out? Who's on the bubble?",
+      "published": "2026-04-28"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "TST Best Bets: April 28, 2026",
+      "description": "The first round of the NBA playoffs is nearing its end with the Oklahoma City Thunder securing the sweep over the Phoenix Suns following a 131-122 victory last night.",
+      "published": "2026-04-28"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Desmond Bane scores 22, No. 8 seed Magic beat No. 1 seed Pistons for a 3-1 series lead",
+      "description": "The Orlando Magic are one win away from knocking off a No. 1 seed and winning their first playoff series in 16 years. Desmond Bane scored 22 points, Franz Wagner had 19 in three quarters and the Magic beat the Detroit Pistons 94-88 Monday night to take a 3-1 \u2026",
+      "published": "2026-04-28"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Best NBA Player Props Today for April 27: McDaniel McDelivers",
+      "description": "Douglas Farmer breaks down his favorite NBA player props for Monday, April 27, headlined by Jaden McDaniels and Jalen Suggs.",
+      "published": "2026-04-27"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "TST Best Bets: April 26, 2026",
+      "description": "The overlooked lower-seeded playoff teams of the Eastern Conference have turned the first round into chaos, with every series producing upsets or serious scares for contenders.The eighth-seeded Orlando Magic are the most shocking story of the postseason so fa\u2026",
+      "published": "2026-04-26"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "NBA playoffs winners and losers: Ayo Dosunmu puts the Nuggets on the brink, Jalen Brunson gets some help",
+      "description": "The Magic, Thunder, Knicks and Wolves were winners on Saturday, but let's dive in deeper to the first-round action",
+      "published": "2026-04-26"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Jalen Duren, Pistons C, misses out on 2026 NBA Most Improved Player",
+      "description": "After a breakout season, Detroit Pistons star center Jalen Duren was acknowledged by NBA awards voters on Friday, April 24.",
+      "published": "2026-04-24"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "2025-26 NBA Playoff Odds: Why Long-Shot Magic Are Best Bet to Win East",
+      "description": "If you believe in magic like Will Hill, long-shot Orlando to win the East might be a bet you want to consider. Here's why.",
+      "published": "2026-04-24"
+    }
+  ],
+  "causal_chains": [],
+  "summary": ""
+}

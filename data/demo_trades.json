@@ -3638,8 +3638,8 @@
     "size_usd": 0.5,
     "price_at_entry": 0.15,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": 0.17,
     "p_true_estimated": 0.3,
     "confidence_at_bet": 0.68,
     "edge_at_bet": 0.15,
@@ -3659,7 +3659,12 @@
       "Spot bid still firm at $77k, micro-structure not clearly bearish",
       "Market volume on this specific market unknown (check <$50k could negate)"
     ],
-    "peak_price": 0.17
+    "peak_price": 0.2,
+    "exit_price": 0.2,
+    "exit_reason": "TAKE_PROFIT_2X (+33%)",
+    "prediction_correct": true,
+    "resolved_at": "2026-04-29T12:27:59.453984+00:00",
+    "brier_score": 0.7225
   },
   {
     "trade_id": "51a63969-4cd3-432a-8c70-789bb2b5842a",
@@ -3769,6 +3774,117 @@
       "Match not until May 2026, plenty of time for MI changes",
       "No team news or injury reports yet",
       "Low current volume may mean slow follow-through"
+    ]
+  },
+  {
+    "trade_id": "cdd9cdec-92a1-4ea2-a169-9178790e45a1",
+    "timestamp": "2026-04-29T12:12:26.017196",
+    "mode": "demo",
+    "market_id": "0x06a804e8bd1a539829b7db279ad33b2cf0bcf98f315a3b3a8c7623e6230d88fd",
+    "market_numeric_id": "1823776",
+    "market_question": "Will Bitcoin reach $80,000 in April?",
+    "end_date": "2026-05-01T04:00:00Z",
+    "category": "",
+    "side": "YES",
+    "size_usd": 0.5,
+    "price_at_entry": 0.17,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": -0.04,
+    "p_true_estimated": 0.32,
+    "confidence_at_bet": 0.68,
+    "edge_at_bet": 0.15,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: proximity to $80k + extreme fear mean-reversion + Friday gamma \u2192 DIRECTION: up \u2192 TARGET: 32% because history shows 15-20% pop when BTC <4% from monthly strike with days left",
+    "calibration_applied": "Required \u226570% confidence & \u226512% edge \u2192 both met; capped size to $0.50 because last trade was a loss | hard_cap=68% (overconf 61x)",
+    "key_factors_for": [
+      "BTC 3.3% from strike with 72h left",
+      "Fear-Greed 26 (Extreme Fear) \u2192 mean-reversion bounce likely",
+      "Friday gamma squeeze window",
+      "Prior profitable trades on same setup (16c\u219232c, 15c\u219230c)",
+      "No overhead resistance until $80k"
+    ],
+    "key_factors_against": [
+      "Geo-risk flag flashing 'Extreme Fear' could cap upside",
+      "No fresh bullish news headline yet",
+      "Previous bet on this market lost"
+    ],
+    "peak_price": 0.185,
+    "exit_price": 0.15725,
+    "exit_reason": "TRAILING_STOP (peak=0.18\u2192sl=0.16, locked $-0.04)",
+    "prediction_correct": false,
+    "resolved_at": "2026-04-29T12:27:59.632403+00:00",
+    "brier_score": 0.0289
+  },
+  {
+    "trade_id": "21d99e96-df3a-4b7e-9274-220f731fc99f",
+    "timestamp": "2026-04-29T12:29:01.715031",
+    "mode": "demo",
+    "market_id": "0xa05c869fcd6edef0b6e3ee0f11c67c7cd372f29afd88e2a837cd9458c19b4411",
+    "market_numeric_id": "2054872",
+    "market_question": "Will Bitcoin dip to $75,000 in April?",
+    "end_date": "2026-05-01T04:00:00Z",
+    "category": "",
+    "side": "YES",
+    "size_usd": 0.5,
+    "price_at_entry": 0.23,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.34,
+    "confidence_at_bet": 0.68,
+    "edge_at_bet": 0.11,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: Extreme-fear sentiment + Friday gamma + BTC within 3 % of $75k \u2192 DIRECTION: up \u2192 TARGET: 34 % because similar setups recently delivered 10-15 pt pops on slightest spot dip.",
+    "calibration_applied": "Down-sized confidence 5 % vs prior win because no headline, but kept >0.70 given repeat setup that printed +33-50 % wins last month | hard_cap=68% (overconf 61x)",
+    "key_factors_for": [
+      "BTC $77.1k only 2.8 % above $75k target",
+      "Fear & Greed 26 (Extreme Fear) \u2013 prior wins came from similar reads",
+      "Friday expiry gamma squeeze often pushes price toward popular strikes",
+      "Geo-risk flag flashing \u2018Extreme Fear\u2019 \u2192 risk-off flows",
+      "Previous profitable trades entered 15-16 c when BTC within 3 % of strike"
+    ],
+    "key_factors_against": [
+      "No fresh headline/news catalyst yet today",
+      "Market already tried and failed once (our last loss)",
+      "Low polymarket volume so far (<$5k) \u2192 could be slow to follow spot"
+    ],
+    "peak_price": 0.28
+  },
+  {
+    "trade_id": "460a00b6-f005-4ee8-b02a-5ec14ab37ce9",
+    "timestamp": "2026-04-29T12:37:05.309164",
+    "mode": "demo",
+    "market_id": "0x06a804e8bd1a539829b7db279ad33b2cf0bcf98f315a3b3a8c7623e6230d88fd",
+    "market_numeric_id": "1823776",
+    "market_question": "Will Bitcoin reach $80,000 in April?",
+    "end_date": "2026-05-01T04:00:00Z",
+    "category": "",
+    "side": "YES",
+    "size_usd": 0.5,
+    "price_at_entry": 0.13,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.24,
+    "confidence_at_bet": 0.68,
+    "edge_at_bet": 0.11,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: BTC within 3.8 % of $80 k + Friday gamma squeeze + extreme-fear bounce \u2192 DIRECTION: up \u2192 TARGET: 24 % because identical setup produced 30-50 % price spikes in past trades and sentiment is primed for chase",
+    "calibration_applied": "boosted p_true by +0.03 vs model because historical crypto gamma plays showed 10-15 % additional pop when fear index <30 | hard_cap=68% (overconf 61x)",
+    "key_factors_for": [
+      "Distance to strike 3.8 % \u2014 inside the 3 % profit zone that triggered +33 % to +50 % wins in past",
+      "Friday gamma expiry historically amplifies moves into 80k magnet",
+      "Fear-Greed at 26 (Extreme Fear) \u2192 mean-reversion bounce likely",
+      "No overhead resistance until 80k \u2014 clean path for momentum chasers"
+    ],
+    "key_factors_against": [
+      "Geo-signal flagging \u2018Extreme Fear \u2192 geopol risk HIGH\u2019 could spark sudden dump",
+      "Previous bet on this market lost \u2014 need to respect false-break risk",
+      "April expiry 01-May 04:00 UTC \u2014 still 36 h left, but time decay accelerates"
     ]
   }
 ]

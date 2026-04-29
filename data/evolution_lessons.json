@@ -1,7 +1,14 @@
 {
-  "total_resolved": 128,
-  "overall_win_rate": 0.352,
+  "total_resolved": 130,
+  "overall_win_rate": 0.354,
   "momentum_lessons": [
+    {
+      "category": "crypto",
+      "entry_price": 0.15,
+      "pnl": 0.17,
+      "exit_reason": "TAKE_PROFIT_2X (+33%)",
+      "catalyst": "CATALYST: Extreme-fear sentiment + geopol jitters pushing traders to price in a quick $75k touch \u2192 DIRECTION: up \u2192 TARGE"
+    },
     {
       "category": "crypto",
       "entry_price": 0.16,
@@ -29,20 +36,13 @@
       "pnl": 0.74,
       "exit_reason": "TRAILING_STOP (peak=0.88\u2192sl=0.66, locked $+0.74)",
       "catalyst": "DATA: ESPN live score Angels 1, White Sox 0, game In Progress \u2192 p_true=90 % because the leading team in an ongoing baseb"
-    },
-    {
-      "category": "politics",
-      "entry_price": 0.501,
-      "pnl": 0.46,
-      "exit_reason": "TRAILING_STOP (peak=0.56\u2192sl=0.42, locked $-0.47)",
-      "catalyst": "Base rate 25% for national party defeating entrenched regional incumbent after re-election \u2192 2021 landslide + consistent"
     }
   ],
   "price_movement_patterns": {
     "10-20%": {
       "win_rate": 0.44,
-      "avg_pnl": 7.64,
-      "n": 16
+      "avg_pnl": 6.8,
+      "n": 18
     },
     "40-50%": {
       "win_rate": 0.56,
@@ -92,10 +92,10 @@
   },
   "exit_patterns": {
     "RESOLVED": 67,
-    "TAKE_PROFIT": 20,
+    "TAKE_PROFIT": 21,
     "STOP_LOSS": 25,
     "TIME_LIMIT": 3,
-    "TRAILING_STOP": 13
+    "TRAILING_STOP": 14
   },
   "edge_reality": {
     "10%": {
@@ -111,8 +111,8 @@
       "n": 15
     },
     "20%": {
-      "actual_wr": 0.35,
-      "n": 26
+      "actual_wr": 0.36,
+      "n": 28
     },
     "60%": {
       "actual_wr": 0.25,
@@ -391,6 +391,13 @@
     {
       "question": "Will Bitcoin reach $80,000 in April?",
       "category": "crypto",
+      "entry_price": 0.17,
+      "reasoning": "CATALYST: proximity to $80k + extreme fear mean-reversion + Friday gamma \u2192 DIRECTION: up \u2192 TARGET: 3",
+      "lesson": "Momentum thesis failed in crypto at entry 0.17. Review what catalyst was missing."
+    },
+    {
+      "question": "Will Bitcoin reach $80,000 in April?",
+      "category": "crypto",
       "entry_price": 0.2,
       "reasoning": "CATALYST: BTC within 3 % of $80k + Friday gamma + Twitter narrative heat \u2192 DIRECTION: up \u2192 TARGET: 3",
       "lesson": "Momentum thesis failed in crypto at entry 0.20. Review what catalyst was missing."
@@ -401,13 +408,6 @@
       "entry_price": 0.23,
       "reasoning": "CATALYST: BTC within 3% of $80k + Friday gamma + Twitter buzz \u2192 DIRECTION: up \u2192 TARGET: 35% because ",
       "lesson": "Momentum thesis failed in crypto at entry 0.23. Review what catalyst was missing."
-    },
-    {
-      "question": "Will Bitcoin dip to $75,000 in April?",
-      "category": "crypto",
-      "entry_price": 0.21,
-      "reasoning": "CATALYST: Extreme Fear index + fresh geopol-risk chatter + BTC only 3.5% above $75k with Friday gamm",
-      "lesson": "Momentum thesis failed in crypto at entry 0.21. Review what catalyst was missing."
     }
   ]
 }
