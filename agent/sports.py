@@ -70,7 +70,10 @@ def get_game_context(question: str) -> str:
                 record = rec[0].get("summary", "?") if rec else "?"
                 ha     = c.get("homeAway", "?").upper()
                 score  = c.get("score", "-")
-                lines.append(f"  {ha}: {team} | Record: {record} | Score: {score}")
+                # Series record for playoffs
+                series = next((r for r in rec if r.get("type") == "vsconf"), None)
+                series_str = f" | series: {series['summary']}" if series else ""
+                lines.append(f"  {ha}: {team} | season: {record} | score: {score}{series_str}")
 
             odds = comp.get("odds", [])
             if odds:

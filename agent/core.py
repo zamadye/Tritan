@@ -133,7 +133,7 @@ def run_scan_cycle(mode: str, clob_client=None):
         console.print(f"[yellow]⚠️  Max open positions ({max_open}) reached. Waiting for resolutions.[/yellow]")
         return
 
-    # Step 3: load evolution context ONCE per cycle (not per market)
+    # Step 3: load evolution context ONCE per cycle
     evo_context = get_evolution_context(mode)
     if evo_context:
         console.print(f"\n[dim]🧠 Evolution context loaded[/dim]")
@@ -142,6 +142,17 @@ def run_scan_cycle(mode: str, clob_client=None):
     console.print("\n[bold]🔍 Scanning markets...[/bold]")
     candidates = get_candidate_markets()
     console.print(f"Found {len(candidates)} candidate markets.")
+
+    # Step 4b: fetch macro context ONCE per cycle (shared across all markets)
+    from agent.research import get_macro_context, format_research_for_llm
+    from agent.osint import get_fear_greed_trend
+    macro_ctx = get_macro_context()
+    fg_trend   = get_fear_greed_trend()
+    cycle_macro = "\n".join(filter(None, [
+        f"[MACRO] Fear&Greed: {macro_ctx.get('fear_greed',{}).get('current','?')} | trend: {macro_ctx.get('fear_greed',{}).get('7d_trend','?')}",
+        f"[MACRO] BTC: ${macro_ctx.get('crypto_sentiment',{}).get('btc_price',0):,.0f} ({macro_ctx.get('crypto_sentiment',{}).get('btc_24h',0):+.1f}% 24h) → {macro_ctx.get('crypto_sentiment',{}).get('risk_signal','?')}",
+        fg_trend,
+    ]))
 
     bets_this_cycle = 0
     max_bets_per_cycle = min(max_open - open_count, 10)  # max 10 bets per cycle
@@ -177,14 +188,14 @@ def run_scan_cycle(mode: str, clob_client=None):
             console.print(f"[dim]⛔ Blocked (2+ losses): {market['question'][:50]}[/dim]")
             continue
 
-        # Fetch news + deep research
-        news = fetch_news(market)
-        from agent.research import build_research_report, format_research_for_llm
-        research = build_research_report(market)
+        # Research: market-specific (cached 30min) + cycle macro + news
+        from agent.research import build_research_report, format_research_for_llm, detect_causal_chains
+        research     = build_research_report(market)
         research_ctx = format_research_for_llm(research)
 
-        # Combine: research context is primary, news is supplementary
-        combined_news = "\n".join(filter(None, [research_ctx, news]))
+        # Combine: cycle macro (fresh) + market research (cached) + news
+        news         = fetch_news(market)
+        combined_news = "\n".join(filter(None, [cycle_macro, research_ctx, news]))
 
         prev_loss = market["question"][:60] in prev_loss_markets
         analysis = estimate_probability(market, combined_news, evo_context, prev_loss=prev_loss)

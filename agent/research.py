@@ -337,7 +337,7 @@ def get_sports_deep_context(question: str) -> dict:
             for entry in group.get("standings", {}).get("entries", [])[:5]:
                 team = entry.get("team", {}).get("displayName", "?")
                 stats = {s["name"]: s["displayValue"] for s in entry.get("stats", [])}
-                wins = stats.get("wins", stats.get("wins", "?"))
+                wins = stats.get("wins", "?")
                 losses = stats.get("losses", "?")
                 pct = stats.get("winPercent", stats.get("playoffSeed", "?"))
                 standings.append(f"{team}: {wins}W-{losses}L ({pct})")
@@ -345,6 +345,23 @@ def get_sports_deep_context(question: str) -> dict:
             context["standings"] = standings[:8]
     except Exception:
         pass
+
+    # Playoff series scores (NBA/NHL specific)
+    if sport_name in ("nba", "nhl"):
+        try:
+            r = requests.get(f"{base}/scoreboard?groups=playoff", timeout=6)
+            playoff_events = r.json().get("events", [])
+            q_words = set(w.strip("?.,!()-").lower() for w in question.split() if len(w) > 3)
+            for e in playoff_events:
+                name = e.get("name","").lower()
+                if sum(1 for w in q_words if w in name) >= 1:
+                    comp = e.get("competitions",[{}])[0]
+                    series_summary = comp.get("series", {})
+                    if series_summary:
+                        context["playoff_series"] = str(series_summary)
+                    break
+        except Exception:
+            pass
 
     # Injuries (ESPN)
     try:
@@ -516,6 +533,8 @@ def format_research_for_llm(report: dict) -> str:
 
     # Sports
     sports = report.get("sports",{})
+    if sports.get("playoff_series"):
+        lines.append(f"[SPORTS] Playoff series: {sports['playoff_series']}")
     if sports.get("recent_games"):
         lines.append("[SPORTS] Recent games:")
         for g in sports["recent_games"][:3]:
