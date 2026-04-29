@@ -1,71 +1,23 @@
 """Poly-Agent Admin — Entry point with top navbar."""
-import sys, os
+import sys, os, subprocess
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
-import subprocess
 import streamlit as st
 from pathlib import Path
 
-st.set_page_config(page_title="Poly-Agent", page_icon="🤖", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(
+    page_title="Poly-Agent Admin",
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
 from dashboard.components.shared import (
     inject_css, badge, service_active, get_current_mode,
-    switch_mode, restart_agent, load_trades, load_evolution,
-    load_bankroll, compute_stats, get_usdc_balance
+    switch_mode, load_trades, load_evolution, load_bankroll,
+    compute_stats, get_usdc_balance
 )
 
 inject_css()
-
-# ── top navbar ────────────────────────────────────────────────────────────────
-mode   = get_current_mode()
-active = service_active()
-
-st.markdown("""<style>
-section[data-testid="stSidebar"]{display:none}
-#MainMenu{visibility:hidden}
-header[data-testid="stHeader"]{background:#0d0d1a;border-bottom:1px solid #2e2e4e}
-.topbar{display:flex;align-items:center;gap:16px;padding:0 8px;flex-wrap:wrap}
-.topbar-title{font-size:18px;font-weight:700;color:#fff;margin-right:8px}
-.nav-link{padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500;
-  cursor:pointer;border:1px solid transparent;color:#aaa;text-decoration:none;white-space:nowrap}
-.nav-link:hover,.nav-link.active{background:#2e2e4e;color:#fff;border-color:#3e3e6e}
-.nav-link.active{color:#7c7cff}
-</style>""", unsafe_allow_html=True)
-
-# Nav state
-if "page" not in st.session_state:
-    st.session_state.page = "dashboard"
-
-# Top bar: logo + nav + status + controls
-col_nav, col_ctrl = st.columns([5, 1])
-
-with col_nav:
-    pages = [
-        ("dashboard",  "📊 Dashboard"),
-        ("trades",     "📋 Trades"),
-        ("positions",  "📂 Positions"),
-        ("scanner",    "🔍 Scanner"),
-        ("learning",   "🧠 Learning"),
-        ("settings",   "⚙️ Settings"),
-    ]
-    cols = st.columns([1.2] + [1]*len(pages))
-    cols[0].markdown("**🤖 Poly-Agent**")
-    for i, (key, label) in enumerate(pages):
-        if cols[i+1].button(label, key=f"nav_{key}",
-                            type="primary" if st.session_state.page==key else "secondary",
-                            use_container_width=True):
-            st.session_state.page = key
-            st.rerun()
-
-with col_ctrl:
-    mc = "#00cc88" if mode=="demo" else "#ff9900"
-    ac = "#00cc88" if active else "#ff4444"
-    st.markdown(
-        f"{badge('🟢 ON' if active else '🔴 OFF', ac)} "
-        f"{badge('📝 DEMO' if mode=='demo' else '💰 LIVE', mc)}",
-        unsafe_allow_html=True
-    )
-
-st.divider()
 
 # ── auto-refresh ──────────────────────────────────────────────────────────────
 try:
@@ -74,7 +26,58 @@ try:
 except ImportError:
     pass
 
-# ── route to page ─────────────────────────────────────────────────────────────
+# ── navbar ────────────────────────────────────────────────────────────────────
+if "page" not in st.session_state:
+    st.session_state.page = "dashboard"
+
+mode   = get_current_mode()
+active = service_active()
+
+PAGES = [
+    ("dashboard",  "📊 Dashboard"),
+    ("trades",     "📋 Trades"),
+    ("positions",  "📂 Positions"),
+    ("scanner",    "🔍 Scanner"),
+    ("learning",   "🧠 Learning"),
+    ("settings",   "⚙️ Settings"),
+]
+
+# Status badges
+ac = "#22c55e" if active else "#ef4444"
+mc = "#22c55e" if mode == "demo" else "#f59e0b"
+status_html = (
+    f"<span class='badge' style='background:{ac}18;border:1px solid {ac};color:{ac}'>"
+    f"{'● ON' if active else '● OFF'}</span>&nbsp;"
+    f"<span class='badge' style='background:{mc}18;border:1px solid {mc};color:{mc}'>"
+    f"{'📝 DEMO' if mode=='demo' else '💰 LIVE'}</span>"
+)
+
+# Build nav HTML
+nav_items = "".join(
+    f"<span class='nav-pill {'active' if st.session_state.page==key else ''}' "
+    f"id='nav-{key}'>{label}</span>"
+    for key, label in PAGES
+)
+
+st.markdown(f"""
+<div class='navbar'>
+  <span class='navbar-brand'>🤖 Poly-Agent</span>
+  {nav_items}
+  <span style='margin-left:auto'>{status_html}</span>
+</div>
+""", unsafe_allow_html=True)
+
+# Nav buttons (invisible, positioned over HTML pills via columns)
+nav_cols = st.columns([1.4] + [1.1]*len(PAGES) + [1.5])
+for i, (key, label) in enumerate(PAGES):
+    with nav_cols[i+1]:
+        st.markdown("<div style='margin-top:-52px;opacity:0'>", unsafe_allow_html=True)
+        if st.button(label, key=f"nav_{key}", use_container_width=True):
+            st.session_state.page = key
+            st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
+
+# ── route ─────────────────────────────────────────────────────────────────────
 page = st.session_state.page
 
 if page == "dashboard":
@@ -94,4 +97,9 @@ else:
 
 render()
 
-st.markdown(f"<div style='text-align:right;color:#555;font-size:11px;margin-top:20px'>Poly-Agent Admin v3.1 · {__import__('datetime').datetime.utcnow().strftime('%H:%M UTC')}</div>", unsafe_allow_html=True)
+st.markdown(
+    f"<div style='text-align:right;color:#374151;font-size:11px;margin-top:24px;padding-top:12px;"
+    f"border-top:1px solid #1e1e3a'>Poly-Agent Admin v3.2 · "
+    f"{__import__('datetime').datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}</div>",
+    unsafe_allow_html=True
+)

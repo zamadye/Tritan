@@ -1,15 +1,71 @@
 {
-  "last_updated": "2026-04-27T11:55:52.023180",
+  "last_updated": "2026-04-28T00:52:03.395271",
   "mode": "demo",
-  "total_resolved": 105,
-  "wins": 37,
-  "losses": 68,
-  "win_rate": 0.3524,
-  "total_pnl": 103.96,
-  "avg_brier": 0.2487,
+  "total_resolved": 113,
+  "wins": 40,
+  "losses": 73,
+  "win_rate": 0.354,
+  "total_pnl": 101.76,
+  "avg_brier": 0.2505,
   "biggest_win": 73.33,
   "biggest_loss": -10.0,
   "recent": [
+    {
+      "question": "Tampa Bay Rays vs. Cleveland Guardians",
+      "side": "NO",
+      "outcome": "YES",
+      "pnl": -2.56,
+      "correct": false
+    },
+    {
+      "question": "Tampa Bay Rays vs. Cleveland Guardians",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": -1.02,
+      "correct": false
+    },
+    {
+      "question": "Tampa Bay Rays vs. Cleveland Guardians",
+      "side": "YES",
+      "outcome": "EXIT",
+      "pnl": -0.22,
+      "correct": false
+    },
+    {
+      "question": "Will Manchester United FC win on 2026-04-27?",
+      "side": "YES",
+      "outcome": "YES",
+      "pnl": 1.38,
+      "correct": true
+    },
+    {
+      "question": "Strait of Hormuz traffic returns to normal by May 15?",
+      "side": "YES",
+      "outcome": "EXIT",
+      "pnl": 0.3,
+      "correct": true
+    },
+    {
+      "question": "Will Bitcoin reach $80,000 in April?",
+      "side": "YES",
+      "outcome": "EXIT",
+      "pnl": -0.63,
+      "correct": false
+    },
+    {
+      "question": "Will Bitcoin reach $80,000 in April?",
+      "side": "YES",
+      "outcome": "EXIT",
+      "pnl": -0.58,
+      "correct": false
+    },
+    {
+      "question": "Madrid Open: Solana Sierra vs Karolina Pliskova",
+      "side": "NO",
+      "outcome": "NO",
+      "pnl": 1.13,
+      "correct": true
+    },
     {
       "question": "Madrid Open: Belinda Bencic vs Hailey Baptiste",
       "side": "YES",
@@ -23,62 +79,6 @@
       "outcome": "EXIT",
       "pnl": 0.49,
       "correct": true
-    },
-    {
-      "question": "Will the All India Trinamool Congress (AITC) win the most se",
-      "side": "YES",
-      "outcome": "EXIT",
-      "pnl": -0.43,
-      "correct": false
-    },
-    {
-      "question": "Israel x Hezbollah Ceasefire extended by April 26, 2026?",
-      "side": "YES",
-      "outcome": "EXIT",
-      "pnl": 0.42,
-      "correct": true
-    },
-    {
-      "question": "NHL Playoffs: Who Will Win Series? - Ducks vs. Oilers ",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": -1.35,
-      "correct": false
-    },
-    {
-      "question": "Los Angeles Angels vs. Kansas City Royals",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": -1.16,
-      "correct": false
-    },
-    {
-      "question": "Los Angeles Angels vs. Kansas City Royals",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": -1.17,
-      "correct": false
-    },
-    {
-      "question": "Los Angeles Angels vs. Kansas City Royals",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": -1.17,
-      "correct": false
-    },
-    {
-      "question": "Los Angeles Angels vs. Kansas City Royals",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": -1.11,
-      "correct": false
-    },
-    {
-      "question": "Los Angeles Angels vs. Kansas City Royals",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": -1.19,
-      "correct": false
     }
   ]
 }

@@ -9,18 +9,202 @@ import streamlit as st
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"), override=True)
 
 DARK_CSS = """<style>
-[data-testid="metric-container"]{background:#1e1e2e;border:1px solid #313155;border-radius:10px;padding:14px 18px!important}
-[data-testid="metric-container"] label{font-size:11px!important;color:#888!important;text-transform:uppercase;letter-spacing:.5px}
-[data-testid="metric-container"] [data-testid="stMetricValue"]{font-size:22px!important;font-weight:700!important}
-[data-testid="stExpander"]{border:1px solid #2e2e4e!important;border-radius:8px!important;margin-bottom:4px!important}
-[data-testid="stSidebar"]{background:#13131f!important}
-[data-testid="stSidebar"] hr{border-color:#2e2e4e!important}
-.nav-btn button{width:100%!important;text-align:left!important;background:transparent!important;border:none!important;
-  padding:8px 12px!important;border-radius:6px!important;font-size:14px!important;color:#ccc!important}
-.nav-btn button:hover{background:#2e2e4e!important;color:#fff!important}
-.status-badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;display:inline-block}
-hr{margin:10px 0!important;border-color:#2e2e4e!important}
-div[data-testid="stVerticalBlock"] > div:has(> [data-testid="stHorizontalBlock"]) {gap:8px!important}
+/* ── Base ── */
+html, body, [class*="css"] { font-family: 'Inter', 'Segoe UI', sans-serif !important; }
+.main .block-container { padding: 1.5rem 2rem 2rem !important; max-width: 1400px !important; }
+
+/* ── Metric cards ── */
+[data-testid="metric-container"] {
+  background: #16162a !important;
+  border: 1px solid #2a2a4a !important;
+  border-radius: 12px !important;
+  padding: 18px 20px !important;
+}
+[data-testid="metric-container"] label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #6b7280 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+}
+[data-testid="metric-container"] [data-testid="stMetricValue"] {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: #f1f5f9 !important;
+  line-height: 1.2 !important;
+}
+[data-testid="metric-container"] [data-testid="stMetricDelta"] {
+  font-size: 12px !important;
+}
+
+/* ── Expanders ── */
+[data-testid="stExpander"] {
+  background: #16162a !important;
+  border: 1px solid #2a2a4a !important;
+  border-radius: 10px !important;
+  margin-bottom: 6px !important;
+}
+[data-testid="stExpander"] summary {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 10px 14px !important;
+  color: #cbd5e1 !important;
+}
+
+/* ── Divider ── */
+hr { margin: 16px 0 !important; border-color: #1e1e3a !important; }
+
+/* ── Sidebar hidden ── */
+section[data-testid="stSidebar"] { display: none !important; }
+#MainMenu, footer, header { visibility: hidden !important; }
+
+/* ── Navbar ── */
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 0 14px 0;
+  border-bottom: 1px solid #1e1e3a;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.navbar-brand {
+  font-size: 16px;
+  font-weight: 700;
+  color: #7c7cff;
+  margin-right: 16px;
+  white-space: nowrap;
+}
+.nav-pill {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  color: #94a3b8;
+  background: transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.nav-pill:hover { background: #1e1e3a; color: #e2e8f0; }
+.nav-pill.active { background: #2d2d5e; color: #a5b4fc; border-color: #4a4a8a; }
+
+/* ── Status badges ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ── Cards ── */
+.card {
+  background: #16162a;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+.card-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.card-sub {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* ── Tables / lists ── */
+.trade-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #1e1e3a;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+.trade-row:hover { background: #16162a; }
+
+/* ── Progress bars ── */
+[data-testid="stProgress"] > div > div {
+  background: #2a2a4a !important;
+  border-radius: 4px !important;
+}
+[data-testid="stProgress"] > div > div > div {
+  border-radius: 4px !important;
+}
+
+/* ── Buttons ── */
+[data-testid="stButton"] > button {
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 6px 14px !important;
+  transition: all 0.15s !important;
+}
+[data-testid="stButton"] > button[kind="primary"] {
+  background: #4f46e5 !important;
+  border-color: #4f46e5 !important;
+}
+[data-testid="stButton"] > button[kind="primary"]:hover {
+  background: #4338ca !important;
+}
+
+/* ── Inputs ── */
+[data-testid="stTextInput"] input,
+[data-testid="stNumberInput"] input,
+[data-testid="stSelectbox"] > div {
+  background: #16162a !important;
+  border-color: #2a2a4a !important;
+  border-radius: 8px !important;
+  color: #e2e8f0 !important;
+  font-size: 13px !important;
+}
+
+/* ── Tabs ── */
+[data-testid="stTabs"] [role="tab"] {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 8px 16px !important;
+  color: #94a3b8 !important;
+}
+[data-testid="stTabs"] [role="tab"][aria-selected="true"] {
+  color: #a5b4fc !important;
+  border-bottom-color: #a5b4fc !important;
+}
+
+/* ── Info/warning boxes ── */
+[data-testid="stInfo"] { background: #1e2a3a !important; border-color: #3b82f6 !important; border-radius: 8px !important; }
+[data-testid="stWarning"] { background: #2a1f0e !important; border-color: #f59e0b !important; border-radius: 8px !important; }
+[data-testid="stError"] { background: #2a0e0e !important; border-color: #ef4444 !important; border-radius: 8px !important; }
+
+/* ── Subheaders ── */
+h2 { font-size: 15px !important; font-weight: 600 !important; color: #e2e8f0 !important; margin: 16px 0 8px !important; }
+h3 { font-size: 13px !important; font-weight: 600 !important; color: #94a3b8 !important; margin: 12px 0 6px !important; }
+
+/* ── Caption ── */
+[data-testid="stCaptionContainer"] { color: #6b7280 !important; font-size: 11px !important; }
+
+/* ── Code blocks ── */
+[data-testid="stCode"] { background: #0d0d1a !important; border: 1px solid #1e1e3a !important; border-radius: 8px !important; font-size: 12px !important; }
 </style>"""
 
 def inject_css():

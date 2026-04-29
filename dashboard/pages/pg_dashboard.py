@@ -18,19 +18,21 @@ def render():
     oc     = len(evo.get("overconfidence_patterns", []))
 
     # ── agent controls ────────────────────────────────────────────────────────
-    c1,c2,c3,c4,_ = st.columns([1,1,1,1,3])
-    if c1.button("▶ Start",   use_container_width=True): subprocess.run(["systemctl","start","polymarket-agent"]);   st.rerun()
-    if c2.button("⏹ Stop",    use_container_width=True): subprocess.run(["systemctl","stop","polymarket-agent"]);    st.rerun()
+    c1,c2,c3,c4,c5 = st.columns([1,1,1,1.6,1])
+    if c1.button("▶ Start",    use_container_width=True): subprocess.run(["systemctl","start","polymarket-agent"]);   st.rerun()
+    if c2.button("⏹ Stop",     use_container_width=True): subprocess.run(["systemctl","stop","polymarket-agent"]);    st.rerun()
     if c3.button("🔄 Restart", use_container_width=True): subprocess.run(["systemctl","restart","polymarket-agent"]); st.rerun()
     new_mode = "live" if mode=="demo" else "demo"
-    if c4.button(f"⇄ →{'LIVE' if mode=='demo' else 'DEMO'}", use_container_width=True):
+    if c4.button(f"⇄ Switch to {'LIVE 💰' if mode=='demo' else 'DEMO 📝'}", use_container_width=True):
         st.session_state["confirm_switch"] = True
+    if c5.button("🗑 Refresh", use_container_width=True):
+        st.cache_data.clear(); st.rerun()
 
     if st.session_state.get("confirm_switch"):
-        st.warning(f"Switch to **{new_mode.upper()}**? This will restart the agent.")
-        y, n = st.columns(2)
-        if y.button("✅ Confirm", key="sw_yes"): switch_mode(new_mode); st.session_state["confirm_switch"]=False; st.cache_data.clear(); st.rerun()
-        if n.button("❌ Cancel",  key="sw_no"):  st.session_state["confirm_switch"]=False; st.rerun()
+        col_warn, col_y, col_n = st.columns([4,1,1])
+        col_warn.warning(f"⚠️ Switch to **{new_mode.upper()}**? Agent will restart.")
+        if col_y.button("✅ Yes", key="sw_yes"): switch_mode(new_mode); st.session_state["confirm_switch"]=False; st.cache_data.clear(); st.rerun()
+        if col_n.button("❌ No",  key="sw_no"):  st.session_state["confirm_switch"]=False; st.rerun()
 
     st.divider()
 
@@ -93,37 +95,53 @@ def render():
 
     with right:
         level = bk.get("level",0)
-        lc    = "#00cc88" if level>0 else "#ff4444" if level<0 else "#888"
+        lc    = "#22c55e" if level>0 else "#ef4444" if level<0 else "#94a3b8"
         step  = float(os.getenv("BANKROLL_STEP_SIZE",0.10))
         mult  = max(0.5, min(2.0, 1.0+level*step))
         eff_k = round(float(os.getenv("KELLY_FRACTION",0.25))*mult, 4)
         need  = 3 if level<=0 else 2 if level==1 else 1
         ws, ls = bk.get("win_streak",0), bk.get("loss_streak",0)
 
-        st.markdown(f"""<div style='background:#1e1e2e;border:1px solid #313155;border-radius:10px;padding:16px;margin-bottom:12px'>
-<div style='font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px'>Compounding Level</div>
-<div style='font-size:36px;font-weight:700;color:{lc}'>{level:+d}</div>
-<div style='font-size:12px;color:#aaa'>Kelly {eff_k:.4f} &nbsp;×{mult:.2f}</div>
+        st.markdown(f"""
+<div class='card'>
+  <div class='card-title'>Compounding Level</div>
+  <div class='card-value' style='color:{lc}'>{level:+d}</div>
+  <div class='card-sub'>Kelly {eff_k:.4f} &nbsp;·&nbsp; ×{mult:.2f} base</div>
 </div>""", unsafe_allow_html=True)
-        st.progress(min(ws/need,1.0), text=f"🏆 Win streak {ws}/{need} → up")
-        st.progress(min(ls/3,1.0),   text=f"💀 Loss streak {ls}/3 → down")
 
-        st.divider()
-        st.markdown("**🛡 Exit Rules**")
+        st.markdown(f"<div style='font-size:12px;color:#6b7280;margin-bottom:4px'>Win streak {ws}/{need} → level up</div>", unsafe_allow_html=True)
+        st.progress(min(ws/need,1.0))
+        st.markdown(f"<div style='font-size:12px;color:#6b7280;margin:4px 0'>Loss streak {ls}/3 → level down</div>", unsafe_allow_html=True)
+        st.progress(min(ls/3,1.0))
+
+        st.markdown("""<div style='height:1px;background:#1e1e3a;margin:16px 0'></div>""", unsafe_allow_html=True)
+
         tp = float(os.getenv("EXIT_TAKE_PROFIT",1.0))
         sl = float(os.getenv("EXIT_STOP_LOSS",0.33))
         tr = float(os.getenv("TRAILING_STOP_PCT",0.25))
         mh = float(os.getenv("EXIT_MAX_HOURS",48))
-        st.markdown(f"- TP **+{tp:.0%}** return\n- Trail **{tr:.0%}** from peak\n- SL **-{sl:.0%}** return\n- Max **{mh:.0f}h**")
+        st.markdown(f"""
+<div class='card'>
+  <div class='card-title'>Exit Rules</div>
+  <div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px'>
+    <div><div style='font-size:10px;color:#6b7280'>TAKE PROFIT</div><div style='font-size:15px;font-weight:600;color:#22c55e'>+{tp:.0%}</div></div>
+    <div><div style='font-size:10px;color:#6b7280'>STOP LOSS</div><div style='font-size:15px;font-weight:600;color:#ef4444'>-{sl:.0%}</div></div>
+    <div><div style='font-size:10px;color:#6b7280'>TRAIL DIST</div><div style='font-size:15px;font-weight:600;color:#a5b4fc'>{tr:.0%}</div></div>
+    <div><div style='font-size:10px;color:#6b7280'>MAX HOLD</div><div style='font-size:15px;font-weight:600;color:#94a3b8'>{mh:.0f}h</div></div>
+  </div>
+</div>""", unsafe_allow_html=True)
 
-        st.divider()
-        st.markdown("**🔌 OSINT**")
-        for name, key in [("Tavily","TAVILY_API_KEY"),("Odds API","ODDS_API_KEY"),("FRED","FRED_API_KEY")]:
-            st.markdown(f"{'✅' if os.getenv(key) else '❌'} {name}")
+        st.markdown("""<div style='height:1px;background:#1e1e3a;margin:16px 0'></div>""", unsafe_allow_html=True)
 
-        st.divider()
-        if st.button("🔍 Trigger Scan", use_container_width=True):
+        osint_items = [("Tavily","TAVILY_API_KEY"),("Odds API","ODDS_API_KEY"),("FRED","FRED_API_KEY")]
+        osint_html = "".join(
+            f"<div style='display:flex;align-items:center;gap:6px;padding:4px 0;font-size:12px;color:#94a3b8'>"
+            f"<span style='color:{'#22c55e' if os.getenv(k) else '#ef4444'}'>{'●' if os.getenv(k) else '○'}</span>{n}</div>"
+            for n,k in osint_items
+        )
+        st.markdown(f"<div class='card'><div class='card-title'>OSINT Sources</div>{osint_html}</div>", unsafe_allow_html=True)
+
+        st.markdown("""<div style='height:1px;background:#1e1e3a;margin:16px 0'></div>""", unsafe_allow_html=True)
+        if st.button("🔍 Trigger Scan", use_container_width=True, type="primary"):
             with st.spinner("Scanning..."): subprocess.run(["python3","main.py","--mode",mode,"scan"], capture_output=True, timeout=120)
             st.cache_data.clear(); st.success("Done!"); st.rerun()
-        if st.button("🗑 Refresh Data", use_container_width=True):
-            st.cache_data.clear(); st.rerun()

@@ -1,26 +1,30 @@
 {
-  "total_resolved": 105,
-  "overall_win_rate": 0.3523809523809524,
+  "total_resolved": 119,
+  "overall_win_rate": 0.35294117647058826,
   "category_bias": {
     "geopolitik": {
       "status": "AVOID",
       "win_rate": 0.25,
-      "note": "Only 25% win rate in 8 bets \u2014 agent consistently wrong here"
+      "conf_gap": 0.53,
+      "note": "WR=25% but claimed conf=78% \u2014 overconfident by 53%. Need hard data only."
     },
     "sports": {
       "status": "AVOID",
       "win_rate": 0.38,
-      "note": "Only 38% win rate in 86 bets \u2014 agent consistently wrong here"
+      "conf_gap": 0.37,
+      "note": "WR=38% but claimed conf=75% \u2014 overconfident by 37%. Need hard data only."
     },
     "crypto": {
       "status": "AVOID",
-      "win_rate": 0.2,
-      "note": "Only 20% win rate in 5 bets \u2014 agent consistently wrong here"
+      "win_rate": 0.11,
+      "conf_gap": 0.62,
+      "note": "WR=11% but claimed conf=73% \u2014 overconfident by 62%. Need hard data only."
     },
     "politics": {
       "status": "AVOID",
-      "win_rate": 0.25,
-      "note": "Only 25% win rate in 4 bets \u2014 agent consistently wrong here"
+      "win_rate": 0.33,
+      "conf_gap": 0.38,
+      "note": "WR=33% but claimed conf=72% \u2014 overconfident by 38%. Need hard data only."
     }
   },
   "overconfidence_patterns": [
@@ -61,8 +65,18 @@
     },
     {
       "category": "sports",
+      "confidence_claimed": 0.71,
+      "question_snippet": "Barcelona Open: Tomas Machac vs Andrey Rublev"
+    },
+    {
+      "category": "sports",
       "confidence_claimed": 0.75,
       "question_snippet": "ODI Series Bangladesh vs New Zealand: Bangladesh vs New Zeal"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.72,
+      "question_snippet": "Busan: August Holmgren vs Liam Broady"
     },
     {
       "category": "sports",
@@ -78,6 +92,11 @@
       "category": "sports",
       "confidence_claimed": 0.75,
       "question_snippet": "Kansas City Royals vs. New York Yankees"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.7,
+      "question_snippet": "San Francisco Giants vs. Washington Nationals"
     },
     {
       "category": "sports",
@@ -111,6 +130,11 @@
     },
     {
       "category": "crypto",
+      "confidence_claimed": 0.72,
+      "question_snippet": "Will Bitcoin reach $85,000 in April?"
+    },
+    {
+      "category": "crypto",
       "confidence_claimed": 0.88,
       "question_snippet": "Will WTI Crude Oil (WTI) hit (LOW) $70 in April?"
     },
@@ -133,6 +157,11 @@
       "category": "sports",
       "confidence_claimed": 0.75,
       "question_snippet": "Indian Premier League: Sunrisers Hyderabad vs Chennai Super "
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.7,
+      "question_snippet": "New York Mets vs. Chicago Cubs"
     },
     {
       "category": "sports",
@@ -166,6 +195,11 @@
     },
     {
       "category": "sports",
+      "confidence_claimed": 0.73,
+      "question_snippet": "BMW Open: Flavio Cobolli vs Ben Shelton"
+    },
+    {
+      "category": "sports",
       "confidence_claimed": 0.75,
       "question_snippet": "US x Iran diplomatic meeting by April 30, 2026?"
     },
@@ -176,6 +210,11 @@
     },
     {
       "category": "sports",
+      "confidence_claimed": 0.73,
+      "question_snippet": "Madrid Open: Patrick Kypson vs Stefanos Tsitsipas"
+    },
+    {
+      "category": "sports",
       "confidence_claimed": 0.75,
       "question_snippet": "New York Yankees vs. Boston Red Sox"
     },
@@ -183,6 +222,11 @@
       "category": "geopolitik",
       "confidence_claimed": 0.75,
       "question_snippet": "Israel x Hezbollah Ceasefire extended by April 26, 2026?"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.7,
+      "question_snippet": "Madrid Open: Ben Shelton vs Dino Prizmic"
     },
     {
       "category": "sports",
@@ -205,6 +249,21 @@
       "question_snippet": "US x Iran diplomatic meeting by April 28, 2026?"
     },
     {
+      "category": "politics",
+      "confidence_claimed": 0.72,
+      "question_snippet": "Will the Bharatiya Janata Party (BJP) win the most seats in "
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.72,
+      "question_snippet": "Madrid Open: Thiago Agustin Tirante vs Tommy Paul"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.71,
+      "question_snippet": "Philadelphia Phillies vs. Atlanta Braves"
+    },
+    {
       "category": "sports",
       "confidence_claimed": 0.75,
       "question_snippet": "US x Iran diplomatic meeting by April 29, 2026?"
@@ -218,6 +277,11 @@
       "category": "sports",
       "confidence_claimed": 0.75,
       "question_snippet": "San Diego Padres vs. Arizona Diamondbacks"
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75,
+      "question_snippet": "Madrid Open: Linda Noskova vs Liudmila Samsonova"
     },
     {
       "category": "sports",
@@ -272,6 +336,10 @@
   ],
   "underconfidence_patterns": [
     {
+      "category": "other",
+      "confidence_claimed": 0.62
+    },
+    {
       "category": "sports",
       "confidence_claimed": 0.62
     },
@@ -294,59 +362,125 @@
     {
       "category": "geopolitik",
       "confidence_claimed": 0.65
+    },
+    {
+      "category": "other",
+      "confidence_claimed": 0.65
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.65
     }
   ],
   "recent_mistakes": [
     {
-      "question": "Madrid Open: Belinda Bencic vs Hailey Baptiste",
+      "question": "Will Bitcoin reach $80,000 in April?",
+      "category": "crypto",
+      "predicted_side": "YES",
+      "actual_outcome": "EXIT",
+      "p_true_claimed": 0.6,
+      "confidence": 0.68,
+      "data_quality": "unknown",
+      "lesson": "Prediction incorrect in  \u2014 review reasoning methodology."
+    },
+    {
+      "question": "Will Bitcoin reach $80,000 in April?",
+      "category": "crypto",
+      "predicted_side": "YES",
+      "actual_outcome": "EXIT",
+      "p_true_claimed": 0.55,
+      "confidence": 0.68,
+      "data_quality": "unknown",
+      "lesson": "Prediction incorrect in  \u2014 review reasoning methodology."
+    },
+    {
+      "question": "Tampa Bay Rays vs. Cleveland Guardians",
+      "category": "sports",
+      "predicted_side": "NO",
+      "actual_outcome": "YES",
+      "p_true_claimed": 0.72,
+      "confidence": 0.68,
+      "data_quality": "unknown",
+      "lesson": "Underestimated YES probability in . Market may have had better information."
+    },
+    {
+      "question": "Tampa Bay Rays vs. Cleveland Guardians",
+      "category": "sports",
+      "predicted_side": "NO",
+      "actual_outcome": "EXIT",
+      "p_true_claimed": 0.475,
+      "confidence": 0.68,
+      "data_quality": "unknown",
+      "lesson": "Prediction incorrect in  \u2014 review reasoning methodology."
+    },
+    {
+      "question": "Tampa Bay Rays vs. Cleveland Guardians",
       "category": "sports",
       "predicted_side": "YES",
-      "actual_outcome": "NO",
-      "p_true_claimed": 0.48,
-      "confidence": 0.65,
-      "lesson": "Overestimated YES probability in sports. Check base rates more carefully."
-    },
-    {
-      "question": "NHL Playoffs: Who Will Win Series? - Ducks vs. Oilers ",
-      "category": "sports",
-      "predicted_side": "NO",
       "actual_outcome": "EXIT",
-      "p_true_claimed": 0.537,
-      "confidence": 0.65,
-      "lesson": "Prediction incorrect in sports \u2014 review reasoning methodology."
-    },
-    {
-      "question": "Los Angeles Angels vs. Kansas City Royals",
-      "category": "sports",
-      "predicted_side": "NO",
-      "actual_outcome": "EXIT",
-      "p_true_claimed": 0.286,
-      "confidence": 0.75,
-      "lesson": "Prediction incorrect in sports \u2014 review reasoning methodology."
-    },
-    {
-      "question": "Los Angeles Angels vs. Kansas City Royals",
-      "category": "sports",
-      "predicted_side": "NO",
-      "actual_outcome": "EXIT",
-      "p_true_claimed": 0.286,
-      "confidence": 0.75,
-      "lesson": "Prediction incorrect in sports \u2014 review reasoning methodology."
-    },
-    {
-      "question": "Los Angeles Angels vs. Kansas City Royals",
-      "category": "sports",
-      "predicted_side": "NO",
-      "actual_outcome": "EXIT",
-      "p_true_claimed": 0.286,
-      "confidence": 0.75,
-      "lesson": "Prediction incorrect in sports \u2014 review reasoning methodology."
+      "p_true_claimed": 0.525,
+      "confidence": 0.68,
+      "data_quality": "unknown",
+      "lesson": "Prediction incorrect in  \u2014 review reasoning methodology."
     }
   ],
   "calibration_adjustments": {
-    "geopolitik": -0.1,
-    "sports": -0.1,
-    "crypto": -0.1,
-    "politics": -0.1
-  }
+    "geopolitik": -0.15,
+    "sports": -0.15,
+    "crypto": -0.15,
+    "politics": -0.15
+  },
+  "edge_reality": {
+    "10%": {
+      "claimed_edge": "10%",
+      "actual_wr": 0.52,
+      "n": 23
+    },
+    "70%": {
+      "claimed_edge": "70%",
+      "actual_wr": 0.25,
+      "n": 4
+    },
+    "50%": {
+      "claimed_edge": "50%",
+      "actual_wr": 0.4,
+      "n": 15
+    },
+    "20%": {
+      "claimed_edge": "20%",
+      "actual_wr": 0.35,
+      "n": 26
+    },
+    "60%": {
+      "claimed_edge": "60%",
+      "actual_wr": 0.25,
+      "n": 8
+    },
+    "80%": {
+      "claimed_edge": "80%",
+      "actual_wr": 0.17,
+      "n": 6
+    },
+    "40%": {
+      "claimed_edge": "40%",
+      "actual_wr": 0.18,
+      "n": 17
+    },
+    "30%": {
+      "claimed_edge": "30%",
+      "actual_wr": 0.41,
+      "n": 17
+    },
+    "90%": {
+      "claimed_edge": "90%",
+      "actual_wr": 0.0,
+      "n": 2
+    },
+    "0%": {
+      "claimed_edge": "0%",
+      "actual_wr": 1.0,
+      "n": 1
+    }
+  },
+  "sports_signal_required": true
 }
