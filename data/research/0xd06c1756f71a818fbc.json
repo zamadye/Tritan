@@ -1,0 +1,35 @@
+{
+  "market_id": "0xd06c1756f71a818fbce16d630ef0e61b2bc6f7870973406b7ff8026acf176af5",
+  "question": "Madrid Open: Karolina Pliskova vs Anastasia Potapova",
+  "market_price": 0.38,
+  "generated_at": "2026-04-29T12:39:05.180617+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
+      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        33,
+        47,
+        33,
+        31,
+        39,
+        46
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 77052,
+      "btc_24h": 1.0560354435829664,
+      "risk_signal": "risk-ON"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

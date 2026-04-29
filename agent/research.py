@@ -83,47 +83,175 @@ def get_macro_context() -> dict:
 # ── CAUSAL CHAIN BUILDER ──────────────────────────────────────────────────────
 
 CAUSAL_CHAINS = {
-    # Geopolitical → Economic chains
+    # ── GEOPOLITICAL ──────────────────────────────────────────────────────────
     "hormuz": [
         "Strait of Hormuz closure → oil shipping disrupted → oil price +15-30%",
-        "Oil price spike → shipping costs rise → plastic/chemical prices rise",
-        "Oil spike → inflation pressure → Fed less likely to cut rates",
-        "Oil spike → airline costs rise → travel stocks fall",
+        "Oil price spike → shipping costs rise → plastic/chemical/fertilizer prices rise",
+        "Oil spike → inflation pressure → Fed less likely to cut rates → BTC falls",
+        "Oil spike → airline costs rise → travel stocks fall → recession risk",
+        "Hormuz reopens → oil price -10-20% → inflation eases → Fed dovish → BTC rallies",
     ],
     "iran": [
         "Iran-US tension escalates → oil supply risk → WTI crude +5-15%",
-        "Iran sanctions tighten → crypto adoption in Iran increases",
-        "Iran ceasefire → oil price -5-10% → risk-ON for equities/crypto",
+        "Iran nuclear deal progress → sanctions ease → oil supply increases → oil price falls",
+        "Iran ceasefire → oil price -5-10% → risk-ON → equities/crypto rally",
+        "Iran military strike → oil spike → global inflation → Fed hawkish",
+        "Iran sanctions tighten → crypto adoption in Iran increases (capital flight)",
     ],
     "ukraine": [
-        "Ukraine conflict escalates → wheat/grain prices rise → food inflation",
-        "Ukraine ceasefire → European energy prices fall → EUR strengthens",
-        "Russia sanctions → energy supply disruption → EU recession risk",
+        "Ukraine conflict escalates → wheat/grain prices rise → food inflation globally",
+        "Ukraine ceasefire → European energy prices fall → EUR strengthens vs USD",
+        "Russia sanctions tighten → energy supply disruption → EU recession risk",
+        "Ukraine peace deal → European reconstruction spending → EUR strengthens",
+        "Russia oil embargo → global oil supply shock → inflation spike",
+    ],
+    "china": [
+        "China-Taiwan tension → semiconductor supply disruption → tech stocks fall",
+        "China economic slowdown → commodity demand falls → oil/copper/iron prices fall",
+        "China stimulus announced → commodity demand rises → AUD/BRL strengthen",
+        "China property crisis deepens → global risk-OFF → BTC falls",
+        "China trade surplus grows → USD/CNY pressure → EM currency stress",
     ],
     "tariff": [
-        "US tariffs on China → supply chain disruption → consumer prices rise",
-        "Trade war escalation → USD strengthens → EM currencies weaken",
-        "Tariff reduction → risk-ON → equities/crypto rally",
+        "US tariffs on China → supply chain disruption → consumer prices rise 2-5%",
+        "Trade war escalation → USD strengthens → EM currencies weaken → crypto falls",
+        "Tariff reduction/deal → risk-ON → equities/crypto rally 5-15%",
+        "Tariff on steel/aluminum → manufacturing costs rise → inflation",
+        "Retaliatory tariffs → US agricultural exports fall → farm sector stress",
     ],
+
+    # ── MONETARY POLICY ───────────────────────────────────────────────────────
     "fed_cut": [
-        "Fed rate cut → USD weakens → BTC/gold rally",
+        "Fed rate cut → USD weakens → BTC/gold rally (inverse USD correlation)",
         "Fed rate cut → mortgage rates fall → housing market recovers",
         "Fed cut signals recession fear → equities initially fall then rally",
+        "Fed cut → yield curve steepens → bank stocks rally",
+        "Surprise Fed cut → immediate BTC +5-10% within 24h",
     ],
     "fed_hike": [
         "Fed rate hike → USD strengthens → BTC/gold fall",
-        "Fed hike → bond yields rise → tech stocks fall (higher discount rate)",
+        "Fed hike → bond yields rise → tech/growth stocks fall (higher discount rate)",
         "Fed hike → credit tightens → crypto lending platforms stressed",
+        "Fed hike → mortgage rates rise → housing market cools",
+        "Surprise Fed hike → immediate BTC -8-15% within 24h",
+    ],
+    "fed": [
+        "FOMC meeting → market volatility spikes 24h before and after",
+        "Fed pause (hold) → uncertainty → BTC sideways, then direction from guidance",
+        "Fed hawkish language → USD up → BTC/gold down",
+        "Fed dovish language → USD down → BTC/gold up",
     ],
     "inflation": [
         "CPI above expectations → Fed hawkish → rate cut delayed → BTC falls",
         "CPI below expectations → Fed dovish → rate cut sooner → BTC rallies",
         "Inflation sticky → consumer spending falls → recession risk rises",
+        "Core PCE above 2.5% → Fed holds rates → USD strong → EM stress",
+        "Deflation risk → Fed emergency cut → BTC/gold spike",
     ],
     "unemployment": [
         "Unemployment rises → Fed more likely to cut → BTC/equities rally",
-        "Unemployment falls → economy strong → Fed holds rates → USD strong",
-        "Jobless claims spike → recession signal → risk-OFF → BTC falls",
+        "Unemployment falls (strong jobs) → Fed holds rates → USD strong → BTC flat",
+        "Jobless claims spike → recession signal → risk-OFF → BTC falls -5-10%",
+        "NFP miss → Fed dovish pivot → BTC +3-8% within 48h",
+        "NFP beat → Fed hawkish → BTC -3-5% within 24h",
+    ],
+
+    # ── CRYPTO SPECIFIC ───────────────────────────────────────────────────────
+    "bitcoin": [
+        "BTC within 3% of round number ($80k/$90k) → gamma squeeze → price accelerates",
+        "BTC ETF inflows spike → institutional buying → price +5-15%",
+        "BTC ETF outflows → selling pressure → price -5-10%",
+        "BTC halving approaching → supply shock narrative → price rally",
+        "Crypto exchange hack/collapse → panic selling → BTC -15-30%",
+        "Whale accumulation (on-chain) → supply squeeze → price up",
+        "Miner capitulation → hash rate falls → price bottom signal",
+    ],
+    "btc": [
+        "BTC dominance rising → altcoins falling → BTC relatively strong",
+        "BTC options expiry (monthly) → volatility spike → direction unclear",
+        "BTC funding rate negative → shorts dominant → potential short squeeze up",
+        "BTC funding rate very positive → longs dominant → potential long squeeze down",
+    ],
+    "crypto": [
+        "Regulatory clarity (positive) → institutional adoption → price rally",
+        "Regulatory crackdown → exchange delistings → price fall",
+        "Stablecoin depeg → contagion risk → broad crypto sell-off",
+        "DeFi hack → TVL falls → sector rotation out of DeFi",
+    ],
+
+    # ── SPORTS ───────────────────────────────────────────────────────────────
+    "nba": [
+        "Star player injury (day-to-day) → team win probability falls 10-20%",
+        "Star player returns from injury → team win probability rises 15-25%",
+        "Home court advantage → home team wins 60% of playoff games historically",
+        "Team on 3+ game win streak → momentum factor → +5% win probability",
+        "Back-to-back games → fatigue factor → road team disadvantage increases",
+        "Coaching change mid-series → uncertainty → slight underdog advantage",
+    ],
+    "nfl": [
+        "Starting QB injury → team win probability falls 20-35%",
+        "Weather (rain/snow/wind >20mph) → passing game disrupted → under on points",
+        "Home playoff game → home team wins 65% historically",
+        "Bye week advantage → rested team +5% win probability",
+    ],
+    "mlb": [
+        "Starting pitcher ERA below 3.0 → team win probability +15%",
+        "Bullpen ERA above 5.0 → late-game collapse risk",
+        "Home run park factor → high-scoring game more likely",
+        "Day game after night game → fatigue factor for hitters",
+    ],
+    "tennis": [
+        "Clay court specialist vs hard court player → clay specialist +20% on clay",
+        "Player coming off injury → stamina risk in long matches",
+        "Head-to-head record matters more in tennis than other sports",
+        "Top seed vs qualifier → top seed wins 80%+ in early rounds",
+    ],
+    "ufc": [
+        "Grappler vs striker → grappler wins if fight goes to ground",
+        "Significant strike differential → striker wins 70% if +50 strikes/round",
+        "Late replacement fighter → -15% win probability due to camp disruption",
+        "Weight cut issues → performance degradation in later rounds",
+    ],
+
+    # ── TECHNOLOGY/AI ─────────────────────────────────────────────────────────
+    "openai": [
+        "OpenAI product launch → competitor stocks fall (GOOG, MSFT react)",
+        "OpenAI funding round → AI sector sentiment improves → AI stocks rally",
+        "OpenAI safety controversy → regulatory scrutiny → sector uncertainty",
+    ],
+    "ai": [
+        "Major AI model release → benchmark competition → sector excitement",
+        "AI regulation proposed → uncertainty → AI stocks fall short-term",
+        "AI chip shortage → NVIDIA revenue beats → AI infrastructure stocks rally",
+        "AI energy demand → data center power stocks rally",
+    ],
+
+    # ── FOREX/MACRO ───────────────────────────────────────────────────────────
+    "eur": [
+        "ECB rate cut → EUR weakens vs USD → EUR/USD falls",
+        "EU GDP beats expectations → EUR strengthens",
+        "EU political crisis (elections) → EUR uncertainty → falls",
+        "EUR/USD above 1.10 → European exports competitive → EU stocks rally",
+    ],
+    "dollar": [
+        "USD strengthens → EM debt stress → EM currencies fall",
+        "USD weakens → commodity prices rise (oil/gold priced in USD)",
+        "DXY above 105 → BTC historically falls → risk-OFF signal",
+        "DXY below 100 → BTC historically rallies → risk-ON signal",
+    ],
+    "oil": [
+        "OPEC production cut → oil price +5-15%",
+        "OPEC production increase → oil price -5-10%",
+        "US shale production rises → oil price ceiling effect",
+        "Oil above $90 → inflation pressure → Fed hawkish → BTC falls",
+        "Oil below $60 → deflation risk → Fed dovish → BTC rallies",
+        "Oil price spike → airline/shipping stocks fall → consumer discretionary falls",
+    ],
+    "gold": [
+        "Gold above $3000 → safe haven demand high → risk-OFF environment",
+        "Gold falls → risk-ON → equities/crypto rally",
+        "Gold/BTC correlation positive → both move together in macro stress",
+        "Central bank gold buying → long-term price support",
     ],
 }
 
