@@ -37,32 +37,45 @@ def get_game_context(question: str) -> str:
     try:
         r = requests.get(f"{base}/scoreboard", timeout=8)
         events = r.json().get("events", [])
-        q_words = set(w.lower().strip("?.,!") for w in question.split() if len(w) > 3)
+        # Broader matching: check each word >3 chars against event name
+        q_words = set(w.lower().strip("?.,!()-") for w in question.split() if len(w) > 3)
 
+        matched = None
         for event in events:
             name = event.get("name", "").lower()
-            # Match if any team name word appears in question
-            if not any(w in name for w in q_words):
-                continue
+            short = event.get("shortName", "").lower()
+            # Match if 2+ words from question appear in event name
+            matches = sum(1 for w in q_words if w in name or w in short)
+            if matches >= 1:
+                matched = event
+                break
 
-            comp = event.get("competitions", [{}])[0]
-            status = event.get("status", {}).get("type", {}).get("description", "scheduled")
-            lines.append(f"[ESPN] {event.get('name')} | {status}")
+        if not matched and events:
+            # Fallback: return all today's games for this sport
+            lines.append(f"[ESPN {sport.upper()}] Today's games:")
+            for e in events[:5]:
+                comp = e.get("competitions",[{}])[0]
+                status = e.get("status",{}).get("type",{}).get("description","?")
+                lines.append(f"  {e.get('shortName',e.get('name','?'))} | {status}")
+            return "\n".join(lines)
+
+        if matched:
+            comp = matched.get("competitions", [{}])[0]
+            status = matched.get("status", {}).get("type", {}).get("description", "scheduled")
+            lines.append(f"[ESPN] {matched.get('name')} | {status}")
 
             for c in comp.get("competitors", []):
-                team = c.get("team", {}).get("displayName", "?")
-                rec = c.get("records", [{}])
+                team   = c.get("team", {}).get("displayName", "?")
+                rec    = c.get("records", [{}])
                 record = rec[0].get("summary", "?") if rec else "?"
-                ha = c.get("homeAway", "?").upper()
-                score = c.get("score", "-")
+                ha     = c.get("homeAway", "?").upper()
+                score  = c.get("score", "-")
                 lines.append(f"  {ha}: {team} | Record: {record} | Score: {score}")
 
-            # Bookmaker odds if available
             odds = comp.get("odds", [])
             if odds:
                 o = odds[0]
                 lines.append(f"  Odds: {o.get('details','?')} | O/U: {o.get('overUnder','?')}")
-            break
 
     except Exception as e:
         lines.append(f"ESPN unavailable: {e}")

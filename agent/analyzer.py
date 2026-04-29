@@ -335,42 +335,15 @@ def _get_calibration_adjustment(category: str) -> float:
 
 
 def fetch_news(market: dict) -> str:
-    """Fetch recent news — tries Tavily first, fallback to Serper."""
-    news = _fetch_tavily(market.get("question", ""))
+    """Fetch recent news — Serper primary (Tavily quota exceeded), fallback to NewsAPI."""
+    q = market.get("question", "")
+    news = _fetch_serper(q)
     if news:
         return news
-    return _fetch_serper(market.get("question", ""))
-
-
-def _fetch_tavily(query: str) -> str:
-    api_key = os.getenv("TAVILY_API_KEY", "")
-    if not api_key:
-        return ""
-    import requests
-    try:
-        resp = requests.post(
-            "https://api.tavily.com/search",
-            json={
-                "api_key": api_key,
-                "query": query,
-                "max_results": 8,           # lebih banyak artikel
-                "search_depth": "advanced", # deep search
-                "include_answer": True,     # Tavily AI summary
-                "include_raw_content": False,
-            },
-            timeout=10,
-        )
-        data = resp.json()
-        lines = []
-        # Tavily AI answer (ringkasan langsung)
-        if data.get("answer"):
-            lines.append(f"[SUMMARY] {data['answer']}")
-        # Individual results
-        for r in data.get("results", []):
-            lines.append(f"- {r['title']}: {r.get('content','')[:200]}")
-        return "\n".join(lines) or ""
-    except Exception:
-        return ""
+    news = _fetch_tavily(q)
+    if news:
+        return news
+    return _fetch_newsapi(q)
 
 
 def _fetch_serper(query: str) -> str:
@@ -382,12 +355,54 @@ def _fetch_serper(query: str) -> str:
         resp = requests.post(
             "https://google.serper.dev/news",
             headers={"X-API-KEY": api_key, "Content-Type": "application/json"},
-            json={"q": query, "num": int(os.getenv("MAX_NEWS_ARTICLES", 5))},
+            json={"q": query, "num": 8},
             timeout=8,
         )
         if resp.status_code != 200:
             return ""
         items = resp.json().get("news", [])
-        return "\n".join(f"- {i['title']}: {i.get('snippet', '')}" for i in items)
+        return "\n".join(f"- {i['title']}: {i.get('snippet','')}" for i in items)
+    except Exception:
+        return ""
+
+
+def _fetch_tavily(query: str) -> str:
+    api_key = os.getenv("TAVILY_API_KEY", "")
+    if not api_key:
+        return ""
+    import requests
+    try:
+        resp = requests.post(
+            "https://api.tavily.com/search",
+            json={"api_key": api_key, "query": query, "max_results": 5,
+                  "search_depth": "basic", "include_answer": True},
+            timeout=8,
+        )
+        data = resp.json()
+        if data.get("detail"):  # quota exceeded or error
+            return ""
+        lines = []
+        if data.get("answer"):
+            lines.append(f"[SUMMARY] {data['answer']}")
+        for r in data.get("results", []):
+            lines.append(f"- {r['title']}: {r.get('content','')[:200]}")
+        return "\n".join(lines) or ""
+    except Exception:
+        return ""
+
+
+def _fetch_newsapi(query: str) -> str:
+    api_key = os.getenv("NEWS_API_KEY", "")
+    if not api_key:
+        return ""
+    import requests
+    try:
+        resp = requests.get(
+            "https://newsapi.org/v2/everything",
+            params={"q": query, "pageSize": 5, "sortBy": "publishedAt", "apiKey": api_key},
+            timeout=8,
+        )
+        articles = resp.json().get("articles", [])
+        return "\n".join(f"- {a['title']}: {a.get('description','')}" for a in articles)
     except Exception:
         return ""

@@ -1,6 +1,6 @@
 {
-  "total_resolved": 126,
-  "overall_win_rate": 0.357,
+  "total_resolved": 127,
+  "overall_win_rate": 0.354,
   "momentum_lessons": [
     {
       "category": "crypto",
@@ -60,9 +60,9 @@
       "n": 15
     },
     "30-40%": {
-      "win_rate": 0.33,
-      "avg_pnl": 1.44,
-      "n": 9
+      "win_rate": 0.3,
+      "avg_pnl": 1.29,
+      "n": 10
     },
     "60-70%": {
       "win_rate": 0.5,
@@ -93,14 +93,14 @@
   "exit_patterns": {
     "RESOLVED": 67,
     "TAKE_PROFIT": 20,
-    "STOP_LOSS": 24,
+    "STOP_LOSS": 25,
     "TIME_LIMIT": 3,
     "TRAILING_STOP": 12
   },
   "edge_reality": {
     "10%": {
-      "actual_wr": 0.5,
-      "n": 30
+      "actual_wr": 0.48,
+      "n": 31
     },
     "70%": {
       "actual_wr": 0.25,
@@ -403,11 +403,11 @@
       "lesson": "Momentum thesis failed in crypto at entry 0.21. Review what catalyst was missing."
     },
     {
-      "question": "James Comey arrested by May 15?",
-      "category": "other",
-      "entry_price": 0.81,
-      "reasoning": "CATALYST: absent news/sentiment \u2192 DIRECTION: down \u2192 TARGET: 70 % because stale high odds without fre",
-      "lesson": "Momentum thesis failed in other at entry 0.81. Review what catalyst was missing."
+      "question": "US x Iran diplomatic meeting by May 15, 2026?",
+      "category": "sports",
+      "entry_price": 0.33,
+      "reasoning": "CATALYST: leaked EU/Oman roadmap + Jan Muscat meeting \u2192 DIRECTION: up \u2192 TARGET: 45 % because headlin",
+      "lesson": "Momentum thesis failed in sports at entry 0.33. Review what catalyst was missing."
     }
   ]
 }

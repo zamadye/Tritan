@@ -3438,8 +3438,8 @@
     "size_usd": 0.5,
     "price_at_entry": 0.33,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": -0.07,
     "p_true_estimated": 0.45,
     "confidence_at_bet": 0.68,
     "edge_at_bet": 0.12,
@@ -3457,7 +3457,12 @@
       "No US or Iranian official confirmation yet",
       "Previous failed tracks make traders skeptical",
       "Hard-liner pushback inside Iran could kill narrative quickly"
-    ]
+    ],
+    "exit_price": 0.2805,
+    "exit_reason": "STOP_LOSS (-26%)",
+    "prediction_correct": false,
+    "resolved_at": "2026-04-29T11:45:17.376325+00:00",
+    "brier_score": 0.1089
   },
   {
     "trade_id": "45886084-89e6-4561-8a55-4b0eb7a62fa8",
@@ -3690,6 +3695,6 @@
       "No fresh spot-buying catalyst yet",
       "Previous trade on this market lost"
     ],
-    "peak_price": 0.205
+    "peak_price": 0.21
   }
 ]
