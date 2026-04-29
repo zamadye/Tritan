@@ -88,62 +88,25 @@ def _infer_category(trade: dict) -> str:
 
 
 def _generate_evolution_lessons(trades: list, mode: str = "demo"):
-    """Generate structured lessons from resolved trades for LLM self-improvement."""
+    """Generate momentum trading lessons from resolved trades."""
     resolved = [t for t in trades if t.get("actual_outcome")]
     if not resolved:
         return
 
     lessons = {
         "total_resolved": len(resolved),
-        "overall_win_rate": sum(1 for t in resolved if t.get("prediction_correct")) / len(resolved),
-        "category_bias": {},       # categories where agent is systematically wrong
-        "overconfidence_patterns": [],
-        "underconfidence_patterns": [],
-        "recent_mistakes": [],
+        "overall_win_rate": round(sum(1 for t in resolved if t.get("prediction_correct")) / len(resolved), 3),
+        "momentum_lessons": [],
+        "price_movement_patterns": {},
+        "exit_patterns": {},
+        "edge_reality": {},
+        "category_bias": {},
         "calibration_adjustments": {},
-        "edge_reality": {},       # claimed edge vs actual WR — key insight
-        "sports_signal_required": True,  # flag: sports needs hard data
+        "overconfidence_patterns": [],
+        "recent_mistakes": [],
     }
 
-    # Category analysis
-    cat_stats = defaultdict(lambda: {"bets":0,"wins":0,"conf_sum":0.0,"edge_sum":0.0})
-    for t in resolved:
-        cat = _infer_category(t)
-        cat_stats[cat]["bets"] += 1
-        cat_stats[cat]["wins"] += 1 if t.get("prediction_correct") else 0
-        cat_stats[cat]["conf_sum"] += t.get("confidence_at_bet", 0.6)
-        cat_stats[cat]["edge_sum"] += abs(t.get("edge_at_bet", 0))
-
-    for cat, s in cat_stats.items():
-        n = s["bets"]; win_rate = s["wins"]/n
-        avg_conf = s["conf_sum"]/n; avg_edge = s["edge_sum"]/n
-        conf_gap = avg_conf - win_rate
-
-        if n >= 3:
-            if win_rate < 0.40:
-                lessons["category_bias"][cat] = {
-                    "status": "AVOID",
-                    "win_rate": round(win_rate, 2),
-                    "conf_gap": round(conf_gap, 2),
-                    "note": f"WR={win_rate:.0%} but claimed conf={avg_conf:.0%} — overconfident by {conf_gap:.0%}. Need hard data only.",
-                }
-            elif win_rate < 0.50:
-                lessons["category_bias"][cat] = {
-                    "status": "CAUTION",
-                    "win_rate": round(win_rate, 2),
-                    "conf_gap": round(conf_gap, 2),
-                    "note": f"WR={win_rate:.0%} below 50% — reduce confidence, require stronger evidence",
-                }
-
-            # Calibration: scale penalty to actual gap
-            if conf_gap > 0.30:
-                lessons["calibration_adjustments"][cat] = round(-0.15, 2)
-            elif conf_gap > 0.20:
-                lessons["calibration_adjustments"][cat] = round(-0.10, 2)
-            elif conf_gap > 0.10:
-                lessons["calibration_adjustments"][cat] = round(-0.05, 2)
-
-    # Edge reality: claimed edge bucket vs actual WR
+    # Edge reality
     edge_buckets = defaultdict(lambda: {"n":0,"w":0})
     for t in resolved:
         e = abs(t.get("edge_at_bet") or 0)
@@ -151,36 +114,58 @@ def _generate_evolution_lessons(trades: list, mode: str = "demo"):
         edge_buckets[b]["n"]+=1
         edge_buckets[b]["w"]+=int(bool(t.get("prediction_correct")))
     for b, s in edge_buckets.items():
-        wr = s["w"]/s["n"]
-        lessons["edge_reality"][b] = {"claimed_edge": b, "actual_wr": round(wr,2), "n": s["n"]}
+        lessons["edge_reality"][b] = {"actual_wr": round(s["w"]/s["n"],2), "n": s["n"]}
 
-    # Recent mistakes (last 5)
-    mistakes = [t for t in reversed(resolved) if not t.get("prediction_correct")][:5]
-    for t in mistakes:
-        lessons["recent_mistakes"].append({
-            "question": t.get("market_question","")[:80],
+    # Price movement patterns: entry price range → profit rate
+    price_buckets = defaultdict(lambda: {"n":0,"w":0,"pnl":0.0})
+    for t in resolved:
+        ep = t.get("price_at_entry", 0.5)
+        b = f"{int(ep*10)*10}-{int(ep*10)*10+10}%"
+        price_buckets[b]["n"]+=1
+        price_buckets[b]["w"]+=int(bool(t.get("prediction_correct")))
+        price_buckets[b]["pnl"]+=t.get("pnl",0)
+    for b, s in price_buckets.items():
+        lessons["price_movement_patterns"][b] = {
+            "win_rate": round(s["w"]/s["n"],2),
+            "avg_pnl": round(s["pnl"]/s["n"],2),
+            "n": s["n"]
+        }
+
+    # Exit patterns
+    exit_counts = defaultdict(int)
+    for t in resolved:
+        r = t.get("exit_reason","RESOLVED")
+        if "TAKE_PROFIT" in str(r): exit_counts["TAKE_PROFIT"]+=1
+        elif "TRAILING" in str(r):  exit_counts["TRAILING_STOP"]+=1
+        elif "STOP_LOSS" in str(r): exit_counts["STOP_LOSS"]+=1
+        elif "TIME" in str(r):      exit_counts["TIME_LIMIT"]+=1
+        else:                       exit_counts["RESOLVED"]+=1
+    lessons["exit_patterns"] = dict(exit_counts)
+
+    # Momentum lessons: profitable exits with catalyst
+    for t in [t for t in reversed(resolved) if t.get("prediction_correct") and t.get("reasoning_summary")][:5]:
+        lessons["momentum_lessons"].append({
             "category": _infer_category(t),
-            "predicted_side": t.get("side"),
-            "actual_outcome": t.get("actual_outcome"),
-            "p_true_claimed": t.get("p_true_estimated","?"),
-            "confidence": t.get("confidence_at_bet","?"),
-            "data_quality": t.get("data_quality","unknown"),
+            "entry_price": t.get("price_at_entry"),
+            "pnl": t.get("pnl"),
+            "exit_reason": t.get("exit_reason","RESOLVED"),
+            "catalyst": (t.get("reasoning_summary","")[:120]),
+        })
+
+    # Recent mistakes
+    for t in [t for t in reversed(resolved) if not t.get("prediction_correct")][:3]:
+        lessons["recent_mistakes"].append({
+            "question": t.get("market_question","")[:70],
+            "category": _infer_category(t),
+            "entry_price": t.get("price_at_entry"),
+            "reasoning": (t.get("reasoning_summary","")[:100]),
             "lesson": _infer_lesson(t),
         })
 
-    # Overconfidence: high confidence + wrong
+    # Overconfidence
     for t in resolved:
         if not t.get("prediction_correct") and t.get("confidence_at_bet",0) >= 0.70:
             lessons["overconfidence_patterns"].append({
-                "category": _infer_category(t),
-                "confidence_claimed": t.get("confidence_at_bet"),
-                "question_snippet": t.get("market_question","")[:60],
-            })
-
-    # Underconfidence: low confidence + right
-    for t in resolved:
-        if t.get("prediction_correct") and t.get("confidence_at_bet",1) <= 0.65:
-            lessons["underconfidence_patterns"].append({
                 "category": _infer_category(t),
                 "confidence_claimed": t.get("confidence_at_bet"),
             })
@@ -226,36 +211,32 @@ def get_evolution_context(mode: str = "demo") -> str:
         return ""
 
     lines = [
-        f"AGENT PERFORMANCE DATA ({lessons['total_resolved']} resolved, WR={lessons['overall_win_rate']:.0%}):",
-        "⚠️  CRITICAL: Base rates and Vegas odds are NOT valid evidence. Only cite verifiable facts.",
+        f"MOMENTUM TRADING HISTORY ({lessons['total_resolved']} trades, WR={lessons['overall_win_rate']:.0%}):",
     ]
 
-    if lessons.get("edge_reality"):
-        lines.append("Edge reality (claimed edge → actual WR from our history):")
-        for b, d in sorted(lessons["edge_reality"].items()):
-            lines.append(f"  claimed {b} edge → actual WR={d['actual_wr']:.0%} (n={d['n']}) {'⚠️ OVERESTIMATED' if float(b.strip('%'))/100 - d['actual_wr'] > 0.15 else ''}")
+    if lessons.get("exit_patterns"):
+        ep = lessons["exit_patterns"]
+        lines.append(f"Exit breakdown: TP={ep.get('TAKE_PROFIT',0)} · Trail={ep.get('TRAILING_STOP',0)} · SL={ep.get('STOP_LOSS',0)} · Time={ep.get('TIME_LIMIT',0)} · Resolved={ep.get('RESOLVED',0)}")
 
-    if lessons.get("category_bias"):
-        lines.append("Category performance (MUST follow these):")
-        for cat, info in lessons["category_bias"].items():
-            lines.append(f"  {cat}: {info['status']} WR={info['win_rate']:.0%} conf_gap={info.get('conf_gap',0):+.0%} — {info.get('note','')[:80]}")
+    if lessons.get("price_movement_patterns"):
+        best = sorted(lessons["price_movement_patterns"].items(), key=lambda x: x[1]["avg_pnl"], reverse=True)[:3]
+        lines.append("Best entry price ranges (by avg P&L):")
+        for b, d in best:
+            lines.append(f"  {b}: WR={d['win_rate']:.0%} avg_pnl=${d['avg_pnl']:+.2f} (n={d['n']})")
 
-    if lessons.get("calibration_adjustments"):
-        lines.append("Calibration adjustments (apply to p_true estimates):")
-        for cat, adj in lessons["calibration_adjustments"].items():
-            lines.append(f"  - {cat}: {adj:+.0%} adjustment needed")
+    if lessons.get("momentum_lessons"):
+        lines.append("What worked (profitable momentum trades):")
+        for m in lessons["momentum_lessons"][:3]:
+            lines.append(f"  [{m['category']}] entry={m.get('entry_price',0):.2f} pnl=${m.get('pnl',0):+.2f} via {m.get('exit_reason','?')}: {m.get('catalyst','')[:80]}")
 
     if lessons.get("recent_mistakes"):
-        lines.append("Recent mistakes to learn from:")
-        for m in lessons["recent_mistakes"][:3]:
-            lines.append(
-                f"  - [{m['category']}] Predicted {m['predicted_side']}, "
-                f"actual={m['actual_outcome']}, conf={m['confidence']} → {m['lesson']}"
-            )
+        lines.append("Recent losses (avoid repeating):")
+        for m in lessons["recent_mistakes"]:
+            lines.append(f"  [{m['category']}] entry={m.get('entry_price',0):.2f}: {m.get('lesson','')[:80]}")
 
     if lessons.get("overconfidence_patterns"):
         n = len(lessons["overconfidence_patterns"])
-        lines.append(f"Overconfidence detected {n}x — be more conservative with high-confidence calls.")
+        lines.append(f"Overconfidence: {n}x high-conf bets were wrong — stay disciplined on catalyst quality.")
 
     return "\n".join(lines)
 

@@ -28,66 +28,73 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         if prev_loss else ""
     )
 
-    prompt = f"""You are a disciplined quantitative analyst. Your ONLY job: find markets where VERIFIABLE FACTS prove the price is wrong.
+    prompt = f"""You are a momentum trader on a prediction market. Your job: find markets where SENTIMENT, NEWS, or NARRATIVE will push the price UP or DOWN in the next few hours/days — regardless of the final outcome.
+
+You are NOT trying to predict who wins. You are trying to predict: will the YES price go UP or DOWN from current {market['price']:.2%}?
 
 ━━━ MARKET ━━━
 QUESTION: {market['question']}
-MARKET PRICE (YES): {market['price']:.2%}
+CURRENT YES PRICE: {market['price']:.2%}
 RESOLVES: {market['end_date']}
 CATEGORY: {market.get('category', 'unknown')}
 
-━━━ REAL-TIME DATA ━━━
-{full_context if full_context else '[NO DATA AVAILABLE]'}
+━━━ REAL-TIME DATA (news, sentiment, market signals) ━━━
+{full_context if full_context else '[NO DATA AVAILABLE — SKIP this market]'}
 
-━━━ AGENT PERFORMANCE HISTORY ━━━
+━━━ MOMENTUM LESSONS (from past trades) ━━━
 {evolution_context if evolution_context else 'No history yet.'}
-{prev_loss_note}{f"CALIBRATION: Apply {cal_adj:+.0%} to p_true for this category." if cal_adj else ""}
+{prev_loss_note}
 
-━━━ STRICT ANALYSIS RULES ━━━
+━━━ MOMENTUM TRADING RULES ━━━
 
-RULE 1 — FACTS ONLY, NO ASSUMPTIONS:
-- Every probability claim MUST cite a specific data point from the context above
-- "Base rate" and "historically" are NOT valid evidence — they are assumptions
-- If you have no verifiable data → output SKIP, confidence=0.50
-- Vegas/market odds are NOT facts — they are other people's guesses
+RULE 1 — PRICE MOVEMENT, NOT OUTCOME:
+- Ask: "Will YES price move UP from {market['price']:.2%} in the next 24-48h?"
+- You don't need to know the final answer — you need to know the DIRECTION of price movement
+- Positive news/sentiment → YES price goes UP → BET YES
+- Negative news/sentiment → YES price goes DOWN → BET NO (buy NO = sell YES)
 
-RULE 2 — CONFIDENCE SCALE (be brutally honest):
-- 0.75-0.80: You have DIRECT verifiable data (live score, official result, confirmed announcement)
-- 0.65-0.74: You have strong indirect data (recent form + injury report + odds movement)
-- 0.60-0.64: You have weak signals (1-2 data points, conflicting info)
-- <0.60: No real data → SKIP
+RULE 2 — MOMENTUM SIGNALS (what moves prices):
+- Breaking news directly related to the question → STRONG signal
+- Social sentiment shift (many people suddenly talking about it) → MEDIUM signal  
+- Official announcement or data release → STRONG signal
+- Volume spike on this market (>$50k/day) → market is moving, follow the flow
+- Price already moved >5% today → momentum is real, ride it
+- No news, no sentiment, no volume → SKIP (no catalyst to move price)
 
-RULE 3 — EDGE REALITY CHECK:
-- Our historical data shows: when we claim edge>30%, actual WR is only 13-25%
-- When we claim edge 10-20%, actual WR is 30-58%
-- Therefore: NEVER claim edge >25%. If your analysis gives edge >25%, you are overconfident.
-- Real edge comes from market being WRONG, not from you being right about base rates
+RULE 3 — ENTRY CRITERIA:
+- Current price 15-85% (avoid near-certain markets, no room to move)
+- At least ONE strong signal OR two medium signals
+- Expected price movement: at least 10% from entry (your profit target)
+- If price is already at 85%+: too late, skip
+- If price is at 15%-: already priced in, skip
 
-RULE 4 — SPORTS MARKETS:
-- We have 38% WR in sports despite claiming 76% confidence — we are systematically wrong
-- For sports: ONLY bet if you have live score data, confirmed injury of key player, or odds movement >10%
-- Without those 3 signals: output SKIP
+RULE 4 — CONFIDENCE = HOW STRONG IS THE CATALYST:
+- 0.70-0.75: Breaking news + volume spike + sentiment aligned
+- 0.65-0.69: Clear news catalyst, moderate volume
+- 0.60-0.64: Weak signal, 1 data point only
+- <0.60: No catalyst → SKIP
 
-RULE 5 — SKIP IS CORRECT:
-- Skipping a bad bet is MORE profitable than placing it
-- If uncertain: SKIP. We make money on quality, not quantity.
+RULE 5 — SKIP FREELY:
+- Most markets have no catalyst right now → SKIP them
+- We make money on 3-5 high-quality momentum trades per day, not 20 random bets
 
 ━━━ OUTPUT FORMAT ━━━
 Output ONLY valid JSON:
 {{
-  "p_true": <float 0-1, your honest estimate>,
-  "confidence": <float 0-1, how sure you are about p_true>,
+  "p_true": <float 0-1, where you think YES price will move TO>,
+  "confidence": <float 0-1, how strong is the momentum catalyst>,
   "edge": <p_true minus {market['price']:.4f}>,
   "recommended_side": "<YES/NO/SKIP>",
-  "base_rate": <float 0-1>,
-  "news_adjustment": <float>,
-  "key_factors_for": ["<SPECIFIC FACT from data above, not assumption>"],
-  "key_factors_against": ["<SPECIFIC FACT>"],
-  "resolution_clarity": "<high/medium/low>",
-  "data_quality": "<strong/weak/none — how good is the evidence>",
-  "market_efficiency_note": "<specific reason market price is wrong, or 'market is correct'>"  ,
-  "calibration_applied": "<what adjustments applied>",
-  "reasoning_summary": "<DATA: [cite specific facts] → p_true=X% because [specific reason], NOT base rate>"
+  "momentum_direction": "<up/down/neutral>",
+  "catalyst": "<what specific news/event/sentiment will move the price>",
+  "price_target": <float, where you expect price to reach>,
+  "time_horizon": "<hours until catalyst plays out, e.g. '4h', '24h', '48h'>",
+  "key_factors_for": ["<specific fact that supports price movement>"],
+  "key_factors_against": ["<specific fact against>"],
+  "data_quality": "<strong/weak/none>",
+  "volume_signal": "<high/medium/low/unknown>",
+  "calibration_applied": "",
+  "reasoning_summary": "<CATALYST: [what] → DIRECTION: [up/down] → TARGET: [price] because [specific reason]>"
 }}"""
 
     try:
