@@ -178,18 +178,23 @@ def _generate_evolution_lessons(trades: list, mode: str = "demo"):
 
 
 def _infer_lesson(trade: dict) -> str:
-    cat = trade.get("category", "")
-    side = trade.get("side", "")
-    actual = trade.get("actual_outcome", "")
-    conf = trade.get("confidence_at_bet", 0)
+    cat   = _infer_category(trade)
+    side  = trade.get("side", "")
+    entry = trade.get("price_at_entry", 0.5)
+    conf  = trade.get("confidence_at_bet", 0)
+    reason = (trade.get("reasoning_summary") or "").lower()
 
-    if conf and conf > 0.75:
-        return f"Overconfident ({conf:.0%}) — was wrong. Reduce confidence in similar {cat} markets."
-    if side == "YES" and actual == "NO":
-        return f"Overestimated YES probability in {cat}. Check base rates more carefully."
-    if side == "NO" and actual == "YES":
-        return f"Underestimated YES probability in {cat}. Market may have had better information."
-    return f"Prediction incorrect in {cat} — review reasoning methodology."
+    if conf and conf > 0.70:
+        return f"Overconfident ({conf:.0%}) at entry {entry:.2f} in {cat}. Catalyst was weaker than claimed."
+    if "base rate" in reason or "historically" in reason:
+        return f"Used base rate instead of real catalyst in {cat}. No momentum signal = no bet."
+    if entry > 0.70 and side == "YES":
+        return f"Bought YES at {entry:.2f} — too expensive, little upside. Prefer entry <0.60 for YES bets."
+    if entry < 0.15 and side == "YES":
+        return f"Bought YES at {entry:.2f} — very low price needs very strong catalyst to move. Was catalyst strong enough?"
+    if "no data" in reason or "no catalyst" in reason or "skip" in reason:
+        return f"Bet without clear catalyst in {cat}. If no data → SKIP."
+    return f"Momentum thesis failed in {cat} at entry {entry:.2f}. Review what catalyst was missing."
 
 
 def get_evolution_context(mode: str = "demo") -> str:

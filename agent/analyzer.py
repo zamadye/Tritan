@@ -4,22 +4,27 @@ import os
 from agent.llm import chat
 
 
+def _load_knowledge() -> str:
+    """Load agent knowledge base."""
+    from pathlib import Path as _Path
+    kb = _Path(__file__).parent / "KNOWLEDGE.md"
+    return kb.read_text() if kb.exists() else ""
+
+
 def estimate_probability(market: dict, news_context: str = "", evolution_context: str = "", prev_loss: bool = False) -> dict:
     cal_adj = _get_calibration_adjustment(market.get("category", ""))
 
-    # Get real-time sports/geopolitik data
     from agent.sports import get_sports_context
     from agent.osint import get_osint_signals
     sports_ctx = get_sports_context(market.get("question", ""))
     osint_ctx  = get_osint_signals(market.get("question", ""))
 
-    # Detect category early (needed for fixes below)
     q_lower = market.get("question","").lower()
     is_sports = any(x in q_lower for x in
         ["vs.","vs ","ipl","ufc","tennis","open:","grand prix","mlb","nba","nhl","nfl"])
 
-    # Combine all context: news + sports + OSINT
     full_context = "\n".join(filter(None, [news_context, sports_ctx, osint_ctx]))
+    knowledge    = _load_knowledge()
 
     prev_loss_note = (
         "\n⚠️  PREVIOUS BET ON THIS MARKET WAS WRONG. Be extra critical. "
@@ -31,6 +36,9 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
     prompt = f"""You are a momentum trader on a prediction market. Your job: find markets where SENTIMENT, NEWS, or NARRATIVE will push the price UP or DOWN in the next few hours/days — regardless of the final outcome.
 
 You are NOT trying to predict who wins. You are trying to predict: will the YES price go UP or DOWN from current {market['price']:.2%}?
+
+━━━ DOMAIN KNOWLEDGE ━━━
+{knowledge}
 
 ━━━ MARKET ━━━
 QUESTION: {market['question']}

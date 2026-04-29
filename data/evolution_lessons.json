@@ -1,63 +1,413 @@
 {
-  "total_resolved": 119,
-  "overall_win_rate": 0.35294117647058826,
+  "total_resolved": 126,
+  "overall_win_rate": 0.357,
+  "momentum_lessons": [
+    {
+      "category": "crypto",
+      "entry_price": 0.16,
+      "pnl": 0.2,
+      "exit_reason": "TAKE_PROFIT_2X (+41%)",
+      "catalyst": "CATALYST: BTC within 3% of $80k + Friday gamma + Twitter chatter \u2192 DIRECTION: up \u2192 TARGET: 28% because proximity+gamma h"
+    },
+    {
+      "category": "crypto",
+      "entry_price": 0.15,
+      "pnl": 0.25,
+      "exit_reason": "TAKE_PROFIT_2X (+50%)",
+      "catalyst": "CATALYST: BTC sits 3.6 % below strike + gamma squeeze into Friday expiry + Twitter narrative spike while sentiment at Ex"
+    },
+    {
+      "category": "crypto",
+      "entry_price": 0.11,
+      "pnl": 0.61,
+      "exit_reason": "TAKE_PROFIT_2X (+32%)",
+      "catalyst": "CATALYST: BTC $77k + options gamma + Twitter narrative \u2192 DIRECTION: up \u2192 TARGET: 18% because 3.8% spot move flips market"
+    },
+    {
+      "category": "sports",
+      "entry_price": 0.44,
+      "pnl": 0.74,
+      "exit_reason": "TRAILING_STOP (peak=0.88\u2192sl=0.66, locked $+0.74)",
+      "catalyst": "DATA: ESPN live score Angels 1, White Sox 0, game In Progress \u2192 p_true=90 % because the leading team in an ongoing baseb"
+    },
+    {
+      "category": "politics",
+      "entry_price": 0.501,
+      "pnl": 0.46,
+      "exit_reason": "TRAILING_STOP (peak=0.56\u2192sl=0.42, locked $-0.47)",
+      "catalyst": "Base rate 25% for national party defeating entrenched regional incumbent after re-election \u2192 2021 landslide + consistent"
+    }
+  ],
+  "price_movement_patterns": {
+    "10-20%": {
+      "win_rate": 0.44,
+      "avg_pnl": 7.64,
+      "n": 16
+    },
+    "40-50%": {
+      "win_rate": 0.56,
+      "avg_pnl": 1.61,
+      "n": 34
+    },
+    "90-100%": {
+      "win_rate": 0.0,
+      "avg_pnl": -6.5,
+      "n": 2
+    },
+    "70-80%": {
+      "win_rate": 0.07,
+      "avg_pnl": -1.58,
+      "n": 15
+    },
+    "30-40%": {
+      "win_rate": 0.33,
+      "avg_pnl": 1.44,
+      "n": 9
+    },
+    "60-70%": {
+      "win_rate": 0.5,
+      "avg_pnl": 0.85,
+      "n": 6
+    },
+    "20-30%": {
+      "win_rate": 0.27,
+      "avg_pnl": -0.68,
+      "n": 15
+    },
+    "0-10%": {
+      "win_rate": 0.12,
+      "avg_pnl": -3.22,
+      "n": 8
+    },
+    "50-60%": {
+      "win_rate": 0.39,
+      "avg_pnl": -0.8,
+      "n": 18
+    },
+    "80-90%": {
+      "win_rate": 0.0,
+      "avg_pnl": -1.96,
+      "n": 3
+    }
+  },
+  "exit_patterns": {
+    "RESOLVED": 67,
+    "TAKE_PROFIT": 20,
+    "STOP_LOSS": 24,
+    "TIME_LIMIT": 3,
+    "TRAILING_STOP": 12
+  },
   "edge_reality": {
     "10%": {
-      "claimed_edge": "10%",
-      "actual_wr": 0.52,
-      "n": 23
+      "actual_wr": 0.5,
+      "n": 30
     },
     "70%": {
-      "claimed_edge": "70%",
       "actual_wr": 0.25,
       "n": 4
     },
     "50%": {
-      "claimed_edge": "50%",
       "actual_wr": 0.4,
       "n": 15
     },
     "20%": {
-      "claimed_edge": "20%",
       "actual_wr": 0.35,
       "n": 26
     },
     "60%": {
-      "claimed_edge": "60%",
       "actual_wr": 0.25,
       "n": 8
     },
     "80%": {
-      "claimed_edge": "80%",
       "actual_wr": 0.17,
       "n": 6
     },
     "40%": {
-      "claimed_edge": "40%",
       "actual_wr": 0.18,
       "n": 17
     },
     "30%": {
-      "claimed_edge": "30%",
       "actual_wr": 0.41,
       "n": 17
     },
     "90%": {
-      "claimed_edge": "90%",
       "actual_wr": 0.0,
       "n": 2
     },
     "0%": {
-      "claimed_edge": "0%",
       "actual_wr": 1.0,
       "n": 1
     }
   },
   "category_bias": {},
   "calibration_adjustments": {},
-  "overconfidence_patterns": [],
-  "underconfidence_patterns": [],
-  "recent_mistakes": [],
-  "momentum_lessons": [],
-  "price_movement_patterns": {}
+  "overconfidence_patterns": [
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.84
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.78
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.95
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.78
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.85
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.78
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.71
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.72
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.78
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.82
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.7
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.8
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.98
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.98
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.85
+    },
+    {
+      "category": "crypto",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "crypto",
+      "confidence_claimed": 0.72
+    },
+    {
+      "category": "crypto",
+      "confidence_claimed": 0.88
+    },
+    {
+      "category": "crypto",
+      "confidence_claimed": 0.82
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.98
+    },
+    {
+      "category": "other",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.7
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.8
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.73
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "politics",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.73
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "geopolitik",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.7
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "politics",
+      "confidence_claimed": 0.72
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.72
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.71
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "politics",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    },
+    {
+      "category": "sports",
+      "confidence_claimed": 0.75
+    }
+  ],
+  "recent_mistakes": [
+    {
+      "question": "Will Bitcoin reach $80,000 in April?",
+      "category": "crypto",
+      "entry_price": 0.23,
+      "reasoning": "CATALYST: BTC within 3% of $80k + Friday gamma + Twitter buzz \u2192 DIRECTION: up \u2192 TARGET: 35% because ",
+      "lesson": "Momentum thesis failed in crypto at entry 0.23. Review what catalyst was missing."
+    },
+    {
+      "question": "Will Bitcoin dip to $75,000 in April?",
+      "category": "crypto",
+      "entry_price": 0.21,
+      "reasoning": "CATALYST: Extreme Fear index + fresh geopol-risk chatter + BTC only 3.5% above $75k with Friday gamm",
+      "lesson": "Momentum thesis failed in crypto at entry 0.21. Review what catalyst was missing."
+    },
+    {
+      "question": "James Comey arrested by May 15?",
+      "category": "other",
+      "entry_price": 0.81,
+      "reasoning": "CATALYST: absent news/sentiment \u2192 DIRECTION: down \u2192 TARGET: 70 % because stale high odds without fre",
+      "lesson": "Momentum thesis failed in other at entry 0.81. Review what catalyst was missing."
+    }
+  ]
 }
