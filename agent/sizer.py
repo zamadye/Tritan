@@ -1,37 +1,32 @@
-"""Kelly Criterion position sizer with R:R filter + stepped compounding."""
+"""High-frequency flat bet sizer with stepped compounding multiplier."""
 import os
 
 
 def calculate_position(p_true: float, p_market: float, bankroll: float) -> tuple[float, str, float]:
-    # Stepped compounding: Kelly fraction adjusts based on win/loss streak
     from agent.bankroll import get_kelly_multiplier
-    base_kelly     = float(os.getenv("KELLY_FRACTION", 0.25))
-    kelly_fraction = round(base_kelly * get_kelly_multiplier(), 4)
 
-    max_bet_pct    = float(os.getenv("MAX_BET_PCT_OF_BANKROLL", 0.15))
-    min_bet        = float(os.getenv("MIN_BET_SIZE", 1.0))
-    max_bet        = float(os.getenv("MAX_BET_SIZE", 3.0))
-    edge_threshold = float(os.getenv("EDGE_THRESHOLD", 0.10))
-    min_rr         = float(os.getenv("MIN_RR_RATIO", 0.8))
+    min_bet        = float(os.getenv("MIN_BET_SIZE", 0.50))
+    max_bet        = float(os.getenv("MAX_BET_SIZE", 1.00))
+    edge_threshold = float(os.getenv("EDGE_THRESHOLD", 0.04))
+    min_rr         = float(os.getenv("MIN_RR_RATIO", 0.5))
 
     edge_yes = p_true - p_market
     edge_no  = (1 - p_true) - (1 - p_market)
 
     if edge_yes >= edge_no and edge_yes > edge_threshold:
-        full_kelly = edge_yes / (1 - p_market)
         side = "YES"
-        rr = (1 / p_market) - 1
+        rr   = (1 / p_market) - 1
     elif edge_no > edge_threshold:
-        full_kelly = edge_no / p_market
         side = "NO"
-        rr = (1 / (1 - p_market)) - 1
+        rr   = (1 / (1 - p_market)) - 1
     else:
         return 0.0, "SKIP", 0.0
 
     if rr < min_rr:
         return 0.0, "SKIP", 0.0
 
-    size = full_kelly * kelly_fraction * bankroll
-    size = min(size, bankroll * max_bet_pct, max_bet)
-    size = max(size, min_bet)
-    return round(size, 2), side, round(full_kelly, 4)
+    # Flat bet size scaled by compounding level
+    mult = get_kelly_multiplier()  # 0.8x to 2.0x based on streak
+    size = min_bet * mult
+    size = min(max(size, min_bet), max_bet, bankroll * 0.05)  # never >5% bankroll
+    return round(size, 2), side, round(edge_yes if side=="YES" else edge_no, 4)

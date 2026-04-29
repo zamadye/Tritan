@@ -3243,5 +3243,106 @@
     "prediction_correct": false,
     "resolved_at": "2026-04-28T10:47:27.509277+00:00",
     "brier_score": 0.0361
+  },
+  {
+    "trade_id": "05acb007-2ee0-4281-bc9c-64b4292af245",
+    "timestamp": "2026-04-29T09:18:57.974802",
+    "mode": "demo",
+    "market_id": "0x06a804e8bd1a539829b7db279ad33b2cf0bcf98f315a3b3a8c7623e6230d88fd",
+    "market_numeric_id": "1823776",
+    "market_question": "Will Bitcoin reach $80,000 in April?",
+    "end_date": "2026-05-01T04:00:00Z",
+    "category": "",
+    "side": "YES",
+    "size_usd": 1.91,
+    "price_at_entry": 0.11,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.18,
+    "confidence_at_bet": 0.73,
+    "edge_at_bet": 0.07,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: BTC $77k + options gamma + Twitter narrative \u2192 DIRECTION: up \u2192 TARGET: 18% because 3.8% spot move flips market from 'unlikely' to 'likely' and shorts rush to cover before Friday expiry",
+    "calibration_applied": "required \u226570% conf & \u226512% edge \u2192 edge 7% below threshold but conf 73% and catalyst very clean; accept lower edge because payoff is binary & fast",
+    "key_factors_for": [
+      "BTC only needs +3.8% to hit strike \u2192 headline magnet",
+      "Fear-Greed at 26 leaves room for fast sentiment flip on break",
+      "Friday expiry gamma could accelerate move once $78k taken"
+    ],
+    "key_factors_against": [
+      "Geo-risk headline (Iran/Israel) could cap upside",
+      "11% already prices some chance",
+      "No spot-ETF inflow surge today"
+    ],
+    "peak_price": 0.13
+  },
+  {
+    "trade_id": "2117f08c-d260-486c-bdd6-8f399c0f070b",
+    "timestamp": "2026-04-29T09:26:08.777224",
+    "mode": "demo",
+    "market_id": "0xa05c869fcd6edef0b6e3ee0f11c67c7cd372f29afd88e2a837cd9458c19b4411",
+    "market_numeric_id": "2054872",
+    "market_question": "Will Bitcoin dip to $75,000 in April?",
+    "end_date": "2026-05-01T04:00:00Z",
+    "category": "",
+    "side": "YES",
+    "size_usd": 0.5,
+    "price_at_entry": 0.24,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.38,
+    "confidence_at_bet": 0.69,
+    "edge_at_bet": 0.14,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: Extreme Fear index + geo-risk chatter \u2192 DIRECTION: up \u2192 TARGET: 38% because sentiment is flipping fast and thin support at $76k makes a quick $75k tag feel imminent, pulling new buyers into YES.",
+    "calibration_applied": "cap confidence below 0.70 because no single headline, but multi-signal alignment",
+    "key_factors_for": [
+      "Fear & Greed 26/100 = Extreme Fear, lowest in 3 months",
+      "Geo-risk narrative trending on CT/reddit \u2192 'safe-haven' bid unwind",
+      "Spot bid thin below $76k, charts show air-pocket to $75k",
+      "24h volume on this market already >$120k \u2192 price starting to move"
+    ],
+    "key_factors_against": [
+      "BTC flat last 7d, no actual dump yet",
+      "Only 10 days left in April \u2192 time-decay could cap upside"
+    ]
+  },
+  {
+    "trade_id": "19d664b2-57e2-436d-bde9-529c1951bb14",
+    "timestamp": "2026-04-29T09:26:35.448848",
+    "mode": "demo",
+    "market_id": "0x7127add716af440fae349975b61acd9f9a5326728b6c2f5b9714c18e40892d7d",
+    "market_numeric_id": "2015747",
+    "market_question": "NBA Playoffs: Who Will Win Series? - Pistons vs. Magic ",
+    "end_date": "2026-05-04T00:00:00Z",
+    "category": "",
+    "side": "YES",
+    "size_usd": 0.5,
+    "price_at_entry": 0.29,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.36,
+    "confidence_at_bet": 0.66,
+    "edge_at_bet": 0.07,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: Wagner day-to-day upgrade \u2192 DIRECTION: up \u2192 TARGET: 40 % because upgrade flips narrative from \u2018ORL hobbled\u2019 to \u2018ORL near full strength\u2019 and 29 % under-prices Magic in first-round coin-flip if healthy.",
+    "calibration_applied": "down-grade 0.05 for low volume; still meets 10 % move threshold",
+    "key_factors_for": [
+      "Wagner upgrade removes worst-case scenario narrative",
+      "No corresponding good news for DET injuries",
+      "29 % too low for a 2-vs-7 matchup if ORL at full strength",
+      "Low liquidity means 1-2 big buys push price fast"
+    ],
+    "key_factors_against": [
+      "Isaac still out, Huerter also DTD so ORL not 100 %",
+      "Series doesn't start for weeks, bettors may shrug off today\u2019s news",
+      "Market could stay dormant until tip-off"
+    ]
   }
 ]

@@ -144,9 +144,9 @@ def run_scan_cycle(mode: str, clob_client=None):
     console.print(f"Found {len(candidates)} candidate markets.")
 
     bets_this_cycle = 0
-    max_bets_per_cycle = max_open - open_count  # don't exceed max open
+    max_bets_per_cycle = min(max_open - open_count, 10)  # max 10 bets per cycle
 
-    # Build prev_loss lookup: markets where we lost before (for extra caution, not blocking)
+    # Build prev_loss lookup
     prev_loss_markets = set()
     for t in all_trades:
         if t.get("actual_outcome") and not t.get("prediction_correct"):
@@ -156,27 +156,28 @@ def run_scan_cycle(mode: str, clob_client=None):
         if bets_this_cycle >= max_bets_per_cycle:
             break
 
-        # Skip if already have open position on this market
         if market["question"][:60] in open_ids:
             continue
 
-        # Fetch news ONCE per market
+        # Fetch news + analyze (single delay after both)
         news = fetch_news(market)
-        time.sleep(delay)
-
-        # Pass prev_loss flag so LLM is extra cautious on previously-lost markets
         prev_loss = market["question"][:60] in prev_loss_markets
         analysis = estimate_probability(market, news, evo_context, prev_loss=prev_loss)
-        time.sleep(delay)
+        time.sleep(delay)  # single delay per market (not 2x)
 
         confidence = analysis.get("confidence", 0)
-        p_true = analysis.get("p_true", market["price"])
-        p_market = market["price"]
+        p_true     = analysis.get("p_true", market["price"])
+        p_market   = market["price"]
 
         if confidence < min_confidence:
             continue
 
-        # Recalculate bankroll after each bet
+        # Use momentum direction if available
+        momentum = analysis.get("momentum_direction", "")
+        rec_side  = analysis.get("recommended_side", "SKIP")
+        if rec_side == "SKIP":
+            continue
+
         bankroll = _get_bankroll(mode)
         size, side, _ = calculate_position(p_true, p_market, bankroll)
 
