@@ -369,7 +369,7 @@ def get_sports_deep_context(question: str) -> dict:
 # ── NEWS PATTERN ANALYSIS ─────────────────────────────────────────────────────
 
 def fetch_multi_source_news(question: str) -> list:
-    """Fetch news from multiple sources and return list of articles."""
+    """Fetch news from multiple sources. Handles rate limits gracefully."""
     articles = []
     stopwords = {"will","the","and","for","are","was","has","have","been","that",
                  "this","with","from","they","their","reach","april","may","june"}
@@ -382,36 +382,40 @@ def fetch_multi_source_news(question: str) -> list:
         api_key = os.getenv("NEWS_API_KEY","")
         if api_key:
             r = requests.get("https://newsapi.org/v2/everything",
-                params={"q": query, "pageSize": 8, "sortBy": "publishedAt",
+                params={"q": query, "pageSize": 6, "sortBy": "publishedAt",
                         "language": "en", "apiKey": api_key}, timeout=8)
-            for a in r.json().get("articles",[]):
-                articles.append({
-                    "source": "NewsAPI",
-                    "title": a.get("title",""),
-                    "description": a.get("description","") or "",
-                    "published": a.get("publishedAt","")[:10],
-                })
+            if r.status_code == 200:
+                for a in r.json().get("articles",[]):
+                    articles.append({
+                        "source": "NewsAPI",
+                        "title": a.get("title",""),
+                        "description": a.get("description","") or "",
+                        "published": a.get("publishedAt","")[:10],
+                    })
+            # 429 = rate limited, skip silently
     except Exception:
         pass
 
-    # Serper
-    try:
-        api_key = os.getenv("SERPER_API_KEY","")
-        if api_key:
-            r = requests.post("https://google.serper.dev/news",
-                headers={"X-API-KEY": api_key, "Content-Type": "application/json"},
-                json={"q": query, "num": 8}, timeout=8)
-            for item in r.json().get("news",[]):
-                articles.append({
-                    "source": "Serper",
-                    "title": item.get("title",""),
-                    "description": item.get("snippet",""),
-                    "published": item.get("date",""),
-                })
-    except Exception:
-        pass
+    # Serper (only if NewsAPI returned nothing)
+    if not articles:
+        try:
+            api_key = os.getenv("SERPER_API_KEY","")
+            if api_key:
+                r = requests.post("https://google.serper.dev/news",
+                    headers={"X-API-KEY": api_key, "Content-Type": "application/json"},
+                    json={"q": query, "num": 6}, timeout=8)
+                if r.status_code == 200:
+                    for item in r.json().get("news",[]):
+                        articles.append({
+                            "source": "Serper",
+                            "title": item.get("title",""),
+                            "description": item.get("snippet",""),
+                            "published": item.get("date",""),
+                        })
+        except Exception:
+            pass
 
-    # Twitter
+    # Twitter (always try, low rate limit risk)
     try:
         bearer = os.getenv("TWITTER_BEARER_TOKEN","")
         if bearer and words:
@@ -421,14 +425,15 @@ def fetch_multi_source_news(question: str) -> list:
                 params={"query": tw_query, "max_results": 10,
                         "tweet.fields": "public_metrics,created_at"},
                 headers={"Authorization": f"Bearer {bearer}"}, timeout=6)
-            for t in r.json().get("data",[]):
-                m = t.get("public_metrics",{})
-                articles.append({
-                    "source": "Twitter",
-                    "title": t["text"][:100],
-                    "description": f"likes={m.get('like_count',0)} rt={m.get('retweet_count',0)}",
-                    "published": t.get("created_at","")[:10],
-                })
+            if r.status_code == 200:
+                for t in r.json().get("data",[]):
+                    m = t.get("public_metrics",{})
+                    articles.append({
+                        "source": "Twitter",
+                        "title": t["text"][:100],
+                        "description": f"likes={m.get('like_count',0)} rt={m.get('retweet_count',0)}",
+                        "published": t.get("created_at","")[:10],
+                    })
     except Exception:
         pass
 
@@ -438,13 +443,24 @@ def fetch_multi_source_news(question: str) -> list:
 def build_research_report(market: dict) -> dict:
     """
     Build comprehensive research report for a market.
-    Saves to data/research/{market_id}.json
-    Returns structured context for LLM.
+    Caches to data/research/{market_id}.json — reuses if <30 min old.
     """
-    question = market.get("question","")
+    question  = market.get("question","")
     market_id = market.get("id", market.get("numeric_id","unknown"))
-    now = datetime.now(timezone.utc).isoformat()
+    report_path = RESEARCH_DIR / f"{str(market_id)[:20]}.json"
 
+    # Return cached report if fresh (<30 min)
+    if report_path.exists():
+        try:
+            cached = json.loads(report_path.read_text())
+            generated = datetime.fromisoformat(cached.get("generated_at","2000-01-01"))
+            age_minutes = (datetime.now(timezone.utc) - generated).total_seconds() / 60
+            if age_minutes < 30:
+                return cached
+        except Exception:
+            pass
+
+    now = datetime.now(timezone.utc).isoformat()
     report = {
         "market_id": market_id,
         "question": question,

@@ -1,0 +1,42 @@
+{
+  "market_id": "test",
+  "question": "Will Bitcoin reach 80000 in April?",
+  "market_price": 0.13,
+  "generated_at": "2026-04-29T13:02:33.570926+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
+      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        33,
+        47,
+        33,
+        31,
+        39,
+        46
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 77165,
+      "btc_24h": 1.122279642608443,
+      "risk_signal": "risk-ON"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [
+    "BTC within 3% of round number ($80k/$90k) \u2192 gamma squeeze \u2192 price accelerates",
+    "BTC ETF inflows spike \u2192 institutional buying \u2192 price +5-15%",
+    "BTC ETF outflows \u2192 selling pressure \u2192 price -5-10%",
+    "BTC halving approaching \u2192 supply shock narrative \u2192 price rally",
+    "Crypto exchange hack/collapse \u2192 panic selling \u2192 BTC -15-30%",
+    "Whale accumulation (on-chain) \u2192 supply squeeze \u2192 price up"
+  ],
+  "summary": ""
+}
