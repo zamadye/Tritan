@@ -2,7 +2,7 @@
   "market_id": "0xc6ddb19f848ac363330d0a690cfe6818d4c51e837161a41d42675eda27767ed0",
   "question": "Will Finland win Eurovision 2026?",
   "market_price": 0.357,
-  "generated_at": "2026-04-29T12:41:03.086192+00:00",
+  "generated_at": "2026-04-29T12:53:56.453539+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
@@ -23,13 +23,18 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77083,
-      "btc_24h": 1.0333655789717904,
+      "btc_price": 77182,
+      "btc_24h": 1.0789011167931033,
       "risk_signal": "risk-ON"
     }
   },
   "sports": {},
   "news_articles": [],
-  "causal_chains": [],
+  "causal_chains": [
+    "ECB rate cut \u2192 EUR weakens vs USD \u2192 EUR/USD falls",
+    "EU GDP beats expectations \u2192 EUR strengthens",
+    "EU political crisis (elections) \u2192 EUR uncertainty \u2192 falls",
+    "EUR/USD above 1.10 \u2192 European exports competitive \u2192 EU stocks rally"
+  ],
   "summary": ""
 }

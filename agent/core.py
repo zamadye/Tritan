@@ -146,17 +146,35 @@ def run_scan_cycle(mode: str, clob_client=None):
     bets_this_cycle = 0
     max_bets_per_cycle = min(max_open - open_count, 10)  # max 10 bets per cycle
 
-    # Build prev_loss lookup
-    prev_loss_markets = set()
+    # Build prev_loss lookup — block market if lost 2+ times today
+    from datetime import datetime, timezone, timedelta
+    cutoff_24h = datetime.now(timezone.utc) - timedelta(hours=24)
+    loss_count = {}
     for t in all_trades:
         if t.get("actual_outcome") and not t.get("prediction_correct"):
-            prev_loss_markets.add(t["market_question"][:60])
+            try:
+                ts = datetime.fromisoformat(t.get("resolved_at", t.get("timestamp","")).replace("Z","+00:00"))
+                if ts > cutoff_24h:
+                    key = t["market_question"][:60]
+                    loss_count[key] = loss_count.get(key, 0) + 1
+            except Exception:
+                pass
+
+    # Block if 2+ losses on same market in 24h
+    hard_blocked = {k for k, v in loss_count.items() if v >= 2}
+    # Soft flag (prev_loss) if 1 loss
+    prev_loss_markets = {k for k, v in loss_count.items() if v == 1}
 
     for market in candidates:
         if bets_this_cycle >= max_bets_per_cycle:
             break
 
         if market["question"][:60] in open_ids:
+            continue
+
+        # Hard block: 2+ losses on same market in 24h
+        if market["question"][:60] in hard_blocked:
+            console.print(f"[dim]⛔ Blocked (2+ losses): {market['question'][:50]}[/dim]")
             continue
 
         # Fetch news + deep research

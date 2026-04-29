@@ -2,7 +2,7 @@
   "market_id": "0xb79f75dd1f2bf0a5d6684af9a68a08073fcb014d99657056469fe89577ec91fd",
   "question": "Madrid Open: Jannik Sinner vs Rafael Jodar",
   "market_price": 0.85,
-  "generated_at": "2026-04-29T12:39:19.203380+00:00",
+  "generated_at": "2026-04-29T12:52:38.058925+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77052,
-      "btc_24h": 1.0560354435829664,
+      "btc_price": 77167,
+      "btc_24h": 1.0591744128805207,
       "risk_signal": "risk-ON"
     }
   },

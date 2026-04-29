@@ -1,8 +1,8 @@
 {
   "market_id": "0xd06c1756f71a818fbce16d630ef0e61b2bc6f7870973406b7ff8026acf176af5",
   "question": "Madrid Open: Karolina Pliskova vs Anastasia Potapova",
-  "market_price": 0.38,
-  "generated_at": "2026-04-29T12:39:05.180617+00:00",
+  "market_price": 0.625,
+  "generated_at": "2026-04-29T12:52:20.131767+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77052,
-      "btc_24h": 1.0560354435829664,
+      "btc_price": 77144,
+      "btc_24h": 1.0290805154989802,
       "risk_signal": "risk-ON"
     }
   },

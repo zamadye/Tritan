@@ -2,7 +2,7 @@
   "market_id": "0xb75c07f4252992808d7ca7d9828169c524b0fef44bf5adf78c327ef88469c986",
   "question": "US x Iran diplomatic meeting by May 5, 2026?",
   "market_price": 0.09,
-  "generated_at": "2026-04-29T12:38:19.544490+00:00",
+  "generated_at": "2026-04-29T12:51:36.357180+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77045,
-      "btc_24h": 1.0466635197799725,
+      "btc_price": 77144,
+      "btc_24h": 1.0290805154989802,
       "risk_signal": "risk-ON"
     }
   },
@@ -32,8 +32,10 @@
   "news_articles": [],
   "causal_chains": [
     "Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%",
-    "Iran sanctions tighten \u2192 crypto adoption in Iran increases",
-    "Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON for equities/crypto"
+    "Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls",
+    "Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally",
+    "Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
+    "Iran sanctions tighten \u2192 crypto adoption in Iran increases (capital flight)"
   ],
   "summary": ""
 }

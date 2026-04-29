@@ -1,8 +1,8 @@
 {
   "market_id": "0xcb3fec389e7b67c890554c10da53f4b29428ae6274652ddda00b410e6b8b92cc",
   "question": "Aix en Provence: Ignacio Buse vs Francisco Comesana",
-  "market_price": 0.58,
-  "generated_at": "2026-04-29T12:38:50.224243+00:00",
+  "market_price": 0.51,
+  "generated_at": "2026-04-29T12:52:07.274126+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
@@ -23,13 +23,18 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77052,
-      "btc_24h": 1.0560354435829664,
+      "btc_price": 77144,
+      "btc_24h": 1.0290805154989802,
       "risk_signal": "risk-ON"
     }
   },
   "sports": {},
   "news_articles": [],
-  "causal_chains": [],
+  "causal_chains": [
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
+    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term",
+    "AI chip shortage \u2192 NVIDIA revenue beats \u2192 AI infrastructure stocks rally",
+    "AI energy demand \u2192 data center power stocks rally"
+  ],
   "summary": ""
 }
