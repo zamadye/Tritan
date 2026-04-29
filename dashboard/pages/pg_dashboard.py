@@ -38,25 +38,31 @@ def render():
 
     # ── alerts ────────────────────────────────────────────────────────────────
     if oc >= 30:
-        st.error(f"⚠️ OVERCONFIDENCE {oc}x — hard cap 70%, penalty -{min(0.25,oc*0.005):.0%} active")
+        st.markdown(f"<div class='alert-banner'>⚠️ OVERCONFIDENCE {oc}x — hard cap 68%, penalty -{min(0.25,oc*0.005):.0%} active on all bets</div>", unsafe_allow_html=True)
     elif oc >= 10:
         st.warning(f"⚠️ Overconfidence {oc}x — penalty -{min(0.25,oc*0.005):.0%} applied")
 
-    # ── KPI row ───────────────────────────────────────────────────────────────
+    # ── KPI row with trend ────────────────────────────────────────────────────
+    res = s["resolved"]
+    last10 = res[-10:]; prev10 = res[-20:-10] if len(res)>=20 else []
+    wr_l10 = sum(1 for t in last10 if t.get("prediction_correct"))/len(last10) if last10 else 0
+    wr_p10 = sum(1 for t in prev10 if t.get("prediction_correct"))/len(prev10) if prev10 else wr_l10
+    pnl_l10 = sum(t.get("pnl",0) for t in last10)
+    pnl_p10 = sum(t.get("pnl",0) for t in prev10)
+
     m1,m2,m3,m4,m5,m6 = st.columns(6)
-    m1.metric("💰 P&L",       f"${s['pnl']:+.2f}")
-    m2.metric("🎯 Win Rate",  f"{s['wr']:.0%}", f"{len(s['wins'])}W/{len(s['losses'])}L")
-    m3.metric("⚖️ R:R",       f"{s['rr']:.2f}:1")
-    m4.metric("📈 EV/trade",  f"${s['ev']:+.3f}")
-    m5.metric("🏦 Bankroll",  f"${s['bankroll']:.2f}", f"-${s['deployed']:.2f} deployed")
-    m6.metric("📂 Open",      str(len(s['open_t'])))
+    m1.metric("💰 P&L",      f"${s['pnl']:+.2f}",  f"last10: ${pnl_l10:+.2f}")
+    m2.metric("🎯 Win Rate", f"{s['wr']:.0%}",      f"last10: {wr_l10:.0%} {'↑' if wr_l10>wr_p10 else '↓' if wr_l10<wr_p10 else '→'}")
+    m3.metric("⚖️ R:R",      f"{s['rr']:.2f}:1")
+    m4.metric("📈 EV/trade", f"${s['ev']:+.3f}")
+    m5.metric("🏦 Bankroll", f"${s['bankroll']:.2f}", f"-${s['deployed']:.2f} deployed")
+    m6.metric("📂 Open",     str(len(s['open_t'])))
 
     st.divider()
     left, right = st.columns([3, 1])
 
     with left:
         st.subheader("Cumulative P&L")
-        res = s["resolved"]
         if res:
             srt = sorted(res, key=lambda x: x.get("resolved_at", x.get("timestamp","")))
             cum, colors, run = [], [], 0
@@ -145,3 +151,28 @@ def render():
         if st.button("🔍 Trigger Scan", use_container_width=True, type="primary"):
             with st.spinner("Scanning..."): subprocess.run(["python3","main.py","--mode",mode,"scan"], capture_output=True, timeout=120)
             st.cache_data.clear(); st.success("Done!"); st.rerun()
+
+    # ── Recent activity feed ──────────────────────────────────────────────────
+    st.divider()
+    st.subheader("Recent Activity")
+    recent = sorted(res, key=lambda x: x.get("resolved_at",""), reverse=True)[:8]
+    if recent:
+        rows = ""
+        for t in recent:
+            correct = t.get("prediction_correct")
+            pnl     = t.get("pnl",0) or 0
+            dot_c   = "#22c55e" if correct else ("#f59e0b" if t.get("actual_outcome")=="EXIT" else "#ef4444")
+            pnl_c   = "#22c55e" if pnl>0 else "#ef4444"
+            ts      = (t.get("resolved_at","") or "")[:10]
+            rows += (
+                f"<div class='stat-row'>"
+                f"<span style='color:{dot_c};font-size:16px;width:20px'>{'✓' if correct else '✗'}</span>"
+                f"<span style='flex:1;color:#cbd5e1;font-size:12px'>{t['market_question'][:55]}</span>"
+                f"<span style='color:#6b7280;font-size:11px;margin:0 12px'>{t['side']}</span>"
+                f"<span style='color:{pnl_c};font-weight:600;font-size:13px;min-width:60px;text-align:right'>${pnl:+.2f}</span>"
+                f"<span style='color:#4b5563;font-size:11px;margin-left:12px'>{ts}</span>"
+                f"</div>"
+            )
+        st.markdown(f"<div class='card' style='padding:8px 16px'>{rows}</div>", unsafe_allow_html=True)
+    else:
+        st.caption("No resolved trades yet.")

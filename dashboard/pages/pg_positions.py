@@ -60,12 +60,24 @@ def render():
         partial  = " · PARTIAL" if t.get("partial_exited") else ""
 
         with st.expander(f"{trend}  {side} ${size:.2f}{partial}   ·   {t['market_question'][:58]}"):
-            c1,c2,c3,c4 = st.columns(4)
+            # Color-coded left border via inline style on metric row
+            border_c = "#22c55e" if (unreal_t or 0)>0 else "#ef4444" if (unreal_t or 0)<0 else "#6b7280"
+            try:
+                from datetime import datetime, timezone as tz
+                ts_str = t["timestamp"].replace("Z","+00:00")
+                if "+" not in ts_str and "T" in ts_str: ts_str += "+00:00"
+                hours_held = (datetime.now(tz.utc) - datetime.fromisoformat(ts_str)).total_seconds()/3600
+            except: hours_held = 0
+
+            st.markdown(f"<div style='border-left:3px solid {border_c};padding-left:10px;margin-bottom:8px'>", unsafe_allow_html=True)
+            c1,c2,c3,c4,c5 = st.columns(5)
             c1.metric("Entry",          f"{entry:.3f}")
             c2.metric("Current",        f"{now_p:.3f}" if now_p else "—",
                       delta=f"{pnl_pct:+.1%}" if now_p else None)
             c3.metric("Unrealized P&L", f"${unreal_t:+.2f}" if unreal_t is not None else "—")
             c4.metric("Peak",           f"{peak:.3f}")
+            c5.metric("Held",           f"{hours_held:.0f}h")
+            st.markdown("</div>", unsafe_allow_html=True)
 
             if now_p:
                 rng = tp_price - eff_sl
