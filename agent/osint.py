@@ -260,9 +260,8 @@ def get_economics_signals(question: str) -> dict:
 
 def get_osint_signals(question: str) -> str:
     """
-    Main entry point. Detects category, fetches relevant Tier 1/2 signals,
+    Main entry point. Detects category, fetches relevant signals,
     returns formatted string for LLM context.
-    Also adds cross-correlation signals (crypto↔geopolitik).
     """
     category = detect_category(question)
     signals = {}
@@ -271,29 +270,39 @@ def get_osint_signals(question: str) -> str:
         signals = get_sports_signals(question)
     elif category == "geopolitik":
         signals = get_geopolitik_signals(question)
-        # Cross-correlation: geopolitik → crypto impact
         signals.update(_get_crypto_geo_correlation(question))
     elif category == "crypto":
         signals = get_crypto_signals(question)
-        # Cross-correlation: crypto → geopolitik context
         signals.update(_get_geo_crypto_correlation())
     elif category == "economics":
         signals = get_economics_signals(question)
         if any(x in question.lower() for x in ["oil","wti","crude","brent"]):
             signals.update(_get_crypto_geo_correlation(question))
 
-    if not signals:
-        return ""
+    lines = []
+    if signals:
+        lines.append(f"[OSINT:{category.upper()}]")
+        for key, value in signals.items():
+            label = key.replace("_", " ").title()
+            if isinstance(value, list):
+                lines.append(f"  {label}:")
+                for item in value: lines.append(f"    - {item}")
+            else:
+                lines.append(f"  {label}: {value}")
 
-    lines = [f"[OSINT:{category.upper()}]"]
-    for key, value in signals.items():
-        label = key.replace("_", " ").title()
-        if isinstance(value, list):
-            lines.append(f"  {label}:")
-            for item in value:
-                lines.append(f"    - {item}")
-        else:
-            lines.append(f"  {label}: {value}")
+    # Always add: news, twitter, related markets, fear&greed trend
+    news = get_newsapi_signals(question)
+    if news: lines.append(news)
+
+    twitter = get_twitter_signals(question)
+    if twitter: lines.append(twitter)
+
+    related = get_polymarket_related_markets(question)
+    if related: lines.append(related)
+
+    fg = get_fear_greed_trend()
+    if fg and category in ("crypto","geopolitik","economics"):
+        lines.append(fg)
 
     return "\n".join(lines)
 
@@ -346,3 +355,103 @@ def _get_geo_crypto_correlation() -> dict:
     except Exception:
         pass
     return signals
+
+
+# ─── ENHANCED DATA SOURCES ────────────────────────────────────────────────────
+
+def get_twitter_signals(question: str) -> str:
+    """Fetch Twitter sentiment for a market question."""
+    bearer = os.getenv("TWITTER_BEARER_TOKEN", "")
+    if not bearer:
+        return ""
+    # Build focused query from question keywords
+    words = [w.strip("?.,!()") for w in question.split() if len(w) > 4 and w[0].isupper()]
+    query = " OR ".join(words[:3]) + " lang:en -is:retweet" if words else ""
+    if not query:
+        return ""
+    try:
+        r = requests.get(
+            "https://api.twitter.com/2/tweets/search/recent",
+            params={"query": query, "max_results": 10,
+                    "tweet.fields": "public_metrics,created_at"},
+            headers={"Authorization": f"Bearer {bearer}"},
+            timeout=6,
+        )
+        tweets = r.json().get("data", [])
+        if not tweets:
+            return ""
+        lines = [f"[TWITTER] {len(tweets)} recent tweets about: {', '.join(words[:3])}"]
+        for t in tweets[:5]:
+            m = t.get("public_metrics", {})
+            lines.append(f"  likes={m.get('like_count',0)} rt={m.get('retweet_count',0)}: {t['text'][:100]}")
+        return "\n".join(lines)
+    except Exception:
+        return ""
+
+
+def get_newsapi_signals(question: str) -> str:
+    """Fetch NewsAPI articles for a market question."""
+    api_key = os.getenv("NEWS_API_KEY", "")
+    if not api_key:
+        return ""
+    # Extract key terms
+    stopwords = {"will","the","and","for","are","was","has","have","been","that","this","with","from","they","their"}
+    words = [w.strip("?.,!()") for w in question.split()
+             if len(w) > 3 and w.lower() not in stopwords]
+    query = " ".join(words[:4])
+    try:
+        r = requests.get(
+            "https://newsapi.org/v2/everything",
+            params={"q": query, "pageSize": 6, "sortBy": "publishedAt",
+                    "language": "en", "apiKey": api_key},
+            timeout=8,
+        )
+        articles = r.json().get("articles", [])
+        if not articles:
+            return ""
+        lines = [f"[NEWS] {len(articles)} articles for: {query}"]
+        for a in articles[:5]:
+            lines.append(f"  - {a['title']}: {(a.get('description') or '')[:120]}")
+        return "\n".join(lines)
+    except Exception:
+        return ""
+
+
+def get_fear_greed_trend() -> str:
+    """Fetch 7-day Fear & Greed trend."""
+    try:
+        r = requests.get("https://api.alternative.me/fng/?limit=7", timeout=5)
+        data = r.json().get("data", [])
+        if not data:
+            return ""
+        trend = " → ".join(f"{d['value']}({d['value_classification'][:4]})" for d in data[:4])
+        current = int(data[0]["value"])
+        direction = "improving" if int(data[0]["value"]) > int(data[2]["value"]) else "worsening"
+        return f"[FEAR&GREED 7d trend] {trend} | sentiment {direction}"
+    except Exception:
+        return ""
+
+
+def get_polymarket_related_markets(question: str) -> str:
+    """Fetch related high-volume markets from Polymarket for context."""
+    try:
+        r = requests.get(
+            "https://gamma-api.polymarket.com/markets",
+            params={"active": "true", "limit": 20, "order": "volume24hr", "ascending": "false"},
+            timeout=6,
+        )
+        markets = r.json()
+        q_words = set(w.lower().strip("?.,!") for w in question.split() if len(w) > 4)
+        related = []
+        for m in markets:
+            mq = m.get("question", "").lower()
+            if sum(1 for w in q_words if w in mq) >= 2:
+                vol = float(m.get("volume24hr", 0))
+                price = float((m.get("outcomePrices") or ["0.5"])[0]
+                              if isinstance(m.get("outcomePrices"), list) else 0.5)
+                related.append(f"  Related: {m['question'][:60]} | YES={price:.0%} vol=${vol:,.0f}")
+        if related:
+            return "[RELATED MARKETS]\n" + "\n".join(related[:3])
+    except Exception:
+        pass
+    return ""

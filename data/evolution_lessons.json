@@ -1,6 +1,6 @@
 {
-  "total_resolved": 127,
-  "overall_win_rate": 0.354,
+  "total_resolved": 128,
+  "overall_win_rate": 0.352,
   "momentum_lessons": [
     {
       "category": "crypto",
@@ -70,9 +70,9 @@
       "n": 6
     },
     "20-30%": {
-      "win_rate": 0.27,
-      "avg_pnl": -0.68,
-      "n": 15
+      "win_rate": 0.25,
+      "avg_pnl": -0.64,
+      "n": 16
     },
     "0-10%": {
       "win_rate": 0.12,
@@ -95,12 +95,12 @@
     "TAKE_PROFIT": 20,
     "STOP_LOSS": 25,
     "TIME_LIMIT": 3,
-    "TRAILING_STOP": 12
+    "TRAILING_STOP": 13
   },
   "edge_reality": {
     "10%": {
-      "actual_wr": 0.48,
-      "n": 31
+      "actual_wr": 0.47,
+      "n": 32
     },
     "70%": {
       "actual_wr": 0.25,
@@ -391,6 +391,13 @@
     {
       "question": "Will Bitcoin reach $80,000 in April?",
       "category": "crypto",
+      "entry_price": 0.2,
+      "reasoning": "CATALYST: BTC within 3 % of $80k + Friday gamma + Twitter narrative heat \u2192 DIRECTION: up \u2192 TARGET: 3",
+      "lesson": "Momentum thesis failed in crypto at entry 0.20. Review what catalyst was missing."
+    },
+    {
+      "question": "Will Bitcoin reach $80,000 in April?",
+      "category": "crypto",
       "entry_price": 0.23,
       "reasoning": "CATALYST: BTC within 3% of $80k + Friday gamma + Twitter buzz \u2192 DIRECTION: up \u2192 TARGET: 35% because ",
       "lesson": "Momentum thesis failed in crypto at entry 0.23. Review what catalyst was missing."
@@ -401,13 +408,6 @@
       "entry_price": 0.21,
       "reasoning": "CATALYST: Extreme Fear index + fresh geopol-risk chatter + BTC only 3.5% above $75k with Friday gamm",
       "lesson": "Momentum thesis failed in crypto at entry 0.21. Review what catalyst was missing."
-    },
-    {
-      "question": "US x Iran diplomatic meeting by May 15, 2026?",
-      "category": "sports",
-      "entry_price": 0.33,
-      "reasoning": "CATALYST: leaked EU/Oman roadmap + Jan Muscat meeting \u2192 DIRECTION: up \u2192 TARGET: 45 % because headlin",
-      "lesson": "Momentum thesis failed in sports at entry 0.33. Review what catalyst was missing."
     }
   ]
 }

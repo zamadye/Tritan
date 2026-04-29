@@ -3674,8 +3674,8 @@
     "size_usd": 0.5,
     "price_at_entry": 0.2,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": -0.05,
     "p_true_estimated": 0.32,
     "confidence_at_bet": 0.68,
     "edge_at_bet": 0.12,
@@ -3695,6 +3695,80 @@
       "No fresh spot-buying catalyst yet",
       "Previous trade on this market lost"
     ],
-    "peak_price": 0.21
+    "peak_price": 0.21,
+    "exit_price": 0.1785,
+    "exit_reason": "TRAILING_STOP (peak=0.21\u2192sl=0.18, locked $-0.05)",
+    "prediction_correct": false,
+    "resolved_at": "2026-04-29T12:11:55.773636+00:00",
+    "brier_score": 0.04
+  },
+  {
+    "trade_id": "bf1ee8d8-00e5-45c7-8d87-24a9f5910c99",
+    "timestamp": "2026-04-29T11:55:49.433929",
+    "mode": "demo",
+    "market_id": "0xffe381a80c1e36f9e0b03a542aa8fe56e74a67d2566a4e29396d4427aa4244c9",
+    "market_numeric_id": "2054133",
+    "market_question": "Strait of Hormuz traffic returns to normal by May 15?",
+    "end_date": "2026-05-15T00:00:00Z",
+    "category": "",
+    "side": "YES",
+    "size_usd": 0.5,
+    "price_at_entry": 0.15,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.28,
+    "confidence_at_bet": 0.68,
+    "edge_at_bet": 0.13,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: U.S.-Iran cease-fire headline already jolting commodity markets \u2192 DIRECTION: up \u2192 TARGET: 28% because traders will map lower conflict risk onto faster normalization of tanker traffic, and at 15c the market offers 13c of room before medium resistance",
+    "calibration_applied": "Cease-fire headline = STRONG catalyst; history shows 10-30% moves on geopolitical de-escalation; entry 15% gives 2:1 upside before 30% take-profit rule | hard_cap=68% (overconf 61x)",
+    "key_factors_for": [
+      "Breaking cease-fire news directly lowers Strait military-risk premium",
+      "Gold/fuel moves show market already repricing geopolitical risk",
+      "15% price leaves 13c upside if cease-fire narrative sticks",
+      "No official shipping-body pushback yet \u2192 vacuum for bullish extrapolation"
+    ],
+    "key_factors_against": [
+      "No direct statement from Iran or U.S. on Hormuz shipping lanes",
+      "Prior false-dawn cease-fire headlines lasted <24h",
+      "Market volume/liquidity unknown; could be thin"
+    ],
+    "peak_price": 0.155
+  },
+  {
+    "trade_id": "b48c30d9-63d9-48a0-847c-8dfcfc53fb04",
+    "timestamp": "2026-04-29T12:03:29.783408",
+    "mode": "demo",
+    "market_id": "0x28047a042b014f25c767d74ef95bb73d0fac42b5618081c919f627e5bb95d82b",
+    "market_numeric_id": "2078392",
+    "market_question": "Indian Premier League: Mumbai Indians vs Sunrisers Hyderabad",
+    "end_date": "2026-05-06T10:00:00Z",
+    "category": "",
+    "side": "YES",
+    "size_usd": 0.5,
+    "price_at_entry": 0.53,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.62,
+    "confidence_at_bet": 0.68,
+    "edge_at_bet": 0.09,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: SRH\u2019s 47-run demolition + MI\u2019s 2-5 slide just hit headlines \u2192 DIRECTION: up \u2192 TARGET: 65 % because narrative of in-form SRH vs reeling MI will be priced in over next day while market still sits at coin-flip odds.",
+    "calibration_applied": "boosted confidence because sports momentum from recent big win + opponent crisis reliably moves IPL prices 10-15 % within 24h when fresh | hard_cap=68% (overconf 61x)",
+    "key_factors_for": [
+      "SRH dominant win (47 runs, centurion) fresh in traders\u2019 minds",
+      "MI 5 losses in 7, no visible solutions",
+      "Social/betting media will amplify SRH momentum narrative overnight",
+      "Price only 53 % leaves 12 % upside before hitting resistance"
+    ],
+    "key_factors_against": [
+      "Match not until May 2026, plenty of time for MI changes",
+      "No team news or injury reports yet",
+      "Low current volume may mean slow follow-through"
+    ]
   }
 ]
