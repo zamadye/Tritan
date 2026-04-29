@@ -1,0 +1,28 @@
+{
+  "total_resolved": 1,
+  "overall_win_rate": 0.0,
+  "category_bias": {},
+  "overconfidence_patterns": [],
+  "underconfidence_patterns": [],
+  "recent_mistakes": [
+    {
+      "question": "Test market",
+      "category": "test",
+      "predicted_side": "YES",
+      "actual_outcome": "EXIT",
+      "p_true_claimed": "?",
+      "confidence": "?",
+      "data_quality": "unknown",
+      "lesson": "Prediction incorrect in test \u2014 review reasoning methodology."
+    }
+  ],
+  "calibration_adjustments": {},
+  "edge_reality": {
+    "0%": {
+      "claimed_edge": "0%",
+      "actual_wr": 0.0,
+      "n": 1
+    }
+  },
+  "sports_signal_required": true
+}
