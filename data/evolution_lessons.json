@@ -1,7 +1,14 @@
 {
-  "total_resolved": 130,
-  "overall_win_rate": 0.354,
+  "total_resolved": 135,
+  "overall_win_rate": 0.348,
   "momentum_lessons": [
+    {
+      "category": "crypto",
+      "entry_price": 0.23,
+      "pnl": 0.18,
+      "exit_reason": "TAKE_PROFIT_2X (+37%)",
+      "catalyst": "CATALYST: Extreme-fear sentiment + Friday gamma + BTC within 3 % of $75k \u2192 DIRECTION: up \u2192 TARGET: 34 % because similar "
+    },
     {
       "category": "crypto",
       "entry_price": 0.15,
@@ -29,20 +36,13 @@
       "pnl": 0.61,
       "exit_reason": "TAKE_PROFIT_2X (+32%)",
       "catalyst": "CATALYST: BTC $77k + options gamma + Twitter narrative \u2192 DIRECTION: up \u2192 TARGET: 18% because 3.8% spot move flips market"
-    },
-    {
-      "category": "sports",
-      "entry_price": 0.44,
-      "pnl": 0.74,
-      "exit_reason": "TRAILING_STOP (peak=0.88\u2192sl=0.66, locked $+0.74)",
-      "catalyst": "DATA: ESPN live score Angels 1, White Sox 0, game In Progress \u2192 p_true=90 % because the leading team in an ongoing baseb"
     }
   ],
   "price_movement_patterns": {
     "10-20%": {
-      "win_rate": 0.44,
-      "avg_pnl": 6.8,
-      "n": 18
+      "win_rate": 0.42,
+      "avg_pnl": 6.43,
+      "n": 19
     },
     "40-50%": {
       "win_rate": 0.56,
@@ -55,9 +55,9 @@
       "n": 2
     },
     "70-80%": {
-      "win_rate": 0.07,
-      "avg_pnl": -1.58,
-      "n": 15
+      "win_rate": 0.06,
+      "avg_pnl": -1.5,
+      "n": 16
     },
     "30-40%": {
       "win_rate": 0.3,
@@ -70,14 +70,14 @@
       "n": 6
     },
     "20-30%": {
-      "win_rate": 0.25,
-      "avg_pnl": -0.64,
-      "n": 16
+      "win_rate": 0.29,
+      "avg_pnl": -0.59,
+      "n": 17
     },
     "0-10%": {
-      "win_rate": 0.12,
-      "avg_pnl": -3.22,
-      "n": 8
+      "win_rate": 0.11,
+      "avg_pnl": -2.87,
+      "n": 9
     },
     "50-60%": {
       "win_rate": 0.39,
@@ -86,21 +86,21 @@
     },
     "80-90%": {
       "win_rate": 0.0,
-      "avg_pnl": -1.96,
-      "n": 3
+      "avg_pnl": -1.54,
+      "n": 4
     }
   },
   "exit_patterns": {
     "RESOLVED": 67,
-    "TAKE_PROFIT": 21,
-    "STOP_LOSS": 25,
+    "TAKE_PROFIT": 22,
+    "STOP_LOSS": 28,
     "TIME_LIMIT": 3,
-    "TRAILING_STOP": 14
+    "TRAILING_STOP": 15
   },
   "edge_reality": {
     "10%": {
-      "actual_wr": 0.47,
-      "n": 32
+      "actual_wr": 0.44,
+      "n": 36
     },
     "70%": {
       "actual_wr": 0.25,
@@ -135,8 +135,8 @@
       "n": 2
     },
     "0%": {
-      "actual_wr": 1.0,
-      "n": 1
+      "actual_wr": 0.5,
+      "n": 2
     }
   },
   "category_bias": {},
@@ -389,25 +389,25 @@
   ],
   "recent_mistakes": [
     {
-      "question": "Will Bitcoin reach $80,000 in April?",
-      "category": "crypto",
-      "entry_price": 0.17,
-      "reasoning": "CATALYST: proximity to $80k + extreme fear mean-reversion + Friday gamma \u2192 DIRECTION: up \u2192 TARGET: 3",
-      "lesson": "Momentum thesis failed in crypto at entry 0.17. Review what catalyst was missing."
+      "question": "James Comey arrested by April 29?",
+      "category": "politics",
+      "entry_price": 0.81,
+      "reasoning": "CATALYST: absence of fresh arrest news \u2192 DIRECTION: down \u2192 TARGET: 72% because 81% embeds speculatio",
+      "lesson": "Momentum thesis failed in politics at entry 0.81. Review what catalyst was missing."
+    },
+    {
+      "question": "Madrid Open: Casper Ruud vs Alexander Blockx",
+      "category": "sports",
+      "entry_price": 0.73,
+      "reasoning": "CATALYST: Absence of bullish tennis news at 73 % \u2192 DIRECTION: down \u2192 TARGET: 65 % because stale high",
+      "lesson": "Momentum thesis failed in sports at entry 0.73. Review what catalyst was missing."
     },
     {
       "question": "Will Bitcoin reach $80,000 in April?",
       "category": "crypto",
-      "entry_price": 0.2,
-      "reasoning": "CATALYST: BTC within 3 % of $80k + Friday gamma + Twitter narrative heat \u2192 DIRECTION: up \u2192 TARGET: 3",
-      "lesson": "Momentum thesis failed in crypto at entry 0.20. Review what catalyst was missing."
-    },
-    {
-      "question": "Will Bitcoin reach $80,000 in April?",
-      "category": "crypto",
-      "entry_price": 0.23,
-      "reasoning": "CATALYST: BTC within 3% of $80k + Friday gamma + Twitter buzz \u2192 DIRECTION: up \u2192 TARGET: 35% because ",
-      "lesson": "Momentum thesis failed in crypto at entry 0.23. Review what catalyst was missing."
+      "entry_price": 0.13,
+      "reasoning": "CATALYST: BTC within 3.8 % of $80 k + Friday gamma squeeze + extreme-fear bounce \u2192 DIRECTION: up \u2192 T",
+      "lesson": "Bought YES at 0.13 \u2014 very low price needs very strong catalyst to move. Was catalyst strong enough?"
     }
   ]
 }

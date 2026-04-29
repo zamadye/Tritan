@@ -1,8 +1,8 @@
 {
   "market_id": "0xcb3fec389e7b67c890554c10da53f4b29428ae6274652ddda00b410e6b8b92cc",
   "question": "Aix en Provence: Ignacio Buse vs Francisco Comesana",
-  "market_price": 0.55,
-  "generated_at": "2026-04-29T13:03:33.502996+00:00",
+  "market_price": 0.83,
+  "generated_at": "2026-04-29T13:40:49.900102+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
@@ -23,9 +23,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77165,
-      "btc_24h": 1.122279642608443,
-      "risk_signal": "risk-ON"
+      "btc_price": 76681,
+      "btc_24h": 0.5370067635015503,
+      "risk_signal": "neutral"
     }
   },
   "sports": {},

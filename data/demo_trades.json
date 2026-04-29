@@ -3369,8 +3369,8 @@
     "size_usd": 0.5,
     "price_at_entry": 0.09,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": -0.08,
     "p_true_estimated": 0.16,
     "confidence_at_bet": 0.64,
     "edge_at_bet": 0.07,
@@ -3386,7 +3386,12 @@
     "key_factors_against": [
       "No official statements yet \u2013 could be routine air-force exercise",
       "Market volume unknown; thin order books could reverse quickly"
-    ]
+    ],
+    "exit_price": 0.0765,
+    "exit_reason": "STOP_LOSS (-17%)",
+    "prediction_correct": false,
+    "resolved_at": "2026-04-29T13:25:42.731952+00:00",
+    "brier_score": 0.0081
   },
   {
     "trade_id": "82657013-f909-4604-8368-50424eab5e35",
@@ -3774,7 +3779,8 @@
       "Match not until May 2026, plenty of time for MI changes",
       "No team news or injury reports yet",
       "Low current volume may mean slow follow-through"
-    ]
+    ],
+    "peak_price": 0.535
   },
   {
     "trade_id": "cdd9cdec-92a1-4ea2-a169-9178790e45a1",
@@ -3830,8 +3836,8 @@
     "size_usd": 0.5,
     "price_at_entry": 0.23,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": 0.18,
     "p_true_estimated": 0.34,
     "confidence_at_bet": 0.68,
     "edge_at_bet": 0.11,
@@ -3851,7 +3857,12 @@
       "Market already tried and failed once (our last loss)",
       "Low polymarket volume so far (<$5k) \u2192 could be slow to follow spot"
     ],
-    "peak_price": 0.28
+    "peak_price": 0.315,
+    "exit_price": 0.315,
+    "exit_reason": "TAKE_PROFIT_2X (+37%)",
+    "prediction_correct": true,
+    "resolved_at": "2026-04-29T13:33:07.763839+00:00",
+    "brier_score": 0.5929
   },
   {
     "trade_id": "460a00b6-f005-4ee8-b02a-5ec14ab37ce9",
@@ -3866,8 +3877,8 @@
     "size_usd": 0.5,
     "price_at_entry": 0.13,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": -0.06,
     "p_true_estimated": 0.24,
     "confidence_at_bet": 0.68,
     "edge_at_bet": 0.11,
@@ -3885,6 +3896,83 @@
       "Geo-signal flagging \u2018Extreme Fear \u2192 geopol risk HIGH\u2019 could spark sudden dump",
       "Previous bet on this market lost \u2014 need to respect false-break risk",
       "April expiry 01-May 04:00 UTC \u2014 still 36 h left, but time decay accelerates"
-    ]
+    ],
+    "peak_price": 0.135,
+    "exit_price": 0.11475,
+    "exit_reason": "TRAILING_STOP (peak=0.14\u2192sl=0.11, locked $-0.06)",
+    "prediction_correct": false,
+    "resolved_at": "2026-04-29T13:40:31.821719+00:00",
+    "brier_score": 0.0169
+  },
+  {
+    "trade_id": "a731eb72-471f-4dc1-ae5e-aefa1d859fd3",
+    "timestamp": "2026-04-29T13:34:14.784135",
+    "mode": "demo",
+    "market_id": "0x45b196ca248639cf35fd3f5960ebb2ababd2ee35709a5a837e4ea3eec43a9761",
+    "market_numeric_id": "2110677",
+    "market_question": "Madrid Open: Casper Ruud vs Alexander Blockx",
+    "end_date": "2026-05-06T11:00:00Z",
+    "category": "sports",
+    "side": "NO",
+    "size_usd": 0.5,
+    "price_at_entry": 0.73,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": -0.24,
+    "p_true_estimated": 0.68,
+    "confidence_at_bet": 0.58,
+    "edge_at_bet": -0.05,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: Absence of bullish tennis news at 73 % \u2192 DIRECTION: down \u2192 TARGET: 65 % because stale high price with no buying interest invites light selling.",
+    "calibration_applied": "Skip weak signals; edge negative so lean NO for small mean-reversion",
+    "key_factors_for": [
+      "Price already elevated (73 %) leaves room for pullback on lack of news",
+      "No volume spike or social chatter observed",
+      "Macro sentiment deteriorating (Fear & Greed falling) can spill into low-liquidity sports markets"
+    ],
+    "key_factors_against": [
+      "No negative tennis news either",
+      "Very long time to resolution so drift risk is low"
+    ],
+    "exit_price": 0.6204999999999999,
+    "exit_reason": "STOP_LOSS (-65%)",
+    "prediction_correct": false,
+    "resolved_at": "2026-04-29T13:40:31.903306+00:00",
+    "brier_score": 0.0729
+  },
+  {
+    "trade_id": "6d8a0141-b36d-4145-8738-cb8ee2fca827",
+    "timestamp": "2026-04-29T13:35:03.046943",
+    "mode": "demo",
+    "market_id": "0x4cdb2e75b2faf7328f3a6de172d72d4d312069484b667d13f96b5fa8ea50122b",
+    "market_numeric_id": "2110589",
+    "market_question": "James Comey arrested by April 29?",
+    "end_date": "2026-05-15T00:00:00Z",
+    "category": "politics",
+    "side": "NO",
+    "size_usd": 0.5,
+    "price_at_entry": 0.81,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": -0.31,
+    "p_true_estimated": 0.75,
+    "confidence_at_bet": 0.58,
+    "edge_at_bet": -0.06,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: absence of fresh arrest news \u2192 DIRECTION: down \u2192 TARGET: 72% because 81% embeds speculation without new DOJ/FBI fuel; quiet tape invites slow bleed",
+    "calibration_applied": "High-confidence longshots failed 61\u00d7 \u2192 demand strong signal; none here \u2192 fade the stale premium",
+    "key_factors_for": [
+      "Market still slightly bid on residual political chatter"
+    ],
+    "key_factors_against": [
+      "No official investigation updates; no Twitter trend; no volume spike; price stalled at high 70s for days; high base rate already baked in"
+    ],
+    "exit_price": 0.6885,
+    "exit_reason": "STOP_LOSS (-90%)",
+    "prediction_correct": false,
+    "resolved_at": "2026-04-29T13:40:31.993227+00:00",
+    "brier_score": 0.0361
   }
 ]

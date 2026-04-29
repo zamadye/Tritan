@@ -1,8 +1,8 @@
 {
-  "market_id": "0xb79f75dd1f2bf0a5d6684af9a68a08073fcb014d99657056469fe89577ec91fd",
-  "question": "Madrid Open: Jannik Sinner vs Rafael Jodar",
-  "market_price": 0.85,
-  "generated_at": "2026-04-29T13:41:43.965011+00:00",
+  "market_id": "0xa7edf95bf27a464dd6126e977eaffccb1afacdc0e4f9506cc97b1d6d28c7bc6f",
+  "question": "Will Elon Musk post 180-199 tweets from April 24 to May 1, 2026?",
+  "market_price": 0.242,
+  "generated_at": "2026-04-29T13:40:37.336338+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76694,
-      "btc_24h": 0.5548886730224195,
+      "btc_price": 76681,
+      "btc_24h": 0.5370067635015503,
       "risk_signal": "neutral"
     }
   },

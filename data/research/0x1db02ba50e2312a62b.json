@@ -1,8 +1,8 @@
 {
-  "market_id": "0xb75c07f4252992808d7ca7d9828169c524b0fef44bf5adf78c327ef88469c986",
-  "question": "US x Iran diplomatic meeting by May 5, 2026?",
-  "market_price": 0.08,
-  "generated_at": "2026-04-29T13:33:22.099204+00:00",
+  "market_id": "0x1db02ba50e2312a62b4104de691cc7a76065d8d0da40decf93eb1b914a3217b7",
+  "question": "US x Iran permanent peace deal by May 15, 2026?",
+  "market_price": 0.09,
+  "generated_at": "2026-04-29T13:26:51.188857+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
@@ -23,9 +23,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76845,
-      "btc_24h": 0.8708134405265463,
-      "risk_signal": "neutral"
+      "btc_price": 76955,
+      "btc_24h": 1.1131834813278194,
+      "risk_signal": "risk-ON"
     }
   },
   "sports": {},

@@ -55,13 +55,13 @@ def _infer_category(trade: dict) -> str:
     if cat and cat.strip():
         return cat.strip().lower()
     q = trade.get("market_question", "").lower()
-    if any(x in q for x in ["vs.", "vs ", "tennis", "open:", "ipl", "ufc", "nba", "nfl", "mlb", "nhl", "grand prix", "soccer", "football"]):
+    if any(x in q for x in ["vs.", "vs ", "tennis", "open:", "ipl", "ufc", "nba", "nfl", "mlb", "nhl", "grand prix", "soccer", "football", "basketball", "baseball", "hockey", "playoffs", "series", "match", "game", "fight", "bout", "tournament", "championship"]):
         return "sports"
     if any(x in q for x in ["bitcoin", "btc", "eth", "crypto", "wti", "oil", "gold", "nasdaq"]):
         return "crypto"
     if any(x in q for x in ["iran", "trump", "war", "ceasefire", "hezbollah", "ukraine", "nato", "sanctions"]):
         return "geopolitik"
-    if any(x in q for x in ["election", "president", "congress", "senate", "vote", "poll", "party", "minister"]):
+    if any(x in q for x in ["election", "president", "congress", "senate", "vote", "poll", "party", "minister", "arrested", "indicted", "impeach", "resign", "appointed", "confirmed", "nominated"]):
         return "politics"
     if any(x in q for x in ["gdp", "inflation", "fed", "rate", "economy", "recession", "unemployment"]):
         return "economics"
