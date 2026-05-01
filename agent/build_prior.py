@@ -96,12 +96,14 @@ def parse_outcome(m: dict):
 
 def build_statistical_prior(markets: list) -> dict:
     """
-    Build statistical prior: for each category and price bucket,
-    what % of markets resolved YES?
+    Build two priors:
+    1. last_price: based on lastTradePrice (current market price)
+    2. entry_price: based on price 24h before resolve (momentum signal)
     """
-    # Buckets: 0-10%, 10-20%, ..., 90-100%
-    stats = defaultdict(lambda: defaultdict(lambda: {"yes":0,"no":0,"total":0}))
-    overall = defaultdict(lambda: {"yes":0,"no":0,"total":0})
+    stats_last   = defaultdict(lambda: defaultdict(lambda: {"yes":0,"no":0,"total":0}))
+    stats_entry  = defaultdict(lambda: {"yes":0,"no":0,"total":0})
+    overall_last = defaultdict(lambda: {"yes":0,"no":0,"total":0})
+    overall_entry= defaultdict(lambda: {"yes":0,"no":0,"total":0})
 
     valid = 0
     for m in markets:
@@ -114,35 +116,58 @@ def build_statistical_prior(markets: list) -> dict:
         cat = infer_category(m.get("question",""), m.get("category",""))
         bucket = f"{int(price*10)*10}-{int(price*10)*10+10}%"
 
-        stats[cat][bucket]["total"] += 1
-        stats[cat][bucket][outcome.lower()] += 1
-        overall[bucket]["total"] += 1
-        overall[bucket][outcome.lower()] += 1
+        # Last price prior
+        stats_last[cat][bucket]["total"] += 1
+        stats_last[cat][bucket][outcome.lower()] += 1
+        overall_last[bucket]["total"] += 1
+        overall_last[bucket][outcome.lower()] += 1
         valid += 1
 
-    # Calculate base rates
-    prior = {"categories": {}, "overall": {}, "total_markets": valid,
-             "generated_at": datetime.utcnow().isoformat()}
+        # Entry price prior (24h before resolve)
+        change = m.get("oneDayPriceChange")
+        if change is not None:
+            try:
+                entry = price - float(change)
+                if 0 < entry < 1:
+                    ebucket = f"{int(entry*10)*10}-{int(entry*10)*10+10}%"
+                    stats_entry[ebucket]["total"] += 1
+                    stats_entry[ebucket][outcome.lower()] += 1
+                    overall_entry[ebucket]["total"] += 1
+                    overall_entry[ebucket][outcome.lower()] += 1
+            except Exception:
+                pass
 
-    for cat, buckets in stats.items():
+    prior = {"categories": {}, "overall": {}, "entry_price_prior": {},
+             "total_markets": valid, "generated_at": datetime.utcnow().isoformat()}
+
+    # Last price prior (per category)
+    for cat, buckets in stats_last.items():
         prior["categories"][cat] = {}
         for bucket, s in buckets.items():
-            if s["total"] >= 5:  # min 5 samples
+            if s["total"] >= 20:
                 yes_rate = s["yes"] / s["total"]
                 prior["categories"][cat][bucket] = {
-                    "yes_rate": round(yes_rate, 4),
-                    "n": s["total"],
+                    "yes_rate": round(yes_rate, 4), "n": s["total"],
                     "calibration_error": round(abs(yes_rate - (int(bucket.split("-")[0])/100 + 0.05)), 4)
                 }
 
-    for bucket, s in overall.items():
-        if s["total"] >= 10:
+    # Last price prior (overall)
+    for bucket, s in overall_last.items():
+        if s["total"] >= 50:
             yes_rate = s["yes"] / s["total"]
             prior["overall"][bucket] = {
-                "yes_rate": round(yes_rate, 4),
-                "n": s["total"],
+                "yes_rate": round(yes_rate, 4), "n": s["total"],
                 "market_implied": int(bucket.split("-")[0])/100 + 0.05,
                 "calibration_error": round(abs(yes_rate - (int(bucket.split("-")[0])/100 + 0.05)), 4)
+            }
+
+    # Entry price prior (momentum signal — what happens to markets at this price 24h before resolve)
+    for bucket, s in overall_entry.items():
+        if s["total"] >= 20:
+            yes_rate = s["yes"] / s["total"]
+            prior["entry_price_prior"][bucket] = {
+                "yes_rate": round(yes_rate, 4), "n": s["total"],
+                "momentum_signal": "UP" if yes_rate > 0.55 else "DOWN" if yes_rate < 0.45 else "NEUTRAL"
             }
 
     return prior

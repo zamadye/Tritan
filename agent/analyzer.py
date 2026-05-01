@@ -17,10 +17,11 @@ def get_statistical_prior(market: dict) -> dict:
     """
     Get base rate from 19,624 resolved Polymarket markets.
     Minimum n=20 for category-specific, n=50 for overall.
+    Also returns entry_price momentum signal.
     """
     prior_file = Path("data/statistical_prior.json")
     if not prior_file.exists():
-        return {"p_base": market["price"], "n": 0, "source": "fallback"}
+        return {"p_base": market["price"], "n": 0, "source": "fallback", "momentum_signal": "NEUTRAL"}
 
     prior = json.loads(prior_file.read_text())
     price = market["price"]
@@ -28,6 +29,11 @@ def get_statistical_prior(market: dict) -> dict:
 
     from agent.learner import _infer_category
     cat = _infer_category({"category": market.get("category",""), "market_question": market.get("question","")})
+
+    # Entry price momentum signal (24h before resolve)
+    ep = prior.get("entry_price_prior",{}).get(bucket,{})
+    momentum_signal = ep.get("momentum_signal","NEUTRAL") if ep.get("n",0) >= 20 else "NEUTRAL"
+    momentum_yes_rate = ep.get("yes_rate", 0.5)
 
     # Category-specific: require n >= 20
     cat_data = prior.get("categories",{}).get(cat,{}).get(bucket)
@@ -37,6 +43,9 @@ def get_statistical_prior(market: dict) -> dict:
             "n": cat_data["n"],
             "source": f"category:{cat}",
             "calibration_error": cat_data["calibration_error"],
+            "momentum_signal": momentum_signal,
+            "momentum_yes_rate": momentum_yes_rate,
+            "momentum_n": ep.get("n",0),
         }
 
     # Overall: require n >= 50
@@ -47,10 +56,15 @@ def get_statistical_prior(market: dict) -> dict:
             "n": overall["n"],
             "source": "overall",
             "calibration_error": overall["calibration_error"],
+            "momentum_signal": momentum_signal,
+            "momentum_yes_rate": momentum_yes_rate,
+            "momentum_n": ep.get("n",0),
         }
 
     # Fallback: use market price (no reliable prior)
-    return {"p_base": market["price"], "n": 0, "source": "fallback"}
+    return {"p_base": market["price"], "n": 0, "source": "fallback",
+            "momentum_signal": momentum_signal, "momentum_yes_rate": momentum_yes_rate,
+            "momentum_n": ep.get("n",0)}
 
 
 # ── Layer 2: LLM Catalyst Evaluator ──────────────────────────────────────────
@@ -85,12 +99,17 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         f"Analyze this prediction market for a momentum trade.\n"
         f"Market: {market['question']}\n"
         f"Current price: {p_market:.0%}. Historical base rate: {p_base:.0%} "
-        f"(from {prior['n']} similar resolved markets). Category: {market.get('category','?')}.\n\n"
+        f"(from {prior['n']} similar resolved markets, source: {prior['source']}). "
+        f"Category: {market.get('category','?')}.\n"
+        f"Momentum signal: markets at this price 24h before resolve → "
+        f"{prior.get('momentum_signal','NEUTRAL')} "
+        f"({prior.get('momentum_yes_rate',0.5):.0%} resolved YES, n={prior.get('momentum_n',0)}).\n\n"
         f"Real-time data:\n{full_context[:500] if full_context else 'No data available.'}\n\n"
         f"Past lessons:\n{evolution_context[:200] if evolution_context else 'None yet.'}\n"
         f"{prev_loss_note}\n"
         f"Question: Is there a specific verifiable catalyst that will move this price in the next 4 hours?\n"
         f"Note: Base rate {p_base:.0%} vs market {p_market:.0%} = {p_base-p_market:+.0%} gap. "
+        f"Momentum signal says {prior.get('momentum_signal','NEUTRAL')}. "
         f"Is this gap justified by current news?\n\n"
         f"Reply with a JSON object containing:\n"
         f"- score: float 0-1 (catalyst strength)\n"
