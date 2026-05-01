@@ -155,7 +155,7 @@ def run_scan_cycle(mode: str, clob_client=None):
     ]))
 
     bets_this_cycle = 0
-    max_bets_per_cycle = min(max_open - open_count, 10)  # max 10 bets per cycle
+    max_bets_per_cycle = min(max_open - open_count, 5)  # max 5 bets per cycle
 
     # Build prev_loss lookup — block market if lost 2+ times today
     from datetime import datetime, timezone, timedelta
@@ -171,33 +171,37 @@ def run_scan_cycle(mode: str, clob_client=None):
             except Exception:
                 pass
 
-    # Block if 2+ losses on same market in 24h
-    hard_blocked = {k for k, v in loss_count.items() if v >= 2}
-    # Soft flag (prev_loss) if 1 loss
+    hard_blocked      = {k for k, v in loss_count.items() if v >= 2}
     prev_loss_markets = {k for k, v in loss_count.items() if v == 1}
+
+    # Pre-filter: only analyze top 5 markets by volume (save LLM calls)
+    MAX_LLM_CALLS = int(os.getenv("MAX_LLM_CALLS_PER_CYCLE", 5))
+    llm_calls_this_cycle = 0
 
     for market in candidates:
         if bets_this_cycle >= max_bets_per_cycle:
             break
-
+        if llm_calls_this_cycle >= MAX_LLM_CALLS:
+            break
         if market["question"][:60] in open_ids:
             continue
-
-        # Hard block: 2+ losses on same market in 24h
         if market["question"][:60] in hard_blocked:
-            console.print(f"[dim]⛔ Blocked (2+ losses): {market['question'][:50]}[/dim]")
             continue
 
-        # Research: market-specific (cached 30min) + cycle macro + news
-        from agent.research import build_research_report, format_research_for_llm, detect_causal_chains
-        research     = build_research_report(market)
-        research_ctx = format_research_for_llm(research)
+        # Quick pre-filter without LLM: skip if price too extreme (no room to move)
+        price = market["price"]
+        if price < 0.06 or price > 0.94:
+            continue
 
-        # Combine: cycle macro (fresh) + market research (cached) + news
-        news         = fetch_news(market)
+        # Research: cached 30min — no extra API cost if cached
+        from agent.research import build_research_report, format_research_for_llm
+        research      = build_research_report(market)
+        research_ctx  = format_research_for_llm(research)
+        news          = fetch_news(market)
         combined_news = "\n".join(filter(None, [cycle_macro, research_ctx, news]))
 
         prev_loss = market["question"][:60] in prev_loss_markets
+        llm_calls_this_cycle += 1
         analysis = estimate_probability(market, combined_news, evo_context, prev_loss=prev_loss)
         time.sleep(delay)
 

@@ -2,11 +2,12 @@
   "market_id": "0x8df5a4256840dee05851250c0490da7593597faff3a7f9a156ccbbda7fec76f8",
   "question": "Will Arsenal win the 2025\u201326 Champions League?",
   "market_price": 0.3,
-  "generated_at": "2026-05-01T06:11:48.404478+00:00",
+  "generated_at": "2026-05-01T06:51:49.850531+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -22,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77084,
-      "btc_24h": 2.015091584505177,
+      "btc_price": 76935,
+      "btc_24h": 1.585285588526111,
       "risk_signal": "risk-ON"
     }
   },

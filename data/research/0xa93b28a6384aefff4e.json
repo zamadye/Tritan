@@ -1,12 +1,13 @@
 {
   "market_id": "0xa93b28a6384aefff4e7d5adb2061c444e4a0e95b8ad17755f9cee123c7099b35",
   "question": "Russia x Ukraine ceasefire by May 31, 2026?",
-  "market_price": 0.085,
-  "generated_at": "2026-05-01T06:10:27.950237+00:00",
+  "market_price": 0.081,
+  "generated_at": "2026-05-01T06:50:39.101827+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -22,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77117,
-      "btc_24h": 2.0591219875585574,
+      "btc_price": 76957,
+      "btc_24h": 1.6147879604249908,
       "risk_signal": "risk-ON"
     }
   },
