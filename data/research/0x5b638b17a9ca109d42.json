@@ -1,0 +1,35 @@
+{
+  "market_id": "0x5b638b17a9ca109d42a429466a0ab67a55bce553daaac3667c02287ccf064c5e",
+  "question": "Jiujiang: Adam Walton vs Tung-Lin Wu",
+  "market_price": 0.36,
+  "generated_at": "2026-04-30T09:55:35.276117+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "Will there be no change in Fed interest rates after the June \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "29/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        29,
+        26,
+        33,
+        47,
+        33,
+        31,
+        39
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 76107,
+      "btc_24h": -1.9621012146651247,
+      "risk_signal": "risk-OFF"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

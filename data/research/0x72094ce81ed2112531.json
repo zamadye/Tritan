@@ -1,0 +1,35 @@
+{
+  "market_id": "0x72094ce81ed21125319a58d64f8ab229a0ea2aad8b0c2f1ef72594fb40cee1d9",
+  "question": "Cagliari: Lorenzo Sonego vs Mattia Bellucci",
+  "market_price": 0.27,
+  "generated_at": "2026-04-29T18:05:22.497421+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        33,
+        47,
+        33,
+        31,
+        39,
+        46
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 75963,
+      "btc_24h": -0.31510575819518166,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

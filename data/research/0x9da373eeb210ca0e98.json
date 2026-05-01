@@ -1,0 +1,52 @@
+{
+  "market_id": "0x9da373eeb210ca0e986b6432708202a98e6f5e65d78e9120aae0ad82eebbce77",
+  "question": "Miami Marlins vs. Los Angeles Dodgers",
+  "market_price": 0.32,
+  "generated_at": "2026-04-29T19:52:44.389671+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        33,
+        47,
+        33,
+        31,
+        39,
+        46
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 75441,
+      "btc_24h": -1.1232969921346414,
+      "risk_signal": "risk-OFF"
+    }
+  },
+  "sports": {
+    "recent_games": [
+      "LAA @ CHW | In Progress | Chicago White Sox(home) 13-17 score:2 vs Los Angeles Angels(away) 12-19 score:2",
+      "MIA @ LAD | In Progress | Los Angeles Dodgers(home) 20-10 score:1 vs Miami Marlins(away) 14-16 score:1"
+    ],
+    "injuries": [
+      "?: Zac Gallen \u2014 Day-To-Day (Bruise)",
+      "?: Gabriel Moreno \u2014 10-Day-IL (Strain)",
+      "?: Tyler Locklear \u2014 10-Day-IL (Surgery)",
+      "?: Tyler Soderstrom \u2014 Day-To-Day (Not Specified)",
+      "?: Max Muncy \u2014 10-Day-IL (Fracture)",
+      "?: JJ Goss \u2014 Day-To-Day (Not Specified)",
+      "?: Spencer Schwellenbach \u2014 60-Day-IL (Surgery)",
+      "?: Hurston Waldrep \u2014 15-Day-IL (Surgery)",
+      "?: Raisel Iglesias \u2014 15-Day-IL (Inflammation)",
+      "?: Jackson Holliday \u2014 10-Day-IL (Surgery)"
+    ]
+  },
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

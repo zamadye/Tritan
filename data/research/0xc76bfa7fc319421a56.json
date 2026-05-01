@@ -1,0 +1,40 @@
+{
+  "market_id": "0xc76bfa7fc319421a56d5dc66b84b2e139f445415f5ed716e41d22addf37634fa",
+  "question": "Cagliari: Federico Arnaboldi vs Matteo Arnaldi",
+  "market_price": 0.71,
+  "generated_at": "2026-04-29T14:24:23.195492+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
+      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        33,
+        47,
+        33,
+        31,
+        39,
+        46
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 76598,
+      "btc_24h": 0.9295400697624113,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [
+    "FOMC meeting \u2192 market volatility spikes 24h before and after",
+    "Fed pause (hold) \u2192 uncertainty \u2192 BTC sideways, then direction from guidance",
+    "Fed hawkish language \u2192 USD up \u2192 BTC/gold down",
+    "Fed dovish language \u2192 USD down \u2192 BTC/gold up"
+  ],
+  "summary": ""
+}

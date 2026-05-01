@@ -1,0 +1,51 @@
+{
+  "market_id": "0xda580ae918d49e35690241d31034b23b81afbf26139b126e5cb703018840e0cb",
+  "question": "New York Yankees vs. Texas Rangers",
+  "market_price": 0.19,
+  "generated_at": "2026-04-29T20:41:21.128289+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        33,
+        47,
+        33,
+        31,
+        39,
+        46
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 75705,
+      "btc_24h": -0.9069062149744711,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {
+    "recent_games": [
+      "NYY @ TEX | In Progress | Texas Rangers(home) 14-16 score:2 vs New York Yankees(away) 20-10 score:0"
+    ],
+    "injuries": [
+      "?: Zac Gallen \u2014 Day-To-Day (Bruise)",
+      "?: Gabriel Moreno \u2014 10-Day-IL (Strain)",
+      "?: Tyler Locklear \u2014 10-Day-IL (Surgery)",
+      "?: Tyler Soderstrom \u2014 Day-To-Day (Not Specified)",
+      "?: Max Muncy \u2014 10-Day-IL (Fracture)",
+      "?: JJ Goss \u2014 Day-To-Day (Not Specified)",
+      "?: Spencer Strider \u2014 15-Day-IL (Strain)",
+      "?: Spencer Schwellenbach \u2014 60-Day-IL (Surgery)",
+      "?: Hurston Waldrep \u2014 15-Day-IL (Surgery)",
+      "?: Jackson Holliday \u2014 10-Day-IL (Surgery)"
+    ]
+  },
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

@@ -1,30 +1,28 @@
 {
   "market_id": "0xa7edf95bf27a464dd6126e977eaffccb1afacdc0e4f9506cc97b1d6d28c7bc6f",
   "question": "Will Elon Musk post 180-199 tweets from April 24 to May 1, 2026?",
-  "market_price": 0.242,
-  "generated_at": "2026-04-29T13:40:37.336338+00:00",
+  "market_price": 0.389,
+  "generated_at": "2026-04-30T15:20:08.678041+00:00",
   "macro": {
     "fed_expectations": [
-      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
-      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
-      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%"
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%"
     ],
     "fear_greed": {
-      "current": "26/100 (Fear)",
+      "current": "29/100 (Fear)",
       "7d_trend": "deteriorating",
       "values": [
+        29,
         26,
         33,
         47,
         33,
         31,
-        39,
-        46
+        39
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76681,
-      "btc_24h": 0.5370067635015503,
+      "btc_price": 76350,
+      "btc_24h": 0.09931632468931917,
       "risk_signal": "neutral"
     }
   },

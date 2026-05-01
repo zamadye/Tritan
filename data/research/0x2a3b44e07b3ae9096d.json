@@ -1,12 +1,12 @@
 {
   "market_id": "0x2a3b44e07b3ae9096d8a95c6f8b92aef40a26d6083892777598dbf4f2d6fc5ee",
   "question": "James Comey arrested by May 15?",
-  "market_price": 0.84,
-  "generated_at": "2026-04-29T13:04:47.375220+00:00",
+  "market_price": 0.92,
+  "generated_at": "2026-04-29T17:06:28.025269+00:00",
   "macro": {
     "fed_expectations": [
-      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
       "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
       "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%"
     ],
     "fear_greed": {
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 0,
-      "btc_24h": 0,
+      "btc_price": 75945,
+      "btc_24h": -0.13450993812271245,
       "risk_signal": "neutral"
     }
   },

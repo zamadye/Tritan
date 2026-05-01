@@ -1,0 +1,37 @@
+{
+  "market_id": "0x08a79152c2e9444a887f722f0b741e22a90a8736806320e6bcbfb5a451b33f6f",
+  "question": "Indian Premier League: Gujarat Titans vs Royal Challengers Bengaluru",
+  "market_price": 0.83,
+  "generated_at": "2026-04-30T15:48:00.990546+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25 bps after the Jun \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "29/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        29,
+        26,
+        33,
+        47,
+        33,
+        31,
+        39
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 76336,
+      "btc_24h": 0.48599775964117115,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {
+    "todays_games": []
+  },
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

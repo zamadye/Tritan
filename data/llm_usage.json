@@ -1,0 +1,14 @@
+{
+  "total_input": 4625,
+  "total_output": 1600,
+  "total_calls": 3,
+  "total_cost_usd": 0.001654,
+  "daily": {
+    "2026-05-01": {
+      "input": 4625,
+      "output": 1600,
+      "calls": 3,
+      "cost_usd": 0.001654
+    }
+  }
+}

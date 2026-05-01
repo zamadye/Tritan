@@ -5,10 +5,14 @@ from agent.llm import chat
 
 
 def _load_knowledge() -> str:
-    """Load agent knowledge base."""
+    """Load condensed knowledge base (max 800 chars to save tokens)."""
     from pathlib import Path as _Path
     kb = _Path(__file__).parent / "KNOWLEDGE.md"
-    return kb.read_text() if kb.exists() else ""
+    if not kb.exists():
+        return ""
+    text = kb.read_text()
+    # Return only first 800 chars (entry strategy + catalyst types)
+    return text[:800]
 
 
 def estimate_probability(market: dict, news_context: str = "", evolution_context: str = "", prev_loss: bool = False) -> dict:

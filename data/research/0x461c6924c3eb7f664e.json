@@ -1,0 +1,78 @@
+{
+  "market_id": "0x461c6924c3eb7f664ea68f300574ab6f220b022eed9feaaf2fb6360f1fda30d0",
+  "question": "Madrid Open: Flavio Cobolli vs Alexander Zverev",
+  "market_price": 0.11,
+  "generated_at": "2026-04-30T19:00:24.686260+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "St. Louis Cardinals vs. Pittsburgh Pirates \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "29/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        29,
+        26,
+        33,
+        47,
+        33,
+        31,
+        39
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 76334,
+      "btc_24h": 1.1400932329547246,
+      "risk_signal": "risk-ON"
+    }
+  },
+  "sports": {},
+  "news_articles": [
+    {
+      "source": "NewsAPI",
+      "title": "What Casper Ruud told himself before saving match points to beat Stefanos Tsitsipas",
+      "description": "Casper Ruud booked his spot in the Madrid Open quarter-finals with a dramatic 6-7, 7-6, 7-6 win over Stefanos Tsitsipas. The Norwegian fought back from two match points down late in the third set, breaking Tsitsipas back to level things up and force a tiebrea\u2026",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Three dark horses circle Roland-Garros crown following Carlos Alcaraz\u2019s stunning withdrawal",
+      "description": "Carlos Alcaraz\u2019s absence from this year\u2019s French Open has created an opening at the top of the men\u2019s draw. Having already been ruled out of the Italian Open, the 22-year-old has now pulled out of Roland Garros with a wrist issue, dashing his hopes of chasing \u2026",
+      "published": "2026-04-25"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Ben Shelton claims second ATP 500 title win of 2026 at BMW Open",
+      "description": "Florida alum Ben Shelton finished on top in Munich at the BMW Open, adding 500 ATP points to his season total.",
+      "published": "2026-04-20"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Tennis stars get Grand Slam wearable technology boost after Australian Open controversy",
+      "description": "Welcome back to the Monday Tennis Briefing, where The Athletic will explain the stories behind the stories from the past week on court. This week, there were statement wins on the clay on both the men\u2019s and women\u2019s tours, ahead of the first headline combined \u2026",
+      "published": "2026-04-20"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Holger Rune confirms return to tennis after six months away from the court",
+      "description": "Holger Rune\u2019s tennis career was hit hard by an Achilles injury picked up at the Stockholm Open, putting a halt to his rise through the rankings. Even though he\u2019s been sidelined, Rune has stayed upbeat and regularly shares training clips to show fans he\u2019s stil\u2026",
+      "published": "2026-04-09"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Medvedev thrashed at Monte Carlo as Zverev battles through",
+      "description": "Daniil Medvedev slipped to an embarrassing 6-0, 6-0 thrashing by Matteo Berrettini in the Monte Carlo Masters second round on Wednesday, as Alexander Zverev dug deep to beat Cristian Garin.World number three Zverev, who is hoping to complete the set of all th\u2026",
+      "published": "2026-04-09"
+    }
+  ],
+  "causal_chains": [
+    "Clay court specialist vs hard court player \u2192 clay specialist +20% on clay",
+    "Player coming off injury \u2192 stamina risk in long matches",
+    "Head-to-head record matters more in tennis than other sports",
+    "Top seed vs qualifier \u2192 top seed wins 80%+ in early rounds",
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
+    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term"
+  ],
+  "summary": ""
+}

@@ -1,0 +1,94 @@
+{
+  "market_id": "0x227b33c652eb60e1b8b37b3d35ff288846388e4b59de3d8701eb910d93da5bb6",
+  "question": "Detroit Tigers vs. Atlanta Braves",
+  "market_price": 0.28,
+  "generated_at": "2026-04-30T18:11:32.183433+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "St. Louis Cardinals vs. Pittsburgh Pirates \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "29/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        29,
+        26,
+        33,
+        47,
+        33,
+        31,
+        39
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 76255,
+      "btc_24h": 1.435101884467723,
+      "risk_signal": "risk-ON"
+    }
+  },
+  "sports": {
+    "recent_games": [
+      "DET @ ATL | In Progress | Atlanta Braves(home) 22-9 score:2 vs Detroit Tigers(away) 15-16 score:1"
+    ],
+    "injuries": [
+      "?: Gabriel Moreno \u2014 10-Day-IL (Strain)",
+      "?: Tyler Locklear \u2014 10-Day-IL (Surgery)",
+      "?: Corbin Burnes \u2014 60-Day-IL (Surgery)",
+      "?: Denzel Clarke \u2014 10-Day-IL (Bruise)",
+      "?: Tyler Soderstrom \u2014 Day-To-Day (Soreness)",
+      "?: Max Muncy \u2014 10-Day-IL (Fracture)",
+      "?: Raisel Iglesias \u2014 15-Day-IL (Inflammation)",
+      "?: Spencer Strider \u2014 15-Day-IL (Strain)",
+      "?: Spencer Schwellenbach \u2014 60-Day-IL (Surgery)",
+      "?: Jackson Holliday \u2014 10-Day-IL (Surgery)"
+    ]
+  },
+  "news_articles": [
+    {
+      "source": "NewsAPI",
+      "title": "JR Ritchie on the mound for home debut versus Tigers",
+      "description": "The Braves turn to the rookie Ritchie in hopes of another series win.",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "After a Dreadful 2025 Season, the Braves Are So Back",
+      "description": "On the heels of a 76-86 season that featured a slow start and a slew of injuries and underperformances, Atlanta has the best record in baseball.",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "2026-27 Club Options: AL Central",
+      "description": "Last week, MLBTR began a division by division series looking at the club/mutual option decisions facing every team in the American League East. We\u2019ll continue with a move to the AL Central. There aren\u2019t a ton of notable decisions in this division, but the Tig\u2026",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Yankees Rivalry Roundup: Trey Yesavage blanks Boston in 2026 debut",
+      "description": "Recapping how the Yankees\u2019 top AL opponents fared on April 28th.",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Game 31 Preview: Tigers look to even up series at Braves behind Skubal",
+      "description": "The Detroit Tigers opened up their three-game weekday series against the Atlanta Braves after a disappointing 5-2 loss at Truist Park on Tuesday night. Adding insult to\u2026 um, injury, was losing Casey Mize to right groin tightness and Javier B\u00e1ez to a bum right\u2026",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Javier Baez carted off with scary leg injury #sports",
+      "description": "Javier B\u00e1ez carted off after ankle injury Detroit Tigers infielder Javier B\u00e1ez was carted off the field during a game after suffering a right ankle injury. The 33 year old was unable to put weight on his right leg, a sign that the issue was more than minor. W\u2026",
+      "published": "2026-04-29"
+    }
+  ],
+  "causal_chains": [
+    "Starting pitcher ERA below 3.0 \u2192 team win probability +15%",
+    "Bullpen ERA above 5.0 \u2192 late-game collapse risk",
+    "Home run park factor \u2192 high-scoring game more likely",
+    "Day game after night game \u2192 fatigue factor for hitters",
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
+    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term"
+  ],
+  "summary": ""
+}

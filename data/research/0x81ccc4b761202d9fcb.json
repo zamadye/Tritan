@@ -1,0 +1,35 @@
+{
+  "market_id": "0x81ccc4b761202d9fcbdc5139287d6149dfb52e4850c241aa42c0ddb7d9cf93bf",
+  "question": "Madrid Open: Arthur Fils vs Jiri Lehecka",
+  "market_price": 0.78,
+  "generated_at": "2026-04-29T20:53:56.377487+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        33,
+        47,
+        33,
+        31,
+        39,
+        46
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 75742,
+      "btc_24h": -0.9111959218266394,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

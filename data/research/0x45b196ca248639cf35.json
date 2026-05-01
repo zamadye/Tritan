@@ -1,8 +1,8 @@
 {
   "market_id": "0x45b196ca248639cf35fd3f5960ebb2ababd2ee35709a5a837e4ea3eec43a9761",
   "question": "Madrid Open: Casper Ruud vs Alexander Blockx",
-  "market_price": 0.73,
-  "generated_at": "2026-04-29T13:41:57.648379+00:00",
+  "market_price": 0.75,
+  "generated_at": "2026-04-29T16:32:14.669764+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76694,
-      "btc_24h": 0.5548886730224195,
+      "btc_price": 75832,
+      "btc_24h": -0.1253810788752962,
       "risk_signal": "neutral"
     }
   },

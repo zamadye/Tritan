@@ -1,0 +1,35 @@
+{
+  "market_id": "0x2b742458b2d8429f187070ef1261c9be75802833384eec40325262ba2155eec5",
+  "question": "La Bisbal: Marina Bassols Ribera vs Aliona Bolsova",
+  "market_price": 0.784,
+  "generated_at": "2026-04-29T20:11:36.408088+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        33,
+        47,
+        33,
+        31,
+        39,
+        46
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 75598,
+      "btc_24h": -0.978907966247983,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

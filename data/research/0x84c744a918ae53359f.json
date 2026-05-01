@@ -1,0 +1,51 @@
+{
+  "market_id": "0x84c744a918ae53359f57578ec12d7186ba835bd6438807beda722b40c2d21fd9",
+  "question": "Tampa Bay Rays vs. Cleveland Guardians",
+  "market_price": 0.14,
+  "generated_at": "2026-04-29T20:23:47.695825+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
+      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        33,
+        47,
+        33,
+        31,
+        39,
+        46
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 75605,
+      "btc_24h": -0.9798719495979885,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {
+    "recent_games": [
+      "TB @ CLE | In Progress | Cleveland Guardians(home) 15-16 score:3 vs Tampa Bay Rays(away) 18-11 score:1"
+    ],
+    "injuries": [
+      "?: Zac Gallen \u2014 Day-To-Day (Bruise)",
+      "?: Gabriel Moreno \u2014 10-Day-IL (Strain)",
+      "?: Tyler Locklear \u2014 10-Day-IL (Surgery)",
+      "?: Tyler Soderstrom \u2014 Day-To-Day (Not Specified)",
+      "?: Max Muncy \u2014 10-Day-IL (Fracture)",
+      "?: JJ Goss \u2014 Day-To-Day (Not Specified)",
+      "?: Spencer Schwellenbach \u2014 60-Day-IL (Surgery)",
+      "?: Hurston Waldrep \u2014 15-Day-IL (Surgery)",
+      "?: Raisel Iglesias \u2014 15-Day-IL (Inflammation)",
+      "?: Jackson Holliday \u2014 10-Day-IL (Surgery)"
+    ]
+  },
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

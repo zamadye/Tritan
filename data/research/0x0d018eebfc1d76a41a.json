@@ -1,0 +1,55 @@
+{
+  "market_id": "0x0d018eebfc1d76a41ac20233959c2319cf5b76cb5f968e7e30b94049d3131baa",
+  "question": "Arizona Diamondbacks vs. Milwaukee Brewers",
+  "market_price": 0.8,
+  "generated_at": "2026-04-30T02:01:01.703320+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "St. Louis Cardinals vs. Pittsburgh Pirates \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "29/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        29,
+        26,
+        33,
+        47,
+        33,
+        31,
+        39
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 76220,
+      "btc_24h": -0.3858903389995097,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {
+    "todays_games": [
+      "TB @ CLE | Final",
+      "LAA @ CHW | Final",
+      "SEA @ MIN | Final",
+      "NYY @ TEX | Final",
+      "BOS @ TOR | Final"
+    ],
+    "injuries": [
+      "?: Zac Gallen \u2014 Day-To-Day (Bruise)",
+      "?: Gabriel Moreno \u2014 10-Day-IL (Strain)",
+      "?: Tyler Locklear \u2014 10-Day-IL (Surgery)",
+      "?: Tyler Soderstrom \u2014 Day-To-Day (Soreness)",
+      "?: Max Muncy \u2014 10-Day-IL (Fracture)",
+      "?: JJ Goss \u2014 Day-To-Day (Not Specified)",
+      "?: Raisel Iglesias \u2014 15-Day-IL (Inflammation)",
+      "?: Spencer Strider \u2014 15-Day-IL (Strain)",
+      "?: Spencer Schwellenbach \u2014 60-Day-IL (Surgery)",
+      "?: Trevor Rogers \u2014 15-Day-IL (Not Specified)"
+    ]
+  },
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

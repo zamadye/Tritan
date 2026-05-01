@@ -1,0 +1,33 @@
+{
+  "market_id": "0x73ad4d0417dc02ad3d7223d5bbaca05fefb62ec51687ae6f632cfb32b292221e",
+  "question": "Cagliari: Cristian Garin vs Nuno Borges",
+  "market_price": 0.83,
+  "generated_at": "2026-04-30T11:18:20.038576+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "29/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        29,
+        26,
+        33,
+        47,
+        33,
+        31,
+        39
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 76132,
+      "btc_24h": -1.8453981568241808,
+      "risk_signal": "risk-OFF"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

@@ -1,0 +1,50 @@
+{
+  "market_id": "0x602ff7cc675b58623009b79534bd69ebbd7a87682fa19386e0468941c752e129",
+  "question": "St. Louis Cardinals vs. Pittsburgh Pirates",
+  "market_price": 0.85,
+  "generated_at": "2026-04-30T19:01:38.846541+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "St. Louis Cardinals vs. Pittsburgh Pirates \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "29/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        29,
+        26,
+        33,
+        47,
+        33,
+        31,
+        39
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 76316,
+      "btc_24h": 1.1156744151810933,
+      "risk_signal": "risk-ON"
+    }
+  },
+  "sports": {
+    "recent_games": [
+      "STL @ PIT | In Progress | Pittsburgh Pirates(home) 16-15 score:4 vs St. Louis Cardinals(away) 17-13 score:5"
+    ],
+    "injuries": [
+      "?: Gabriel Moreno \u2014 10-Day-IL (Strain)",
+      "?: Tyler Locklear \u2014 10-Day-IL (Surgery)",
+      "?: Corbin Burnes \u2014 60-Day-IL (Surgery)",
+      "?: Denzel Clarke \u2014 10-Day-IL (Bruise)",
+      "?: Tyler Soderstrom \u2014 Day-To-Day (Soreness)",
+      "?: Max Muncy \u2014 10-Day-IL (Fracture)",
+      "?: Raisel Iglesias \u2014 15-Day-IL (Inflammation)",
+      "?: Spencer Strider \u2014 15-Day-IL (Strain)",
+      "?: Spencer Schwellenbach \u2014 60-Day-IL (Surgery)",
+      "?: Jackson Holliday \u2014 10-Day-IL (Surgery)"
+    ]
+  },
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

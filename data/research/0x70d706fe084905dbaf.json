@@ -1,30 +1,29 @@
 {
   "market_id": "0x70d706fe084905dbafb95dfff13b727e4073efc3ef590adc8330562bac5d26de",
   "question": "US x Iran diplomatic meeting by May 15, 2026?",
-  "market_price": 0.29,
-  "generated_at": "2026-04-29T13:05:00.347944+00:00",
+  "market_price": 0.24,
+  "generated_at": "2026-05-01T01:50:10.025696+00:00",
   "macro": {
     "fed_expectations": [
-      "Will the Fed decrease interest rates by 25 bps after the Apr \u2192 YES=50%",
-      "Will there be no change in Fed interest rates after the Apri \u2192 YES=50%",
-      "Will the Fed increase interest rates by 25+ bps after the Ap \u2192 YES=50%"
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
       "7d_trend": "deteriorating",
       "values": [
         26,
+        29,
+        26,
         33,
         47,
         33,
-        31,
-        39,
-        46
+        31
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 0,
-      "btc_24h": 0,
+      "btc_price": 76616,
+      "btc_24h": 0.38124028292242973,
       "risk_signal": "neutral"
     }
   },

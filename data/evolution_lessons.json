@@ -1,53 +1,53 @@
 {
-  "total_resolved": 135,
-  "overall_win_rate": 0.348,
+  "total_resolved": 152,
+  "overall_win_rate": 0.362,
   "momentum_lessons": [
     {
-      "category": "crypto",
-      "entry_price": 0.23,
-      "pnl": 0.18,
-      "exit_reason": "TAKE_PROFIT_2X (+37%)",
-      "catalyst": "CATALYST: Extreme-fear sentiment + Friday gamma + BTC within 3 % of $75k \u2192 DIRECTION: up \u2192 TARGET: 34 % because similar "
-    },
-    {
-      "category": "crypto",
-      "entry_price": 0.15,
-      "pnl": 0.17,
-      "exit_reason": "TAKE_PROFIT_2X (+33%)",
-      "catalyst": "CATALYST: Extreme-fear sentiment + geopol jitters pushing traders to price in a quick $75k touch \u2192 DIRECTION: up \u2192 TARGE"
-    },
-    {
-      "category": "crypto",
-      "entry_price": 0.16,
+      "category": "sports",
+      "entry_price": 0.29,
       "pnl": 0.2,
-      "exit_reason": "TAKE_PROFIT_2X (+41%)",
-      "catalyst": "CATALYST: BTC within 3% of $80k + Friday gamma + Twitter chatter \u2192 DIRECTION: up \u2192 TARGET: 28% because proximity+gamma h"
+      "exit_reason": "TAKE_PROFIT_2X (+40%)",
+      "catalyst": "CATALYST: Dodgers already leading 20-10 in live game vs weaker Marlins \u2192 DIRECTION: up \u2192 TARGET: 42% because market hasn"
     },
     {
-      "category": "crypto",
-      "entry_price": 0.15,
-      "pnl": 0.25,
-      "exit_reason": "TAKE_PROFIT_2X (+50%)",
-      "catalyst": "CATALYST: BTC sits 3.6 % below strike + gamma squeeze into Friday expiry + Twitter narrative spike while sentiment at Ex"
+      "category": "sports",
+      "entry_price": 0.48,
+      "pnl": 0.04,
+      "exit_reason": "TRAILING_STOP (peak=0.61\u2192sl=0.52, locked $+0.04)",
+      "catalyst": "CATALYST: Betting market pricing TOR ~54 % vs polymarket 48 % \u2192 arbitrage gap \u2192 DIRECTION: up \u2192 TARGET: 55 % because low"
     },
     {
-      "category": "crypto",
+      "category": "sports",
+      "entry_price": 0.35,
+      "pnl": 0.18,
+      "exit_reason": "TAKE_PROFIT_2X (+36%)",
+      "catalyst": "CATALYST: Live game tied 1-1 with Angels showing last-night momentum vs weak White Sox bullpen \u2192 DIRECTION: up \u2192 TARGET:"
+    },
+    {
+      "category": "sports",
+      "entry_price": 0.49,
+      "pnl": 0.07,
+      "exit_reason": "TRAILING_STOP (peak=0.52\u2192sl=0.44, locked $-0.05)",
+      "catalyst": "CATALYST: Miller streak snapped by Cubs \u2192 short-term \u2018Cubs momentum\u2019 narrative, but Padres stronger roster & home advant"
+    },
+    {
+      "category": "sports",
       "entry_price": 0.11,
-      "pnl": 0.61,
-      "exit_reason": "TAKE_PROFIT_2X (+32%)",
-      "catalyst": "CATALYST: BTC $77k + options gamma + Twitter narrative \u2192 DIRECTION: up \u2192 TARGET: 18% because 3.8% spot move flips market"
+      "pnl": 0.48,
+      "exit_reason": "TAKE_PROFIT_2X (+95%)",
+      "catalyst": "CATALYST: SRH demolition + MI crisis headlines just released \u2192 DIRECTION: up \u2192 TARGET: 26% because retail money piles on"
     }
   ],
   "price_movement_patterns": {
     "10-20%": {
-      "win_rate": 0.42,
-      "avg_pnl": 6.43,
-      "n": 19
+      "win_rate": 0.41,
+      "avg_pnl": 5.57,
+      "n": 22
     },
     "40-50%": {
-      "win_rate": 0.56,
-      "avg_pnl": 1.61,
-      "n": 34
+      "win_rate": 0.54,
+      "avg_pnl": 1.4,
+      "n": 39
     },
     "90-100%": {
       "win_rate": 0.0,
@@ -56,13 +56,13 @@
     },
     "70-80%": {
       "win_rate": 0.06,
-      "avg_pnl": -1.5,
-      "n": 16
+      "avg_pnl": -1.36,
+      "n": 18
     },
     "30-40%": {
-      "win_rate": 0.3,
-      "avg_pnl": 1.29,
-      "n": 10
+      "win_rate": 0.31,
+      "avg_pnl": 0.99,
+      "n": 13
     },
     "60-70%": {
       "win_rate": 0.5,
@@ -70,9 +70,9 @@
       "n": 6
     },
     "20-30%": {
-      "win_rate": 0.29,
-      "avg_pnl": -0.59,
-      "n": 17
+      "win_rate": 0.4,
+      "avg_pnl": -0.49,
+      "n": 20
     },
     "0-10%": {
       "win_rate": 0.11,
@@ -80,9 +80,9 @@
       "n": 9
     },
     "50-60%": {
-      "win_rate": 0.39,
-      "avg_pnl": -0.8,
-      "n": 18
+      "win_rate": 0.42,
+      "avg_pnl": -0.75,
+      "n": 19
     },
     "80-90%": {
       "win_rate": 0.0,
@@ -92,15 +92,15 @@
   },
   "exit_patterns": {
     "RESOLVED": 67,
-    "TAKE_PROFIT": 22,
-    "STOP_LOSS": 28,
-    "TIME_LIMIT": 3,
-    "TRAILING_STOP": 15
+    "TAKE_PROFIT": 26,
+    "STOP_LOSS": 36,
+    "TIME_LIMIT": 4,
+    "TRAILING_STOP": 19
   },
   "edge_reality": {
     "10%": {
-      "actual_wr": 0.44,
-      "n": 36
+      "actual_wr": 0.47,
+      "n": 45
     },
     "70%": {
       "actual_wr": 0.25,
@@ -111,8 +111,8 @@
       "n": 15
     },
     "20%": {
-      "actual_wr": 0.36,
-      "n": 28
+      "actual_wr": 0.37,
+      "n": 35
     },
     "60%": {
       "actual_wr": 0.25,
@@ -135,8 +135,8 @@
       "n": 2
     },
     "0%": {
-      "actual_wr": 0.5,
-      "n": 2
+      "actual_wr": 0.33,
+      "n": 3
     }
   },
   "category_bias": {},
@@ -389,25 +389,25 @@
   ],
   "recent_mistakes": [
     {
-      "question": "James Comey arrested by April 29?",
-      "category": "politics",
-      "entry_price": 0.81,
-      "reasoning": "CATALYST: absence of fresh arrest news \u2192 DIRECTION: down \u2192 TARGET: 72% because 81% embeds speculatio",
-      "lesson": "Momentum thesis failed in politics at entry 0.81. Review what catalyst was missing."
-    },
-    {
-      "question": "Madrid Open: Casper Ruud vs Alexander Blockx",
+      "question": "Los Angeles Angels vs. Chicago White Sox",
       "category": "sports",
-      "entry_price": 0.73,
-      "reasoning": "CATALYST: Absence of bullish tennis news at 73 % \u2192 DIRECTION: down \u2192 TARGET: 65 % because stale high",
-      "lesson": "Momentum thesis failed in sports at entry 0.73. Review what catalyst was missing."
+      "entry_price": 0.45,
+      "reasoning": "CATALYST: Live game tied 2-2 with Angels showing prior-night momentum vs weaker White Sox \u2192 DIRECTIO",
+      "lesson": "Momentum thesis failed in sports at entry 0.45. Review what catalyst was missing."
     },
     {
-      "question": "Will Bitcoin reach $80,000 in April?",
-      "category": "crypto",
-      "entry_price": 0.13,
-      "reasoning": "CATALYST: BTC within 3.8 % of $80 k + Friday gamma squeeze + extreme-fear bounce \u2192 DIRECTION: up \u2192 T",
-      "lesson": "Bought YES at 0.13 \u2014 very low price needs very strong catalyst to move. Was catalyst strong enough?"
+      "question": "Miami Marlins vs. Los Angeles Dodgers",
+      "category": "sports",
+      "entry_price": 0.32,
+      "reasoning": "CATALYST: Live MLB game tied early with Dodgers superior record vs Marlins \u2192 DIRECTION: up \u2192 TARGET:",
+      "lesson": "Momentum thesis failed in sports at entry 0.32. Review what catalyst was missing."
+    },
+    {
+      "question": "Miami Marlins vs. Los Angeles Dodgers",
+      "category": "sports",
+      "entry_price": 0.4,
+      "reasoning": "CATALYST: Dodgers already leading 20-10 in live game vs weaker Marlins \u2192 DIRECTION: up \u2192 TARGET: 65%",
+      "lesson": "Momentum thesis failed in sports at entry 0.40. Review what catalyst was missing."
     }
   ]
 }
