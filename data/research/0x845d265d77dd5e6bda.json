@@ -1,8 +1,8 @@
 {
   "market_id": "0x845d265d77dd5e6bda07a01ac2ef7f6b7963abc79d822d1e23ecb8556ad21601",
   "question": "Jiujiang: Yunchaokete Bu vs Coleman Wong",
-  "market_price": 0.48,
-  "generated_at": "2026-05-01T06:32:17.343885+00:00",
+  "market_price": 0.3,
+  "generated_at": "2026-05-01T07:07:28.632365+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77116,
-      "btc_24h": 1.820666623552914,
+      "btc_price": 76955,
+      "btc_24h": 1.5696460798948753,
       "risk_signal": "risk-ON"
     }
   },

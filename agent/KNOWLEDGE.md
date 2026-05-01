@@ -30,7 +30,13 @@
 - Indirect correlation (oil price affects Iran deal probability)
 - Historical pattern without current trigger
 
-## Category-Specific Knowledge
+## Geopolitical Markets — STRICT RULES
+- ONLY bet if: official government statement, confirmed military action, or signed agreement
+- "Air activity", "leaked roadmap", "chatter" = WEAK signal → SKIP
+- Iran/ceasefire: need official announcement from US State Dept or Iranian govt
+- High volume ($500k+) = market has information → follow price direction if confirmed news
+
+
 
 ### Crypto Markets
 - BTC price prediction markets: watch actual BTC price vs target
