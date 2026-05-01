@@ -103,6 +103,8 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
             f"\nMarket likely has not priced this in yet."
         )
 
+
+
     prev_loss_note = (
         "⚠️ PREVIOUS BET ON THIS MARKET WAS WRONG. Only bet again with NEW concrete evidence.\n"
         if prev_loss else ""
