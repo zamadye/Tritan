@@ -57,16 +57,20 @@ def get_daily_usage() -> dict:
 
 
 def get_client() -> OpenAI:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"), override=True)
     return OpenAI(
         api_key=os.getenv("AI_API_KEY"),
-        base_url=os.getenv("AI_BASE_URL", "https://api.xiaomimimo.com/v1"),
+        base_url=os.getenv("AI_BASE_URL", "https://token-plan-sgp.xiaomimimo.com/v1"),
     )
 
 
 def chat(prompt: str, max_tokens: int = None) -> str:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"), override=True)
     client    = get_client()
-    model     = os.getenv("AI_MODEL", "mimo-v2.5-pro")
-    max_tokens = max_tokens or int(os.getenv("LLM_MAX_TOKENS", 1200))
+    model     = os.getenv("AI_MODEL", "mimo-v2.5")
+    max_tokens = max_tokens or int(os.getenv("LLM_MAX_TOKENS", 1500))
     retries   = int(os.getenv("API_MAX_RETRIES", 3))
 
     # Daily cost guard — stop if >$2/day
