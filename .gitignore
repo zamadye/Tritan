@@ -4,3 +4,4 @@ data/*.log
 __pycache__/
 *.pyc
 .DS_Store
+data/resolved_markets_raw.json
