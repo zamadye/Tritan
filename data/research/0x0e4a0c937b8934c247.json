@@ -2,11 +2,10 @@
   "market_id": "0x0e4a0c937b8934c2475613b6322b3f8edc8dedc24762e01e42b0e6f87424a089",
   "question": "US x Iran permanent peace deal by May 31, 2026?",
   "market_price": 0.19,
-  "generated_at": "2026-05-01T01:51:40.133732+00:00",
+  "generated_at": "2026-05-01T02:31:19.426744+00:00",
   "macro": {
     "fed_expectations": [
-      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -22,9 +21,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76660,
-      "btc_24h": 0.38559588783594506,
-      "risk_signal": "neutral"
+      "btc_price": 76598,
+      "btc_24h": 1.1348482434105542,
+      "risk_signal": "risk-ON"
     }
   },
   "sports": {},

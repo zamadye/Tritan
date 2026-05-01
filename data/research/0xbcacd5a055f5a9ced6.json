@@ -2,11 +2,10 @@
   "market_id": "0xbcacd5a055f5a9ced6f69f122216c073dd6987d08253fc07bbcc168fa5b81d55",
   "question": "US obtains Iranian enriched uranium by May 31?",
   "market_price": 0.1,
-  "generated_at": "2026-05-01T01:56:34.373722+00:00",
+  "generated_at": "2026-05-01T02:33:53.900742+00:00",
   "macro": {
     "fed_expectations": [
-      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -22,9 +21,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76696,
-      "btc_24h": 0.623704004266229,
-      "risk_signal": "neutral"
+      "btc_price": 76553,
+      "btc_24h": 1.075145044331896,
+      "risk_signal": "risk-ON"
     }
   },
   "sports": {},

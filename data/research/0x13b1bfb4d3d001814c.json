@@ -2,10 +2,11 @@
   "market_id": "0x13b1bfb4d3d001814cc7c7dcecbd2de54befc1a33dc1e9b847dc96b0d66ca46d",
   "question": "NBA Playoffs: Who Will Win Series? - Lakers vs. Rockets ",
   "market_price": 0.746,
-  "generated_at": "2026-05-01T02:09:17.711267+00:00",
+  "generated_at": "2026-05-01T02:42:07.298887+00:00",
   "macro": {
     "fed_expectations": [
-      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%"
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -21,15 +22,15 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76627,
-      "btc_24h": 0.5050232448727772,
-      "risk_signal": "neutral"
+      "btc_price": 76575,
+      "btc_24h": 1.2758934618159148,
+      "risk_signal": "risk-ON"
     }
   },
   "sports": {
     "todays_games": [
       "NY @ ATL | Final",
-      "BOS @ PHI | In Progress",
+      "BOS @ PHI | Final",
       "DEN @ MIN | In Progress"
     ],
     "injuries": [

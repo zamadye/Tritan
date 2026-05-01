@@ -1,8 +1,8 @@
 {
-  "market_id": "0x5072d0bf27763754b734c63255c4cbbba79d9d09b214accf33ecc79b88b1d108",
-  "question": "Will Anthropic have the best AI model at the end of May 2026?",
-  "market_price": 0.84,
-  "generated_at": "2026-05-01T02:47:44.614118+00:00",
+  "market_id": "0x2ae22e1fd29651ed6f049114672a0be94b907e833485a7a6d0c7df2dc7f03ce9",
+  "question": "Will Google have the best AI model at the end of May 2026?",
+  "market_price": 0.14,
+  "generated_at": "2026-05-01T02:48:36.792920+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
@@ -22,8 +22,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76546,
-      "btc_24h": 1.2739034987895146,
+      "btc_price": 76550,
+      "btc_24h": 1.2791838180674269,
       "risk_signal": "risk-ON"
     }
   },

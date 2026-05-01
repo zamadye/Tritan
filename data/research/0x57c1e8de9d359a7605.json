@@ -1,8 +1,8 @@
 {
   "market_id": "0x57c1e8de9d359a76055fe1be95e46a1e72d0537811dcc2ccf070cdfa73d8ba33",
   "question": "Trump announces end of military operations against Iran by May 31st?",
-  "market_price": 0.46,
-  "generated_at": "2026-05-01T02:02:11.792198+00:00",
+  "market_price": 0.41,
+  "generated_at": "2026-05-01T02:36:03.770373+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%"
@@ -21,9 +21,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76657,
-      "btc_24h": 0.5161051477945198,
-      "risk_signal": "neutral"
+      "btc_price": 76537,
+      "btc_24h": 1.284129594143846,
+      "risk_signal": "risk-ON"
     }
   },
   "sports": {},

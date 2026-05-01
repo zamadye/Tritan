@@ -4584,8 +4584,8 @@
     "size_usd": 0.5,
     "price_at_entry": 0.746,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": -0.25,
     "p_true_estimated": 0.5,
     "confidence_at_bet": 0.52,
     "edge_at_bet": -0.246,
@@ -4606,6 +4606,11 @@
       "Lakers still have home court advantage",
       "LeBron could be upgraded to questionable",
       "Market may have already priced in injuries"
-    ]
+    ],
+    "exit_price": 0.6341,
+    "exit_reason": "STOP_LOSS (-65%)",
+    "prediction_correct": false,
+    "resolved_at": "2026-05-01T02:29:27.323772+00:00",
+    "brier_score": 0.0645
   }
 ]
