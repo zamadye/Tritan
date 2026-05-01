@@ -1,12 +1,12 @@
 {
-  "market_id": "0x4080978c4f7e52d80ddc271a7fe4cdb2e40c803d601e402efbdf373ed8391dfd",
-  "question": "UFC Fight Night: Vince Morales vs. Colby Thicknesse (Bantamweight, Prelims)",
-  "market_price": 0.45,
-  "generated_at": "2026-05-01T17:20:44.505376+00:00",
+  "market_id": "0x13d364597429089ef5020c69e41c4fc15703541f9d33e33db4a031f153721540",
+  "question": "UFC Fight Night: Themba Gorimbo vs. Jonathan Micallef (Welterweight, Prelims)",
+  "market_price": 0.33,
+  "generated_at": "2026-05-01T21:33:00.206498+00:00",
   "macro": {
     "fed_expectations": [
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
       "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%"
     ],
     "fear_greed": {
@@ -23,9 +23,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 0,
-      "btc_24h": 0,
-      "risk_signal": "neutral"
+      "btc_price": 78044,
+      "btc_24h": 2.224370894916787,
+      "risk_signal": "risk-ON"
     }
   },
   "sports": {},

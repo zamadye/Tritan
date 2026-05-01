@@ -1,8 +1,8 @@
 {
   "market_id": "0xfbc9af8c69b3c162f80b462c39775420f6a9363d54a33e56a8790b84b283cb37",
   "question": "La Bisbal: Sara Sorribes Tormo vs Elena Pridankina",
-  "market_price": 0.31,
-  "generated_at": "2026-05-01T13:57:39.646207+00:00",
+  "market_price": 0.73,
+  "generated_at": "2026-05-01T14:34:27.088381+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
@@ -22,9 +22,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 0,
-      "btc_24h": 0,
-      "risk_signal": "neutral"
+      "btc_price": 78257,
+      "btc_24h": 2.3992891801007508,
+      "risk_signal": "risk-ON"
     }
   },
   "sports": {},

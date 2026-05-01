@@ -1,12 +1,13 @@
 {
-  "market_id": "0xb861303ab32228d8baed1f83d8d7d5b7e7f8e6aa26ca93408c6bca8acf15be29",
-  "question": "Cagliari: Roman Andres Burruchaga vs Marcos Giron",
-  "market_price": 0.24,
-  "generated_at": "2026-05-01T14:51:03.385414+00:00",
+  "market_id": "0x72369cd4dd7832dcd31db07891ac3f6348877d69c94cdb02153197249e9181cb",
+  "question": "Abidjan 2: Calvin Hemery vs Michael Mmoh",
+  "market_price": 0.38,
+  "generated_at": "2026-05-01T21:17:26.893505+00:00",
   "macro": {
     "fed_expectations": [
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
-      "Will Kevin Warsh be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -22,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78323,
-      "btc_24h": 2.60194456556973,
+      "btc_price": 77922,
+      "btc_24h": 1.976694770559972,
       "risk_signal": "risk-ON"
     }
   },

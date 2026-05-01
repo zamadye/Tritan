@@ -110,25 +110,30 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         if prev_loss else ""
     )
 
-    # Build compact prompt — MiMo works best with short prompts + inline JSON template
+    # Build prompt — MiMo works WITHOUT JSON templates, parse flexibly
     data_summary = full_context[:300] if full_context else "No data."
     info_note = f" {info_edge_ctx.strip()}" if info_edge_ctx else ""
     lesson_note = evolution_context[:150] if evolution_context else ""
-    prev_note = "PREV LOSS - need new evidence. " if prev_loss else ""
+    prev_note = "Previous bet on this market was wrong. " if prev_loss else ""
 
     prompt = (
-        f"{prev_note}Evaluate prediction market: {market['question']}. "
-        f"Price={p_market:.0%}, base_rate={p_base:.0%}(n={prior['n']}), "
-        f"momentum={prior.get('momentum_signal','?')}({prior.get('momentum_yes_rate',0.5):.0%} YES). "
-        f"Gap={p_base-p_market:+.0%}. Category={market.get('category','?')}. "
+        f"{prev_note}Analyze this prediction market: {market['question']}. "
+        f"Current price: {p_market:.0%}. Statistical base rate: {p_base:.0%} (n={prior['n']}). "
+        f"Momentum: {prior.get('momentum_signal','?')} ({prior.get('momentum_yes_rate',0.5):.0%} resolve YES). "
+        f"Price gap: {p_base-p_market:+.0%}. Category: {market.get('category','?')}. "
         f"Data: {data_summary}{info_note} "
         f"Lessons: {lesson_note} "
-        f"Is there a catalyst moving price in 4h? "
-        f'Reply JSON: {{"score":0.0,"cat":"none","type":"none","err":false,"dir":"none","edge":false,"act":"SKIP","conf":0.0,"qual":"none","why":"no data"}}'
+        f"Is there a specific catalyst that will move this price in the next 4 hours? "
+        f"Reply with a JSON object."
     )
 
     try:
         raw = chat(prompt)
+        if not raw or not raw.strip():
+            raw = chat(f"Analyze: {market['question'][:60]}. Price={p_market:.0%} vs base={p_base:.0%}. Catalyst in 4h? Reply JSON.")
+        if not raw or not raw.strip():
+            raise ValueError("Empty LLM response")
+
         raw = raw.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
         start = raw.find("{"); end = raw.rfind("}") + 1
         if start != -1 and end > start:
@@ -137,27 +142,48 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
             result = json.loads(raw)
         except json.JSONDecodeError:
             raw = re.sub(r",\s*([}\]])", r"\1", raw)
-            result = json.loads(raw)
+            try:
+                result = json.loads(raw)
+            except json.JSONDecodeError:
+                result = {}
 
-        # Layer 3: Edge calculation — map compact field names
-        catalyst_score = float(result.get("score", result.get("catalyst_score", 0)))
-        crowd_error    = result.get("err", result.get("error", result.get("crowd_error_detected", False)))
-        action         = result.get("act", result.get("action", result.get("recommended_action", "SKIP")))
-        confidence     = float(result.get("conf", result.get("confidence", 0)))
-        dq             = result.get("qual", result.get("quality", result.get("data_quality", "weak")))
-        catalyst_str   = result.get("cat", result.get("catalyst", "none"))
-        direction      = result.get("dir", result.get("direction", result.get("crowd_error_direction", "none")))
-        info_edge      = result.get("edge", result.get("information_edge", False))
-        reason         = result.get("why", result.get("reason", result.get("reasoning", "")))
+        # Flexible extraction — MiMo uses its own field names
+        def _find(d, *keys, default=None):
+            for k in keys:
+                if k in d: return d[k]
+                # Search nested
+                for v in d.values():
+                    if isinstance(v, dict) and k in v: return v[k]
+            return default
 
-        # Force SKIP if no data or weak catalyst without crowd error
-        if dq == "none":
+        catalyst_score = float(_find(result, "score","catalyst_score","strength","catalyst_strength", default=0) or 0)
+        crowd_error    = bool(_find(result, "err","error","mispriced","crowd_error","is_mispriced", default=False))
+        action_raw     = str(_find(result, "act","action","recommendation","decision","signal", default="SKIP") or "SKIP").upper()
+        confidence     = float(_find(result, "conf","confidence","certainty","probability", default=0) or 0)
+        dq             = str(_find(result, "qual","quality","data_quality","evidence_quality", default="weak") or "weak").lower()
+        catalyst_str   = str(_find(result, "cat","catalyst","trigger","event", default="none") or "none")
+        direction      = str(_find(result, "dir","direction","crowd_error_direction", default="none") or "none").lower()
+        info_edge      = bool(_find(result, "edge","information_edge","info_edge", default=False))
+        reason         = str(_find(result, "why","reason","reasoning","rationale","analysis","summary", default="") or "")
+
+        # Normalize action
+        if "YES" in action_raw or "BUY" in action_raw or "LONG" in action_raw: action = "BET_YES"
+        elif "NO" in action_raw or "SELL" in action_raw or "SHORT" in action_raw: action = "BET_NO"
+        else: action = "SKIP"
+
+        # If confidence not found, estimate from catalyst_score
+        if confidence == 0 and catalyst_score > 0:
+            confidence = min(0.65, catalyst_score * 0.8)
+
+        # Validation gate — two valid paths to bet:
+        # Path A: catalyst-driven (score >= 0.4)
+        # Path B: statistical mispricing (|p_base - market| >= 8%, even without catalyst)
+        statistical_gap = abs(prior["p_base"] - p_market)
+        has_stat_edge   = statistical_gap >= 0.08 and prior["n"] >= 50
+
+        if dq == "none" and not has_stat_edge:
             action = "SKIP"
-        # Strict validation gate (per architecture spec):
-        # Edge valid ONLY IF: p_calibrated diff > 8% AND specific information exists
-        if catalyst_score < 0.4 and not crowd_error:
-            action = "SKIP"
-        if catalyst_score < 0.2:  # no catalyst at all → always skip
+        if catalyst_score < 0.4 and not crowd_error and not has_stat_edge:
             action = "SKIP"
 
         # Calculate p_true from base rate + catalyst adjustment
@@ -173,6 +199,12 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         p_true = max(0.01, min(0.99, p_base + catalyst_adj))
         edge   = round(p_true - p_market, 4)
 
+        # If statistical edge exists, override SKIP from LLM (AFTER p_true calculation)
+        if has_stat_edge and action == "SKIP" and catalyst_score < 0.2:
+            action = "BET_NO" if prior["p_base"] < p_market else "BET_YES"
+            reason = f"Statistical mispricing: p_base={prior['p_base']:.0%} vs market={p_market:.0%} gap={statistical_gap:.0%} (n={prior['n']})"
+            confidence = max(confidence, float(os.getenv("MIN_CONFIDENCE", 0.58)))
+
         # Map action to side
         side = "YES" if action == "BET_YES" else "NO" if action == "BET_NO" else "SKIP"
 
@@ -184,8 +216,11 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         # Confidence cap based on data quality
         if dq == "weak" and confidence > 0.65:
             confidence = 0.65
-        if dq == "none":
+        if dq == "none" and not has_stat_edge:
             confidence = 0.0
+        elif dq == "none" and has_stat_edge:
+            # Statistical edge is valid even without news data
+            confidence = 0.60
 
         return {
             "p_true":             round(p_true, 4),

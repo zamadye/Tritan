@@ -1,8 +1,8 @@
 {
-  "market_id": "0x4080978c4f7e52d80ddc271a7fe4cdb2e40c803d601e402efbdf373ed8391dfd",
-  "question": "UFC Fight Night: Vince Morales vs. Colby Thicknesse (Bantamweight, Prelims)",
-  "market_price": 0.45,
-  "generated_at": "2026-05-01T17:20:44.505376+00:00",
+  "market_id": "0x82acf7fc521dc6089c9ca8807b91cacbad30982b2209125352b6b6ba8e46612f",
+  "question": "Aix en Provence: Ignacio Buse vs Alejandro Tabilo",
+  "market_price": 0.2,
+  "generated_at": "2026-05-01T17:21:28.612771+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
@@ -31,10 +31,10 @@
   "sports": {},
   "news_articles": [],
   "causal_chains": [
-    "Grappler vs striker \u2192 grappler wins if fight goes to ground",
-    "Significant strike differential \u2192 striker wins 70% if +50 strikes/round",
-    "Late replacement fighter \u2192 -15% win probability due to camp disruption",
-    "Weight cut issues \u2192 performance degradation in later rounds"
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
+    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term",
+    "AI chip shortage \u2192 NVIDIA revenue beats \u2192 AI infrastructure stocks rally",
+    "AI energy demand \u2192 data center power stocks rally"
   ],
   "summary": ""
 }

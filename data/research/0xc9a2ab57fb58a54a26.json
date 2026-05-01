@@ -1,12 +1,13 @@
 {
   "market_id": "0xc9a2ab57fb58a54a26acc74b53ba4457a5dec5cdde863f77b9c5bfc9edb7ea8f",
   "question": "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Welterweight, Main Card)",
-  "market_price": 0.53,
-  "generated_at": "2026-05-01T13:56:30.952148+00:00",
+  "market_price": 0.51,
+  "generated_at": "2026-05-01T21:16:02.717138+00:00",
   "macro": {
     "fed_expectations": [
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
-      "Will Kevin Warsh be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -22,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78797,
-      "btc_24h": 3.123540152890064,
+      "btc_price": 77934,
+      "btc_24h": 1.9927869768626052,
       "risk_signal": "risk-ON"
     }
   },
