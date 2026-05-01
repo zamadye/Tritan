@@ -1,8 +1,8 @@
 {
-  "market_id": "0x5ba927603fa4e8cdab361cb94ae44d883b94905dcd4f425cdd352ca5ef1927d3",
-  "question": "Saint-Malo: Jessika Ponchet vs Viktorija Golubic",
-  "market_price": 0.79,
-  "generated_at": "2026-05-01T13:25:47.264233+00:00",
+  "market_id": "0xb861303ab32228d8baed1f83d8d7d5b7e7f8e6aa26ca93408c6bca8acf15be29",
+  "question": "Cagliari: Roman Andres Burruchaga vs Marcos Giron",
+  "market_price": 0.69,
+  "generated_at": "2026-05-01T13:26:11.985683+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
@@ -30,11 +30,6 @@
   },
   "sports": {},
   "news_articles": [],
-  "causal_chains": [
-    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
-    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term",
-    "AI chip shortage \u2192 NVIDIA revenue beats \u2192 AI infrastructure stocks rally",
-    "AI energy demand \u2192 data center power stocks rally"
-  ],
+  "causal_chains": [],
   "summary": ""
 }

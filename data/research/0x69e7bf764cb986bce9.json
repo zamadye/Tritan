@@ -1,13 +1,13 @@
 {
   "market_id": "0x69e7bf764cb986bce98845ab45ae5e3e2a9701c0efaa2018903baa830d03a0ae",
   "question": "Cagliari: Matteo Arnaldi vs Nuno Borges",
-  "market_price": 0.44,
-  "generated_at": "2026-05-01T12:14:11.366911+00:00",
+  "market_price": 0.08,
+  "generated_at": "2026-05-01T12:53:37.943882+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
-      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
+      "Will Kevin Warsh be confirmed as Fed Chair? \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77417,
-      "btc_24h": 1.7546127934253617,
+      "btc_price": 77977,
+      "btc_24h": 2.2211428308401793,
       "risk_signal": "risk-ON"
     }
   },

@@ -1,42 +1,10 @@
 {
-  "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel": {
+  "NBA Hawks vs Knicks tonight": {
     "has_edge": false,
     "signal": "none",
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777639012.3354433
-  },
-  "UFC Fight Night: Vince Morales vs. Colby Thicknesse (Bantamw": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1777639024.8548837
-  },
-  "Madrid Open: Jannik Sinner vs Arthur Fils": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1777639036.2936697
-  },
-  "Cagliari: Matteo Arnaldi vs Nuno Borges": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1777639048.6792514
-  },
-  "Saint-Malo: Jessika Ponchet vs Viktorija Golubic": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1777639061.0792406
+    "ts": 1777645197.8715272
   }
 }

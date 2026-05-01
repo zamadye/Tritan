@@ -110,34 +110,21 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         if prev_loss else ""
     )
 
+    # Build compact prompt — MiMo works best with short prompts + inline JSON template
+    data_summary = full_context[:300] if full_context else "No data."
+    info_note = f" {info_edge_ctx.strip()}" if info_edge_ctx else ""
+    lesson_note = evolution_context[:150] if evolution_context else ""
+    prev_note = "PREV LOSS - need new evidence. " if prev_loss else ""
+
     prompt = (
-        f"Analyze this prediction market for a momentum trade.\n"
-        f"Market: {market['question']}\n"
-        f"Current price: {p_market:.0%}. Historical base rate: {p_base:.0%} "
-        f"(from {prior['n']} similar resolved markets, source: {prior['source']}). "
-        f"Category: {market.get('category','?')}.\n"
-        f"Momentum signal: markets at this price 24h before resolve → "
-        f"{prior.get('momentum_signal','NEUTRAL')} "
-        f"({prior.get('momentum_yes_rate',0.5):.0%} resolved YES, n={prior.get('momentum_n',0)}).\n\n"
-        f"Real-time data:\n{full_context[:500] if full_context else 'No data available.'}"
-        f"{info_edge_ctx}\n\n"
-        f"Past lessons:\n{evolution_context[:200] if evolution_context else 'None yet.'}\n"
-        f"{prev_loss_note}\n"
-        f"Question: Is there a specific verifiable catalyst that will move this price in the next 4 hours?\n"
-        f"Note: Base rate {p_base:.0%} vs market {p_market:.0%} = {p_base-p_market:+.0%} gap. "
-        f"Momentum signal says {prior.get('momentum_signal','NEUTRAL')}. "
-        f"Is this gap justified by current news?\n\n"
-        f"Reply with a JSON object containing:\n"
-        f"- score: float 0-1 (catalyst strength)\n"
-        f"- catalyst: string (what is the catalyst, or none)\n"
-        f"- type: string (official/breaking/data/rumor/none)\n"
-        f"- error: bool (is market price wrong vs base rate?)\n"
-        f"- direction: string (yes_cheap/no_cheap/none)\n"
-        f"- edge: bool (do you have info market has not priced in?)\n"
-        f"- action: string (BET_YES/BET_NO/SKIP)\n"
-        f"- conf: float 0-1\n"
-        f"- quality: string (strong/weak/none)\n"
-        f"- reason: string (max 80 chars, cite specific facts)"
+        f"{prev_note}Evaluate prediction market: {market['question']}. "
+        f"Price={p_market:.0%}, base_rate={p_base:.0%}(n={prior['n']}), "
+        f"momentum={prior.get('momentum_signal','?')}({prior.get('momentum_yes_rate',0.5):.0%} YES). "
+        f"Gap={p_base-p_market:+.0%}. Category={market.get('category','?')}. "
+        f"Data: {data_summary}{info_note} "
+        f"Lessons: {lesson_note} "
+        f"Is there a catalyst moving price in 4h? "
+        f'Reply JSON: {{"score":0.0,"cat":"none","type":"none","err":false,"dir":"none","edge":false,"act":"SKIP","conf":0.0,"qual":"none","why":"no data"}}'
     )
 
     try:
@@ -152,15 +139,16 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
             raw = re.sub(r",\s*([}\]])", r"\1", raw)
             result = json.loads(raw)
 
-        # Layer 3: Edge calculation — map short field names to internal names
+        # Layer 3: Edge calculation — map compact field names
         catalyst_score = float(result.get("score", result.get("catalyst_score", 0)))
-        crowd_error    = result.get("error", result.get("crowd_error_detected", False))
-        action         = result.get("action", result.get("recommended_action", "SKIP"))
+        crowd_error    = result.get("err", result.get("error", result.get("crowd_error_detected", False)))
+        action         = result.get("act", result.get("action", result.get("recommended_action", "SKIP")))
         confidence     = float(result.get("conf", result.get("confidence", 0)))
-        dq             = result.get("quality", result.get("data_quality", "weak"))
-        catalyst_str   = result.get("catalyst", "none")
-        direction      = result.get("direction", result.get("crowd_error_direction", "none"))
+        dq             = result.get("qual", result.get("quality", result.get("data_quality", "weak")))
+        catalyst_str   = result.get("cat", result.get("catalyst", "none"))
+        direction      = result.get("dir", result.get("direction", result.get("crowd_error_direction", "none")))
         info_edge      = result.get("edge", result.get("information_edge", False))
+        reason         = result.get("why", result.get("reason", result.get("reasoning", "")))
 
         # Force SKIP if no data or weak catalyst without crowd error
         if dq == "none":
@@ -218,7 +206,7 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
             "data_quality":       dq,
             "base_rate":          p_base,
             "calibration_applied": f"p_base={p_base:.2%}(n={prior['n']},{prior['source']}) + catalyst_adj={catalyst_adj:+.2%} = p_true={p_true:.2%}",
-            "reasoning_summary":  result.get("reasoning",""),
+            "reasoning_summary":  reason,
             "resolution_clarity": "high" if dq == "strong" else "medium",
         }
 

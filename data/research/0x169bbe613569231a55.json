@@ -1,8 +1,8 @@
 {
-  "market_id": "0xfd542dcfc4d6e50231450c9d0d6ed91cb621b54776e6fb1178ed396194d35407",
-  "question": "Madrid Open: Jannik Sinner vs Arthur Fils",
-  "market_price": 0.85,
-  "generated_at": "2026-05-01T13:57:53.743254+00:00",
+  "market_id": "0x169bbe613569231a5593e939dfc3ed8dfad24d29cf1909d078e088824f960eb7",
+  "question": "LoL: Gen.G vs Dplus KIA (BO3) - LCK Rounds 1-2",
+  "market_price": 0.77,
+  "generated_at": "2026-05-01T13:56:48.034109+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
@@ -22,9 +22,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78784,
-      "btc_24h": 3.1057772495079226,
-      "risk_signal": "risk-ON"
+      "btc_price": 0,
+      "btc_24h": 0,
+      "risk_signal": "neutral"
     }
   },
   "sports": {},
