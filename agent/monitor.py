@@ -72,20 +72,48 @@ def _simulate_exit(trade: dict, exit_price: float, reason: str) -> dict:
     return trade
 
 
+def _get_event_deadline(trade: dict) -> float:
+    """
+    Return max hours to hold based on event type, not arbitrary 4h.
+    - Sports: hold until game ends (typically 3-4h from start)
+    - Crypto: hold 6h (price moves fast)
+    - Geopolitik/politics: hold until end_date or 24h max
+    - Default: use EXIT_MAX_HOURS env
+    """
+    from agent.learner import _infer_category
+    cat = _infer_category(trade)
+    end_date = trade.get("end_date","")
+
+    if cat == "sports":
+        return 4.0   # game resolves within 4h of start
+    if cat == "crypto":
+        return 6.0   # crypto moves fast, don't overstay
+    if cat in ("geopolitik","politics"):
+        # Hold until end_date if within 48h, else 24h
+        if end_date:
+            try:
+                from datetime import datetime, timezone
+                end_dt = datetime.fromisoformat(end_date.replace("Z","+00:00"))
+                hours_to_end = (end_dt - datetime.now(timezone.utc)).total_seconds() / 3600
+                if 0 < hours_to_end <= 48:
+                    return hours_to_end  # hold until event
+            except Exception:
+                pass
+        return 24.0
+    return float(os.getenv("EXIT_MAX_HOURS", 4))
+
+
 def check_and_exit(mode: str = "demo", clob_client=None) -> int:
     """
     Check all open positions for exit conditions.
-    Trailing stop: SL level naik mengikuti peak price, mengunci profit.
-    Returns number of positions exited.
+    Time limit is event-driven, not arbitrary.
     """
     trades    = _load_trades(mode)
     open_t    = [t for t in trades if not t.get("actual_outcome")]
     now       = datetime.now(timezone.utc)
 
-    # Trailing distance: SL selalu X% di bawah peak price
-    trail_pct  = float(os.getenv("TRAILING_STOP_PCT",  0.25))  # 25% dari peak
-    tp_return  = float(os.getenv("EXIT_TAKE_PROFIT",   1.00))  # +100% return = 2x modal
-    max_hours  = float(os.getenv("EXIT_MAX_HOURS",     48))
+    trail_pct  = float(os.getenv("TRAILING_STOP_PCT", 0.10))
+    tp_return  = float(os.getenv("EXIT_TAKE_PROFIT",  0.50))
 
     exited = 0
 
@@ -131,21 +159,24 @@ def check_and_exit(mode: str = "demo", clob_client=None) -> int:
         exit_price  = now_p
         partial     = False
 
+        max_hours = _get_event_deadline(trade)
+
         if pnl_pct >= tp_return:
-            exit_reason = f"TAKE_PROFIT_2X (+{pnl_pct:.0%})"
-        elif pnl_pct >= 0.50 and not trade.get("partial_exited"):
-            # Partial exit: jual 50% posisi saat +50% return, biarkan sisanya trailing
+            exit_reason = f"TAKE_PROFIT (+{pnl_pct:.0%})"
+        elif pnl_pct >= 0.20 and not trade.get("partial_exited"):
             exit_reason = f"PARTIAL_EXIT_50% (+{pnl_pct:.0%})"
             partial = True
         elif now_p <= effective_sl:
             if peak > entry:
                 locked_pnl = shares * effective_sl - size
-                exit_reason = f"TRAILING_STOP (peak={peak:.2f}→sl={effective_sl:.2f}, locked ${locked_pnl:+.2f})"
+                exit_reason = f"TRAILING_STOP (peak={peak:.2f}->sl={effective_sl:.2f}, locked ${locked_pnl:+.2f})"
             else:
                 exit_reason = f"STOP_LOSS ({pnl_pct:.0%})"
             exit_price = effective_sl
         elif hours_held >= max_hours:
-            exit_reason = f"TIME_LIMIT ({hours_held:.0f}h)"
+            from agent.learner import _infer_category
+            cat = _infer_category(trade)
+            exit_reason = f"EVENT_DEADLINE ({cat} {hours_held:.0f}h/{max_hours:.0f}h)"
 
         if exit_reason:
             if partial:
