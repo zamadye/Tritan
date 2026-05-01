@@ -156,10 +156,22 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
                     if isinstance(v, dict) and k in v: return v[k]
             return default
 
-        catalyst_score = float(_find(result, "score","catalyst_score","strength","catalyst_strength", default=0) or 0)
+        def _to_float(val, default=0.0):
+            if val is None: return default
+            if isinstance(val, (int, float)): return float(val)
+            if isinstance(val, str):
+                val = val.strip().lower()
+                mapping = {"high":0.75,"medium":0.60,"low":0.45,"very high":0.80,
+                           "very low":0.35,"strong":0.75,"weak":0.45,"none":0.0}
+                if val in mapping: return mapping[val]
+                try: return float(val)
+                except: return default
+            return default
+
+        catalyst_score = _to_float(_find(result, "score","catalyst_score","strength","catalyst_strength"))
         crowd_error    = bool(_find(result, "err","error","mispriced","crowd_error","is_mispriced", default=False))
         action_raw     = str(_find(result, "act","action","recommendation","decision","signal", default="SKIP") or "SKIP").upper()
-        confidence     = float(_find(result, "conf","confidence","certainty","probability", default=0) or 0)
+        confidence     = _to_float(_find(result, "conf","confidence","certainty","probability"))
         dq             = str(_find(result, "qual","quality","data_quality","evidence_quality", default="weak") or "weak").lower()
         catalyst_str   = str(_find(result, "cat","catalyst","trigger","event", default="none") or "none")
         direction      = str(_find(result, "dir","direction","crowd_error_direction", default="none") or "none").lower()

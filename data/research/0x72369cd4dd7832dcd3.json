@@ -1,8 +1,8 @@
 {
   "market_id": "0x72369cd4dd7832dcd31db07891ac3f6348877d69c94cdb02153197249e9181cb",
   "question": "Abidjan 2: Calvin Hemery vs Michael Mmoh",
-  "market_price": 0.38,
-  "generated_at": "2026-05-01T21:17:26.893505+00:00",
+  "market_price": 0.27,
+  "generated_at": "2026-05-01T21:49:16.249688+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77922,
-      "btc_24h": 1.976694770559972,
+      "btc_price": 78125,
+      "btc_24h": 2.4162060205274836,
       "risk_signal": "risk-ON"
     }
   },

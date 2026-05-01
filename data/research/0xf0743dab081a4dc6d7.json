@@ -2,7 +2,7 @@
   "market_id": "0xf0743dab081a4dc6d7d455fafeb3281e5605ba3802acc7122f2b319abf60ef7b",
   "question": "Baltimore Orioles vs. New York Yankees",
   "market_price": 0.38,
-  "generated_at": "2026-05-01T20:27:51.289352+00:00",
+  "generated_at": "2026-05-01T21:57:27.906410+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78149,
-      "btc_24h": 2.244687390051266,
+      "btc_price": 78150,
+      "btc_24h": 2.5168864245050413,
       "risk_signal": "risk-ON"
     }
   },
@@ -42,7 +42,7 @@
       "?: Michael Harris II \u2014 Day-To-Day (Soreness)",
       "?: Sean Murphy \u2014 10-Day-IL (Surgery)",
       "?: Raisel Iglesias \u2014 15-Day-IL (Inflammation)",
-      "?: Jackson Holliday \u2014 10-Day-IL (Surgery)"
+      "?: Ryan Helsley \u2014 15-Day-IL (Inflammation)"
     ]
   },
   "news_articles": [],

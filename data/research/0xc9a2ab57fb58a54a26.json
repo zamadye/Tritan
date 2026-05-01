@@ -2,7 +2,7 @@
   "market_id": "0xc9a2ab57fb58a54a26acc74b53ba4457a5dec5cdde863f77b9c5bfc9edb7ea8f",
   "question": "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Welterweight, Main Card)",
   "market_price": 0.51,
-  "generated_at": "2026-05-01T21:16:02.717138+00:00",
+  "generated_at": "2026-05-01T21:48:11.328642+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77934,
-      "btc_24h": 1.9927869768626052,
+      "btc_price": 78118,
+      "btc_24h": 2.4063122142462627,
       "risk_signal": "risk-ON"
     }
   },

@@ -2,7 +2,7 @@
   "market_id": "0x13d364597429089ef5020c69e41c4fc15703541f9d33e33db4a031f153721540",
   "question": "UFC Fight Night: Themba Gorimbo vs. Jonathan Micallef (Welterweight, Prelims)",
   "market_price": 0.33,
-  "generated_at": "2026-05-01T21:33:00.206498+00:00",
+  "generated_at": "2026-05-01T22:04:37.220606+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78044,
-      "btc_24h": 2.224370894916787,
+      "btc_price": 78234,
+      "btc_24h": 2.626911488385119,
       "risk_signal": "risk-ON"
     }
   },
