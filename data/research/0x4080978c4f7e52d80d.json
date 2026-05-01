@@ -2,7 +2,7 @@
   "market_id": "0x4080978c4f7e52d80ddc271a7fe4cdb2e40c803d601e402efbdf373ed8391dfd",
   "question": "UFC Fight Night: Vince Morales vs. Colby Thicknesse (Bantamweight, Prelims)",
   "market_price": 0.44,
-  "generated_at": "2026-05-01T11:40:41.248608+00:00",
+  "generated_at": "2026-05-01T12:12:39.797593+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77345,
-      "btc_24h": 1.8853499302875942,
+      "btc_price": 77403,
+      "btc_24h": 1.735819126297192,
       "risk_signal": "risk-ON"
     }
   },
