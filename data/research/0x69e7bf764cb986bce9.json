@@ -1,8 +1,8 @@
 {
-  "market_id": "0xfd542dcfc4d6e50231450c9d0d6ed91cb621b54776e6fb1178ed396194d35407",
-  "question": "Madrid Open: Jannik Sinner vs Arthur Fils",
-  "market_price": 0.86,
-  "generated_at": "2026-05-01T11:41:06.532881+00:00",
+  "market_id": "0x69e7bf764cb986bce98845ab45ae5e3e2a9701c0efaa2018903baa830d03a0ae",
+  "question": "Cagliari: Matteo Arnaldi vs Nuno Borges",
+  "market_price": 0.91,
+  "generated_at": "2026-05-01T11:41:28.683458+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",

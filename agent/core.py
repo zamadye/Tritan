@@ -187,6 +187,18 @@ def run_scan_cycle(mode: str, clob_client=None):
     hard_blocked      = {k for k, v in loss_count.items() if v >= 2}
     prev_loss_markets = {k for k, v in loss_count.items() if v == 1}
 
+    # Correlation control: count open positions per category
+    from agent.learner import _infer_category
+    MAX_PER_CATEGORY = int(os.getenv("MAX_OPEN_PER_CATEGORY", 3))
+    MAX_CATEGORY_EXPOSURE = float(os.getenv("MAX_CATEGORY_EXPOSURE_PCT", 0.30))  # 30% bankroll
+    cat_open_count    = {}
+    cat_open_exposure = {}
+    for t in all_trades:
+        if not t.get("actual_outcome"):
+            cat = _infer_category(t)
+            cat_open_count[cat]    = cat_open_count.get(cat, 0) + 1
+            cat_open_exposure[cat] = cat_open_exposure.get(cat, 0.0) + t["size_usd"]
+
     # Pre-filter: only analyze top 5 markets by volume (save LLM calls)
     MAX_LLM_CALLS = int(os.getenv("MAX_LLM_CALLS_PER_CYCLE", 5))
     llm_calls_this_cycle = 0
@@ -197,6 +209,15 @@ def run_scan_cycle(mode: str, clob_client=None):
         if llm_calls_this_cycle >= MAX_LLM_CALLS:
             break
         if market["question"][:60] in open_ids:
+            continue
+
+        # Correlation filter: skip if category already at limit
+        mcat = _infer_category({"category": market.get("category",""), "market_question": market.get("question","")})
+        if cat_open_count.get(mcat, 0) >= MAX_PER_CATEGORY:
+            console.print(f"[dim]⛔ Corr limit ({mcat} {cat_open_count[mcat]}/{MAX_PER_CATEGORY}): {market['question'][:45]}[/dim]")
+            continue
+        if cat_open_exposure.get(mcat, 0) >= bankroll * MAX_CATEGORY_EXPOSURE:
+            console.print(f"[dim]⛔ Exposure limit ({mcat} ${cat_open_exposure[mcat]:.2f}): {market['question'][:45]}[/dim]")
             continue
         if market["question"][:60] in hard_blocked:
             continue
@@ -248,6 +269,9 @@ def run_scan_cycle(mode: str, clob_client=None):
         trade = execute_trade(market, side, size, mode, clob_client)
         _enrich_trade(trade, analysis, mode)
         open_ids.add(market["question"])
+        # Update correlation counters
+        cat_open_count[mcat]    = cat_open_count.get(mcat, 0) + 1
+        cat_open_exposure[mcat] = cat_open_exposure.get(mcat, 0.0) + size
         bets_this_cycle += 1
 
 

@@ -1,14 +1,14 @@
 {
-  "total_input": 327326,
-  "total_output": 153526,
-  "total_calls": 189,
-  "total_cost_usd": 0.141216,
+  "total_input": 335424,
+  "total_output": 163718,
+  "total_calls": 199,
+  "total_cost_usd": 0.148545,
   "daily": {
     "2026-05-01": {
-      "input": 327326,
-      "output": 153526,
-      "calls": 189,
-      "cost_usd": 0.141216
+      "input": 335424,
+      "output": 163718,
+      "calls": 199,
+      "cost_usd": 0.148545
     }
   }
 }
