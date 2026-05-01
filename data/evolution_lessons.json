@@ -1,7 +1,14 @@
 {
-  "total_resolved": 35,
-  "overall_win_rate": 0.371,
+  "total_resolved": 36,
+  "overall_win_rate": 0.389,
   "momentum_lessons": [
+    {
+      "category": "sports",
+      "entry_price": 0.49,
+      "pnl": 0.01,
+      "exit_reason": "TIME_LIMIT (5h)",
+      "catalyst": "CATALYST: Knicks' 140-89 blowout victory over Hawks \u2192 DIRECTION: UP \u2192 TARGET: 58% because such a decisive win shifts sen"
+    },
     {
       "category": "sports",
       "entry_price": 0.29,
@@ -29,13 +36,6 @@
       "pnl": 0.07,
       "exit_reason": "TRAILING_STOP (peak=0.52\u2192sl=0.44, locked $-0.05)",
       "catalyst": "CATALYST: Miller streak snapped by Cubs \u2192 short-term \u2018Cubs momentum\u2019 narrative, but Padres stronger roster & home advant"
-    },
-    {
-      "category": "sports",
-      "entry_price": 0.11,
-      "pnl": 0.48,
-      "exit_reason": "TAKE_PROFIT_2X (+95%)",
-      "catalyst": "CATALYST: SRH demolition + MI crisis headlines just released \u2192 DIRECTION: up \u2192 TARGET: 26% because retail money piles on"
     }
   ],
   "price_movement_patterns": {
@@ -75,21 +75,21 @@
       "n": 5
     },
     "40-50%": {
-      "win_rate": 0.4,
+      "win_rate": 0.5,
       "avg_pnl": -0.02,
-      "n": 5
+      "n": 6
     }
   },
   "exit_patterns": {
     "TAKE_PROFIT": 9,
     "STOP_LOSS": 17,
-    "TIME_LIMIT": 1,
+    "TIME_LIMIT": 2,
     "TRAILING_STOP": 8
   },
   "edge_reality": {
     "10%": {
-      "actual_wr": 0.41,
-      "n": 22
+      "actual_wr": 0.43,
+      "n": 23
     },
     "20%": {
       "actual_wr": 0.36,

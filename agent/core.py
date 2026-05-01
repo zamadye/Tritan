@@ -138,6 +138,19 @@ def run_scan_cycle(mode: str, clob_client=None):
     if evo_context:
         console.print(f"\n[dim]🧠 Evolution context loaded[/dim]")
 
+    # Step 3b: Regime filter — skip if market is dead (no point trading noise)
+    try:
+        from agent.research import get_macro_context as _gmc
+        _macro = _gmc()
+        _btc_change = abs(_macro.get("crypto_sentiment",{}).get("btc_24h", 99))
+        _fg = _macro.get("fear_greed",{}).get("values",[50])
+        _fg_val = _fg[0] if _fg else 50
+        if _btc_change < 0.5 and 45 <= _fg_val <= 55:
+            console.print("[yellow]💤 Regime filter: market dead (BTC flat + F&G neutral). Skipping cycle.[/yellow]")
+            return
+    except Exception:
+        pass
+
     # Step 4: scan
     console.print("\n[bold]🔍 Scanning markets...[/bold]")
     candidates = get_candidate_markets()

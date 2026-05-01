@@ -4550,8 +4550,8 @@
     "size_usd": 0.5,
     "price_at_entry": 0.49,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": 0.01,
     "p_true_estimated": 0.58,
     "confidence_at_bet": 0.68,
     "edge_at_bet": 0.09,
@@ -4569,7 +4569,12 @@
       "Sports markets can be unpredictable despite recent results",
       "Momentum thesis failed at similar entry points before (0.45, 0.32, 0.40)"
     ],
-    "peak_price": 0.5
+    "peak_price": 0.5,
+    "exit_price": 0.5,
+    "exit_reason": "TIME_LIMIT (5h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-01T07:36:33.395473+00:00",
+    "brier_score": 0.2601
   },
   {
     "trade_id": "4153f392-81cb-4147-94d6-871834698871",

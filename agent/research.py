@@ -466,13 +466,23 @@ def build_research_report(market: dict) -> dict:
     market_id = market.get("id", market.get("numeric_id","unknown"))
     report_path = RESEARCH_DIR / f"{str(market_id)[:20]}.json"
 
-    # Return cached report if fresh (<30 min)
+    # Return cached report if fresh
+    # Hot categories (geopolitik, breaking news): 5 min cache
+    # Others: 30 min cache
+    hot_categories = {"geopolitik", "politics", "breaking"}
+    q_lower = question.lower()
+    is_hot = (
+        any(x in q_lower for x in ["iran","ceasefire","war","military","strike","invasion","coup","arrest","breaking"]) or
+        market.get("category","") in hot_categories
+    )
+    cache_minutes = 5 if is_hot else 30
+
     if report_path.exists():
         try:
             cached = json.loads(report_path.read_text())
             generated = datetime.fromisoformat(cached.get("generated_at","2000-01-01"))
             age_minutes = (datetime.now(timezone.utc) - generated).total_seconds() / 60
-            if age_minutes < 30:
+            if age_minutes < cache_minutes:
                 return cached
         except Exception:
             pass

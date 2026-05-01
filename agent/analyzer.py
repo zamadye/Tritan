@@ -37,10 +37,11 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         if prev_loss else ""
     )
 
-    prompt = f"""You are a momentum trader on a prediction market. Your job: find markets where SENTIMENT, NEWS, or NARRATIVE will push the price UP or DOWN in the next few hours/days — regardless of the final outcome.
+    prompt = f"""Momentum trader on Polymarket. Predict: will YES price move UP in next 4h?
 
-You are NOT trying to predict who wins. You are trying to predict: will the YES price go UP or DOWN from current {market['price']:.2%}?
-
+━━━ LESSONS FROM PAST TRADES ━━━
+{evolution_context if evolution_context else 'No history yet.'}
+{prev_loss_note}
 ━━━ DOMAIN KNOWLEDGE ━━━
 {knowledge}
 
@@ -50,28 +51,21 @@ CURRENT YES PRICE: {market['price']:.2%}
 RESOLVES: {market['end_date']}
 CATEGORY: {market.get('category', 'unknown')}
 
-━━━ REAL-TIME DATA (news, sentiment, market signals) ━━━
-{full_context if full_context else '[NO DATA AVAILABLE — SKIP this market]'}
-
-━━━ MOMENTUM LESSONS (from past trades) ━━━
-{evolution_context if evolution_context else 'No history yet.'}
-{prev_loss_note}
+━━━ REAL-TIME DATA ━━━
+{full_context if full_context else '[NO DATA — SKIP]'}
 
 ━━━ MOMENTUM TRADING RULES ━━━
 
-RULE 1 — PRICE MOVEMENT, NOT OUTCOME:
-- Ask: "Will YES price move UP from {market['price']:.2%} in the next 24-48h?"
-- You don't need to know the final answer — you need to know the DIRECTION of price movement
-- Positive news/sentiment → YES price goes UP → BET YES
-- Negative news/sentiment → YES price goes DOWN → BET NO (buy NO = sell YES)
+RULE 1 — 4H TIMEFRAME ONLY:
+- Ask: "Will YES price move UP in next 4h?" (80% of moves happen within 1-4h of catalyst)
+- Positive news/sentiment → YES UP → BET YES
+- Negative news/sentiment → YES DOWN → BET NO
 
-RULE 2 — MOMENTUM SIGNALS (what moves prices):
-- Breaking news directly related to the question → STRONG signal
-- Social sentiment shift (many people suddenly talking about it) → MEDIUM signal  
-- Official announcement or data release → STRONG signal
-- Volume spike on this market (>$50k/day) → market is moving, follow the flow
-- Price already moved >5% today → momentum is real, ride it
-- No news, no sentiment, no volume → SKIP (no catalyst to move price)
+RULE 2 — MOMENTUM SIGNALS:
+- Official announcement / confirmed event → STRONG
+- Volume spike >$50k/day + price moving → STRONG
+- Social sentiment shift + news → MEDIUM
+- "Chatter", "leaked", "rumor", "air activity" → WEAK → SKIP
 
 RULE 3 — ENTRY CRITERIA:
 - Current price 15-85% (avoid near-certain markets, no room to move)
@@ -100,7 +94,7 @@ IMPORTANT: Output ONLY the JSON object. No text before or after. Start with {{ a
   "momentum_direction": "<up/down/neutral>",
   "catalyst": "<what specific news/event/sentiment will move the price>",
   "price_target": <float, where you expect price to reach>,
-  "time_horizon": "<hours until catalyst plays out, e.g. '4h', '24h', '48h'>",
+  "time_horizon": "<hours, e.g. 1h 2h 4h — most moves happen within 4h>'>",
   "key_factors_for": ["<specific fact that supports price movement>"],
   "key_factors_against": ["<specific fact against>"],
   "data_quality": "<strong/weak/none>",

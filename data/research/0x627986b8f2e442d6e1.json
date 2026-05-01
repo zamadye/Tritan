@@ -1,8 +1,8 @@
 {
   "market_id": "0x627986b8f2e442d6e198dc769bfe8a528b72379f20a814e2532c428da6d49670",
   "question": "Huzhou: Xiyu Wang vs Polona Hercog",
-  "market_price": 0.79,
-  "generated_at": "2026-05-01T06:58:38.686899+00:00",
+  "market_price": 0.55,
+  "generated_at": "2026-05-01T07:36:53.183840+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
@@ -23,9 +23,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77028,
-      "btc_24h": 1.736825894384317,
-      "risk_signal": "risk-ON"
+      "btc_price": 0,
+      "btc_24h": 0,
+      "risk_signal": "neutral"
     }
   },
   "sports": {},
