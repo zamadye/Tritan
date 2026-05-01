@@ -16,7 +16,7 @@ from agent.llm import chat
 def get_statistical_prior(market: dict) -> dict:
     """
     Get base rate from 19,624 resolved Polymarket markets.
-    Returns p_base (actual YES rate for this price bucket + category).
+    Minimum n=20 for category-specific, n=50 for overall.
     """
     prior_file = Path("data/statistical_prior.json")
     if not prior_file.exists():
@@ -29,9 +29,9 @@ def get_statistical_prior(market: dict) -> dict:
     from agent.learner import _infer_category
     cat = _infer_category({"category": market.get("category",""), "market_question": market.get("question","")})
 
-    # Try category-specific first
+    # Category-specific: require n >= 20
     cat_data = prior.get("categories",{}).get(cat,{}).get(bucket)
-    if cat_data and cat_data["n"] >= 10:
+    if cat_data and cat_data["n"] >= 20:
         return {
             "p_base": cat_data["yes_rate"],
             "n": cat_data["n"],
@@ -39,9 +39,9 @@ def get_statistical_prior(market: dict) -> dict:
             "calibration_error": cat_data["calibration_error"],
         }
 
-    # Fallback to overall
+    # Overall: require n >= 50
     overall = prior.get("overall",{}).get(bucket)
-    if overall and overall["n"] >= 20:
+    if overall and overall["n"] >= 50:
         return {
             "p_base": overall["yes_rate"],
             "n": overall["n"],
@@ -49,6 +49,7 @@ def get_statistical_prior(market: dict) -> dict:
             "calibration_error": overall["calibration_error"],
         }
 
+    # Fallback: use market price (no reliable prior)
     return {"p_base": market["price"], "n": 0, "source": "fallback"}
 
 

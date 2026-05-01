@@ -2,7 +2,7 @@
   "market_id": "0xfd542dcfc4d6e50231450c9d0d6ed91cb621b54776e6fb1178ed396194d35407",
   "question": "Madrid Open: Jannik Sinner vs Arthur Fils",
   "market_price": 0.86,
-  "generated_at": "2026-05-01T11:41:06.532881+00:00",
+  "generated_at": "2026-05-01T12:13:24.234930+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77345,
-      "btc_24h": 1.8853499302875942,
+      "btc_price": 77403,
+      "btc_24h": 1.735819126297192,
       "risk_signal": "risk-ON"
     }
   },

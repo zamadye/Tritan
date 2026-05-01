@@ -1,8 +1,8 @@
 {
-  "market_id": "0x69e7bf764cb986bce98845ab45ae5e3e2a9701c0efaa2018903baa830d03a0ae",
-  "question": "Cagliari: Matteo Arnaldi vs Nuno Borges",
-  "market_price": 0.44,
-  "generated_at": "2026-05-01T12:14:11.366911+00:00",
+  "market_id": "0x5ba927603fa4e8cdab361cb94ae44d883b94905dcd4f425cdd352ca5ef1927d3",
+  "question": "Saint-Malo: Jessika Ponchet vs Viktorija Golubic",
+  "market_price": 0.24,
+  "generated_at": "2026-05-01T12:13:47.514575+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
@@ -30,6 +30,11 @@
   },
   "sports": {},
   "news_articles": [],
-  "causal_chains": [],
+  "causal_chains": [
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
+    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term",
+    "AI chip shortage \u2192 NVIDIA revenue beats \u2192 AI infrastructure stocks rally",
+    "AI energy demand \u2192 data center power stocks rally"
+  ],
   "summary": ""
 }
