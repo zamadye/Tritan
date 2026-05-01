@@ -1,0 +1,382 @@
+{
+  "categories": {
+    "geopolitik": {
+      "0-10%": {
+        "yes_rate": 0.0,
+        "n": 124,
+        "calibration_error": 0.05
+      },
+      "90-100%": {
+        "yes_rate": 1.0,
+        "n": 5,
+        "calibration_error": 0.05
+      },
+      "50-60%": {
+        "yes_rate": 0.3241,
+        "n": 108,
+        "calibration_error": 0.2259
+      }
+    },
+    "sports": {
+      "0-10%": {
+        "yes_rate": 0.0038,
+        "n": 263,
+        "calibration_error": 0.0462
+      },
+      "90-100%": {
+        "yes_rate": 0.9911,
+        "n": 673,
+        "calibration_error": 0.0411
+      },
+      "10-20%": {
+        "yes_rate": 0.0,
+        "n": 44,
+        "calibration_error": 0.15
+      },
+      "50-60%": {
+        "yes_rate": 0.4881,
+        "n": 5396,
+        "calibration_error": 0.0619
+      },
+      "30-40%": {
+        "yes_rate": 0.0,
+        "n": 27,
+        "calibration_error": 0.35
+      },
+      "60-70%": {
+        "yes_rate": 0.0667,
+        "n": 15,
+        "calibration_error": 0.5833
+      },
+      "40-50%": {
+        "yes_rate": 0.027,
+        "n": 37,
+        "calibration_error": 0.423
+      },
+      "20-30%": {
+        "yes_rate": 0.0,
+        "n": 24,
+        "calibration_error": 0.25
+      },
+      "70-80%": {
+        "yes_rate": 0.2857,
+        "n": 7,
+        "calibration_error": 0.4643
+      },
+      "80-90%": {
+        "yes_rate": 0.5,
+        "n": 6,
+        "calibration_error": 0.35
+      }
+    },
+    "other": {
+      "90-100%": {
+        "yes_rate": 0.9692,
+        "n": 1136,
+        "calibration_error": 0.0192
+      },
+      "0-10%": {
+        "yes_rate": 0.0033,
+        "n": 1211,
+        "calibration_error": 0.0467
+      },
+      "10-20%": {
+        "yes_rate": 0.0165,
+        "n": 121,
+        "calibration_error": 0.1335
+      },
+      "50-60%": {
+        "yes_rate": 0.3556,
+        "n": 2880,
+        "calibration_error": 0.1944
+      },
+      "20-30%": {
+        "yes_rate": 0.0,
+        "n": 83,
+        "calibration_error": 0.25
+      },
+      "30-40%": {
+        "yes_rate": 0.0,
+        "n": 53,
+        "calibration_error": 0.35
+      },
+      "80-90%": {
+        "yes_rate": 0.2143,
+        "n": 28,
+        "calibration_error": 0.6357
+      },
+      "40-50%": {
+        "yes_rate": 0.0,
+        "n": 64,
+        "calibration_error": 0.45
+      },
+      "70-80%": {
+        "yes_rate": 0.2727,
+        "n": 33,
+        "calibration_error": 0.4773
+      },
+      "60-70%": {
+        "yes_rate": 0.0513,
+        "n": 39,
+        "calibration_error": 0.5987
+      }
+    },
+    "crypto": {
+      "0-10%": {
+        "yes_rate": 0.0064,
+        "n": 625,
+        "calibration_error": 0.0436
+      },
+      "90-100%": {
+        "yes_rate": 0.9793,
+        "n": 868,
+        "calibration_error": 0.0293
+      },
+      "40-50%": {
+        "yes_rate": 0.0,
+        "n": 10,
+        "calibration_error": 0.45
+      },
+      "50-60%": {
+        "yes_rate": 0.4634,
+        "n": 3949,
+        "calibration_error": 0.0866
+      },
+      "10-20%": {
+        "yes_rate": 0.0,
+        "n": 10,
+        "calibration_error": 0.15
+      },
+      "20-30%": {
+        "yes_rate": 0.0,
+        "n": 10,
+        "calibration_error": 0.25
+      },
+      "60-70%": {
+        "yes_rate": 0.0,
+        "n": 7,
+        "calibration_error": 0.65
+      },
+      "80-90%": {
+        "yes_rate": 0.1538,
+        "n": 13,
+        "calibration_error": 0.6962
+      },
+      "70-80%": {
+        "yes_rate": 0.5,
+        "n": 14,
+        "calibration_error": 0.25
+      },
+      "30-40%": {
+        "yes_rate": 0.1875,
+        "n": 16,
+        "calibration_error": 0.1625
+      }
+    },
+    "economics": {
+      "0-10%": {
+        "yes_rate": 0.0,
+        "n": 22,
+        "calibration_error": 0.05
+      },
+      "90-100%": {
+        "yes_rate": 1.0,
+        "n": 5,
+        "calibration_error": 0.05
+      },
+      "50-60%": {
+        "yes_rate": 0.3279,
+        "n": 61,
+        "calibration_error": 0.2221
+      }
+    },
+    "ai": {
+      "90-100%": {
+        "yes_rate": 1.0,
+        "n": 11,
+        "calibration_error": 0.05
+      },
+      "0-10%": {
+        "yes_rate": 0.0,
+        "n": 40,
+        "calibration_error": 0.05
+      },
+      "50-60%": {
+        "yes_rate": 0.3125,
+        "n": 16,
+        "calibration_error": 0.2375
+      }
+    },
+    "politics": {
+      "50-60%": {
+        "yes_rate": 0.3665,
+        "n": 221,
+        "calibration_error": 0.1835
+      }
+    },
+    "us-current-affairs": {
+      "50-60%": {
+        "yes_rate": 0.4175,
+        "n": 309,
+        "calibration_error": 0.1325
+      }
+    },
+    "coronavirus": {
+      "50-60%": {
+        "yes_rate": 0.5839,
+        "n": 149,
+        "calibration_error": 0.0339
+      }
+    },
+    "nfts": {
+      "50-60%": {
+        "yes_rate": 0.4722,
+        "n": 108,
+        "calibration_error": 0.0778
+      }
+    },
+    "art": {
+      "50-60%": {
+        "yes_rate": 0.2241,
+        "n": 58,
+        "calibration_error": 0.3259
+      }
+    },
+    "nba playoffs": {
+      "50-60%": {
+        "yes_rate": 0.621,
+        "n": 124,
+        "calibration_error": 0.071
+      }
+    },
+    "pop-culture ": {
+      "50-60%": {
+        "yes_rate": 0.3807,
+        "n": 197,
+        "calibration_error": 0.1693
+      }
+    },
+    "business": {
+      "50-60%": {
+        "yes_rate": 0.5414,
+        "n": 133,
+        "calibration_error": 0.0086
+      }
+    },
+    "ukraine & russia": {
+      "50-60%": {
+        "yes_rate": 0.3913,
+        "n": 46,
+        "calibration_error": 0.1587
+      }
+    },
+    "chess": {
+      "50-60%": {
+        "yes_rate": 0.4286,
+        "n": 70,
+        "calibration_error": 0.1214
+      }
+    },
+    "science": {
+      "50-60%": {
+        "yes_rate": 0.48,
+        "n": 50,
+        "calibration_error": 0.07
+      }
+    },
+    "tech": {
+      "50-60%": {
+        "yes_rate": 0.6,
+        "n": 5,
+        "calibration_error": 0.05
+      }
+    },
+    "olympics": {
+      "50-60%": {
+        "yes_rate": 0.5789,
+        "n": 19,
+        "calibration_error": 0.0289
+      }
+    },
+    "global politics": {
+      "50-60%": {
+        "yes_rate": 0.4464,
+        "n": 56,
+        "calibration_error": 0.1036
+      }
+    },
+    "poker": {
+      "50-60%": {
+        "yes_rate": 0.0,
+        "n": 7,
+        "calibration_error": 0.55
+      }
+    },
+    "space": {},
+    "coronavirus-": {}
+  },
+  "overall": {
+    "0-10%": {
+      "yes_rate": 0.0039,
+      "n": 2287,
+      "market_implied": 0.05,
+      "calibration_error": 0.0461
+    },
+    "90-100%": {
+      "yes_rate": 0.9781,
+      "n": 2699,
+      "market_implied": 0.9500000000000001,
+      "calibration_error": 0.0281
+    },
+    "10-20%": {
+      "yes_rate": 0.0112,
+      "n": 179,
+      "market_implied": 0.15000000000000002,
+      "calibration_error": 0.1388
+    },
+    "50-60%": {
+      "yes_rate": 0.4472,
+      "n": 13967,
+      "market_implied": 0.55,
+      "calibration_error": 0.1028
+    },
+    "40-50%": {
+      "yes_rate": 0.0089,
+      "n": 112,
+      "market_implied": 0.45,
+      "calibration_error": 0.4411
+    },
+    "30-40%": {
+      "yes_rate": 0.0309,
+      "n": 97,
+      "market_implied": 0.35,
+      "calibration_error": 0.3191
+    },
+    "60-70%": {
+      "yes_rate": 0.0484,
+      "n": 62,
+      "market_implied": 0.65,
+      "calibration_error": 0.6016
+    },
+    "20-30%": {
+      "yes_rate": 0.0,
+      "n": 119,
+      "market_implied": 0.25,
+      "calibration_error": 0.25
+    },
+    "80-90%": {
+      "yes_rate": 0.234,
+      "n": 47,
+      "market_implied": 0.8500000000000001,
+      "calibration_error": 0.616
+    },
+    "70-80%": {
+      "yes_rate": 0.3273,
+      "n": 55,
+      "market_implied": 0.75,
+      "calibration_error": 0.4227
+    }
+  },
+  "total_markets": 19624,
+  "generated_at": "2026-05-01T07:55:39.978311"
+}
