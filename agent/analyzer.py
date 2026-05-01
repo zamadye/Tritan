@@ -84,14 +84,24 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
     sports_ctx = get_sports_context(market.get("question", ""))
     osint_ctx  = get_osint_signals(market.get("question", ""))
     full_context = "\n".join(filter(None, [news_context, sports_ctx, osint_ctx]))
-    # Sanitize: remove characters that confuse MiMo (pipes, special unicode)
     full_context = full_context.replace("|", "-").replace("━", "-").replace("═", "-")
     knowledge    = _load_knowledge()
 
-    # Layer 1: get statistical base rate
-    prior = get_statistical_prior(market)
-    p_base = prior["p_base"]
+    # Layer 1: statistical prior + logistic calibration
+    prior    = get_statistical_prior(market)
+    p_base   = prior["p_base"]
     p_market = market["price"]
+
+    # Edge Type 2: information delay detector
+    from agent.info_edge import detect_info_edge
+    info_edge_data = detect_info_edge(market)
+    info_edge_ctx  = ""
+    if info_edge_data["has_edge"]:
+        info_edge_ctx = (
+            f"\n⚡ INFO EDGE: {info_edge_data['signal']} "
+            f"({info_edge_data['minutes_since_info']} min ago) — {info_edge_data['detail']}"
+            f"\nMarket likely has not priced this in yet."
+        )
 
     prev_loss_note = (
         "⚠️ PREVIOUS BET ON THIS MARKET WAS WRONG. Only bet again with NEW concrete evidence.\n"
@@ -107,7 +117,8 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         f"Momentum signal: markets at this price 24h before resolve → "
         f"{prior.get('momentum_signal','NEUTRAL')} "
         f"({prior.get('momentum_yes_rate',0.5):.0%} resolved YES, n={prior.get('momentum_n',0)}).\n\n"
-        f"Real-time data:\n{full_context[:500] if full_context else 'No data available.'}\n\n"
+        f"Real-time data:\n{full_context[:500] if full_context else 'No data available.'}"
+        f"{info_edge_ctx}\n\n"
         f"Past lessons:\n{evolution_context[:200] if evolution_context else 'None yet.'}\n"
         f"{prev_loss_note}\n"
         f"Question: Is there a specific verifiable catalyst that will move this price in the next 4 hours?\n"
