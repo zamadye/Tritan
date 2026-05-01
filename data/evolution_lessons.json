@@ -1,6 +1,6 @@
 {
-  "total_resolved": 154,
-  "overall_win_rate": 0.357,
+  "total_resolved": 35,
+  "overall_win_rate": 0.371,
   "momentum_lessons": [
     {
       "category": "sports",
@@ -40,353 +40,69 @@
   ],
   "price_movement_patterns": {
     "10-20%": {
-      "win_rate": 0.41,
-      "avg_pnl": 5.57,
-      "n": 22
-    },
-    "40-50%": {
-      "win_rate": 0.54,
-      "avg_pnl": 1.4,
-      "n": 39
-    },
-    "90-100%": {
-      "win_rate": 0.0,
-      "avg_pnl": -6.5,
-      "n": 2
-    },
-    "70-80%": {
-      "win_rate": 0.05,
-      "avg_pnl": -1.25,
-      "n": 20
-    },
-    "30-40%": {
-      "win_rate": 0.31,
-      "avg_pnl": 0.99,
-      "n": 13
-    },
-    "60-70%": {
-      "win_rate": 0.5,
-      "avg_pnl": 0.85,
-      "n": 6
-    },
-    "20-30%": {
-      "win_rate": 0.4,
-      "avg_pnl": -0.49,
-      "n": 20
-    },
-    "0-10%": {
-      "win_rate": 0.11,
-      "avg_pnl": -2.87,
+      "win_rate": 0.56,
+      "avg_pnl": 0.16,
       "n": 9
     },
-    "50-60%": {
-      "win_rate": 0.42,
-      "avg_pnl": -0.75,
-      "n": 19
+    "20-30%": {
+      "win_rate": 0.5,
+      "avg_pnl": 0.02,
+      "n": 8
+    },
+    "0-10%": {
+      "win_rate": 0.0,
+      "avg_pnl": -0.08,
+      "n": 1
     },
     "80-90%": {
       "win_rate": 0.0,
-      "avg_pnl": -1.54,
+      "avg_pnl": -0.31,
+      "n": 2
+    },
+    "30-40%": {
+      "win_rate": 0.25,
+      "avg_pnl": -0.01,
       "n": 4
+    },
+    "50-60%": {
+      "win_rate": 1.0,
+      "avg_pnl": 0.17,
+      "n": 1
+    },
+    "70-80%": {
+      "win_rate": 0.0,
+      "avg_pnl": -0.25,
+      "n": 5
+    },
+    "40-50%": {
+      "win_rate": 0.4,
+      "avg_pnl": -0.02,
+      "n": 5
     }
   },
   "exit_patterns": {
-    "RESOLVED": 67,
-    "TAKE_PROFIT": 26,
-    "STOP_LOSS": 38,
-    "TIME_LIMIT": 4,
-    "TRAILING_STOP": 19
+    "TAKE_PROFIT": 9,
+    "STOP_LOSS": 17,
+    "TIME_LIMIT": 1,
+    "TRAILING_STOP": 8
   },
   "edge_reality": {
     "10%": {
-      "actual_wr": 0.47,
-      "n": 45
-    },
-    "70%": {
-      "actual_wr": 0.25,
-      "n": 4
-    },
-    "50%": {
-      "actual_wr": 0.4,
-      "n": 15
+      "actual_wr": 0.41,
+      "n": 22
     },
     "20%": {
-      "actual_wr": 0.35,
-      "n": 37
-    },
-    "60%": {
-      "actual_wr": 0.25,
-      "n": 8
-    },
-    "80%": {
-      "actual_wr": 0.17,
-      "n": 6
-    },
-    "40%": {
-      "actual_wr": 0.18,
-      "n": 17
-    },
-    "30%": {
-      "actual_wr": 0.41,
-      "n": 17
-    },
-    "90%": {
-      "actual_wr": 0.0,
-      "n": 2
+      "actual_wr": 0.36,
+      "n": 11
     },
     "0%": {
-      "actual_wr": 0.33,
-      "n": 3
+      "actual_wr": 0.0,
+      "n": 2
     }
   },
   "category_bias": {},
   "calibration_adjustments": {},
-  "overconfidence_patterns": [
-    {
-      "category": "geopolitik",
-      "confidence_claimed": 0.84
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.78
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.95
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.78
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.85
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.78
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.71
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.72
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.78
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.82
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.7
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.8
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.98
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.98
-    },
-    {
-      "category": "geopolitik",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "geopolitik",
-      "confidence_claimed": 0.85
-    },
-    {
-      "category": "crypto",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "crypto",
-      "confidence_claimed": 0.72
-    },
-    {
-      "category": "crypto",
-      "confidence_claimed": 0.88
-    },
-    {
-      "category": "crypto",
-      "confidence_claimed": 0.82
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.98
-    },
-    {
-      "category": "other",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.7
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "geopolitik",
-      "confidence_claimed": 0.8
-    },
-    {
-      "category": "geopolitik",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.73
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "politics",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.73
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "geopolitik",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.7
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "politics",
-      "confidence_claimed": 0.72
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.72
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.71
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "politics",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    },
-    {
-      "category": "sports",
-      "confidence_claimed": 0.75
-    }
-  ],
+  "overconfidence_patterns": [],
   "recent_mistakes": [
     {
       "question": "NBA Playoffs: Who Will Win Series? - Lakers vs. Rockets ",

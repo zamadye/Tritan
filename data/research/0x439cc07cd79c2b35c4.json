@@ -1,12 +1,13 @@
 {
   "market_id": "0x439cc07cd79c2b35c4e3302aec26e35f63ac54a6f02873bf9f3537afbd7315c9",
   "question": "Huzhou: Varvara Panshina vs Katarzyna Kawa",
-  "market_price": 0.21,
-  "generated_at": "2026-05-01T06:20:37.741094+00:00",
+  "market_price": 0.25,
+  "generated_at": "2026-05-01T06:58:24.111258+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -22,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77133,
-      "btc_24h": 2.02539773036507,
+      "btc_price": 77028,
+      "btc_24h": 1.736825894384317,
       "risk_signal": "risk-ON"
     }
   },

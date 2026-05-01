@@ -1,12 +1,13 @@
 {
   "market_id": "0xe5588e3ba9196cdbebbe4188ad941b5c23f4355c968560acbdb961955d27ca2a",
   "question": "Jiujiang: Adam Walton vs Alexis Galarneau",
-  "market_price": 0.861,
-  "generated_at": "2026-05-01T06:20:47.359210+00:00",
+  "market_price": 0.539,
+  "generated_at": "2026-05-01T06:58:09.705873+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -22,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 77133,
-      "btc_24h": 2.02539773036507,
+      "btc_price": 77028,
+      "btc_24h": 1.736825894384317,
       "risk_signal": "risk-ON"
     }
   },

@@ -88,8 +88,14 @@ def _infer_category(trade: dict) -> str:
 
 
 def _generate_evolution_lessons(trades: list, mode: str = "demo"):
-    """Generate momentum trading lessons from resolved trades."""
-    resolved = [t for t in trades if t.get("actual_outcome")]
+    """Generate momentum trading lessons — only from momentum-strategy trades (Apr 29+)."""
+    # Filter: only use momentum trades (new strategy), not old base-rate trades
+    momentum_cutoff = "2026-04-29"
+    momentum_trades = [t for t in trades if (t.get("timestamp","") or "") >= momentum_cutoff]
+    resolved = [t for t in momentum_trades if t.get("actual_outcome")]
+    if not resolved:
+        # Fallback to all trades if no momentum trades resolved yet
+        resolved = [t for t in trades if t.get("actual_outcome")]
     if not resolved:
         return
 
