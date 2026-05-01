@@ -2,10 +2,12 @@
   "market_id": "0x4080978c4f7e52d80ddc271a7fe4cdb2e40c803d601e402efbdf373ed8391dfd",
   "question": "UFC Fight Night: Vince Morales vs. Colby Thicknesse (Bantamweight, Prelims)",
   "market_price": 0.44,
-  "generated_at": "2026-05-01T02:30:01.064421+00:00",
+  "generated_at": "2026-05-01T06:42:59.852090+00:00",
   "macro": {
     "fed_expectations": [
-      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%"
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -21,9 +23,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76604,
-      "btc_24h": 0.6131622411409042,
-      "risk_signal": "neutral"
+      "btc_price": 76992,
+      "btc_24h": 1.650412239536363,
+      "risk_signal": "risk-ON"
     }
   },
   "sports": {},

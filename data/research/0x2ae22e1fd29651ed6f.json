@@ -1,12 +1,13 @@
 {
   "market_id": "0x2ae22e1fd29651ed6f049114672a0be94b907e833485a7a6d0c7df2dc7f03ce9",
   "question": "Will Google have the best AI model at the end of May 2026?",
-  "market_price": 0.14,
-  "generated_at": "2026-05-01T02:48:36.792920+00:00",
+  "market_price": 0.15,
+  "generated_at": "2026-05-01T06:24:12.274402+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -22,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76550,
-      "btc_24h": 1.2791838180674269,
+      "btc_price": 77086,
+      "btc_24h": 1.9645360138999317,
       "risk_signal": "risk-ON"
     }
   },

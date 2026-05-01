@@ -4569,7 +4569,7 @@
       "Sports markets can be unpredictable despite recent results",
       "Momentum thesis failed at similar entry points before (0.45, 0.32, 0.40)"
     ],
-    "peak_price": 0.495
+    "peak_price": 0.5
   },
   {
     "trade_id": "4153f392-81cb-4147-94d6-871834698871",
@@ -4611,6 +4611,44 @@
     "exit_reason": "STOP_LOSS (-65%)",
     "prediction_correct": false,
     "resolved_at": "2026-05-01T02:29:27.323772+00:00",
+    "brier_score": 0.0645
+  },
+  {
+    "trade_id": "72290ca8-106b-42bb-9979-662c07f00ba1",
+    "timestamp": "2026-05-01T03:08:47.695106",
+    "mode": "demo",
+    "market_id": "0x13b1bfb4d3d001814cc7c7dcecbd2de54befc1a33dc1e9b847dc96b0d66ca46d",
+    "market_numeric_id": "2006664",
+    "market_question": "NBA Playoffs: Who Will Win Series? - Lakers vs. Rockets ",
+    "end_date": "2026-05-04T00:00:00Z",
+    "category": "",
+    "side": "NO",
+    "size_usd": 0.5,
+    "price_at_entry": 0.746,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": -0.25,
+    "p_true_estimated": 0.5,
+    "confidence_at_bet": 0.52,
+    "edge_at_bet": -0.246,
+    "base_rate": null,
+    "resolution_clarity": null,
+    "reasoning_summary": "CATALYST: Vegas odds discrepancy (Lakers implied 40% vs market 74.6%) suggests market may be overvalued, but lacks immediate catalyst to drive correction \u2192 DIRECTION: down \u2192 TARGET: 0.65 because market pricing appears disconnected from betting odds, but without breaking news or sentiment shift, momentum may not materialize quickly",
+    "calibration_applied": "Applied sports momentum failure pattern: high-confidence sports bets at 75% entry historically lose without strong catalyst | Vegas-anchored: 40%\u00b1+10%=50% | capped at 52% (Vegas=40%)",
+    "key_factors_for": [
+      "Vegas odds imply Lakers win probability ~40%, significantly below current market price of 74.6%",
+      "Current price already high (74.6%) suggesting limited upside momentum",
+      "Macro fear environment (Fear&Greed 26) typically doesn't favor high-conviction bets"
+    ],
+    "key_factors_against": [
+      "No breaking news or strong catalyst to trigger immediate price correction",
+      "Sports momentum often defies fundamental valuation in short term",
+      "Previous bet on this market was wrong - need stronger evidence to re-enter"
+    ],
+    "exit_price": 0.6341,
+    "exit_reason": "STOP_LOSS (-65%)",
+    "prediction_correct": false,
+    "resolved_at": "2026-05-01T03:17:24.136948+00:00",
     "brier_score": 0.0645
   }
 ]

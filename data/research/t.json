@@ -1,42 +1,41 @@
 {
   "market_id": "t",
-  "question": "Will Bitcoin reach $80,000 in April?",
-  "market_price": 0.13,
-  "generated_at": "2026-04-30T06:05:32.606502+00:00",
+  "question": "US-Iran peace deal?",
+  "market_price": 0.19,
+  "generated_at": "2026-05-01T06:44:45.879552+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
-      "Will there be no change in Fed interest rates after the June \u2192 YES=50%"
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
     ],
     "fear_greed": {
-      "current": "29/100 (Fear)",
+      "current": "26/100 (Fear)",
       "7d_trend": "deteriorating",
       "values": [
+        26,
         29,
         26,
         33,
         47,
         33,
-        31,
-        39
+        31
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 75560,
-      "btc_24h": -2.193455077946664,
-      "risk_signal": "risk-OFF"
+      "btc_price": 76967,
+      "btc_24h": 1.6172036604770172,
+      "risk_signal": "risk-ON"
     }
   },
   "sports": {},
   "news_articles": [],
   "causal_chains": [
-    "BTC within 3% of round number ($80k/$90k) \u2192 gamma squeeze \u2192 price accelerates",
-    "BTC ETF inflows spike \u2192 institutional buying \u2192 price +5-15%",
-    "BTC ETF outflows \u2192 selling pressure \u2192 price -5-10%",
-    "BTC halving approaching \u2192 supply shock narrative \u2192 price rally",
-    "Crypto exchange hack/collapse \u2192 panic selling \u2192 BTC -15-30%",
-    "Whale accumulation (on-chain) \u2192 supply squeeze \u2192 price up"
+    "Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%",
+    "Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls",
+    "Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally",
+    "Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
+    "Iran sanctions tighten \u2192 crypto adoption in Iran increases (capital flight)"
   ],
   "summary": ""
 }

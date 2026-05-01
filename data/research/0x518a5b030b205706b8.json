@@ -1,11 +1,13 @@
 {
   "market_id": "0x518a5b030b205706b8ffe6bbad9bd3de59548348e5c0471827f5de21e513333c",
   "question": "Strait of Hormuz traffic returns to normal by end of May?",
-  "market_price": 0.21,
-  "generated_at": "2026-05-01T02:33:32.037975+00:00",
+  "market_price": 0.15,
+  "generated_at": "2026-05-01T06:46:33.929480+00:00",
   "macro": {
     "fed_expectations": [
-      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%"
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -21,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76553,
-      "btc_24h": 1.075145044331896,
+      "btc_price": 77004,
+      "btc_24h": 1.736021127349246,
       "risk_signal": "risk-ON"
     }
   },

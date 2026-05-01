@@ -2,7 +2,7 @@
   "market_id": "0xa1d97efb8a19de58d995edf58b882c4f99ef356c8a564af8daf888a7610edea1",
   "question": "Kharg Island no longer under Iranian control by May 31?",
   "market_price": 0.11,
-  "generated_at": "2026-05-01T02:36:30.861288+00:00",
+  "generated_at": "2026-05-01T06:12:53.220410+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
@@ -22,8 +22,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76537,
-      "btc_24h": 1.284129594143846,
+      "btc_price": 77072,
+      "btc_24h": 1.9995649992128512,
       "risk_signal": "risk-ON"
     }
   },

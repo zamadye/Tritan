@@ -243,7 +243,7 @@ def get_evolution_context(mode: str = "demo") -> str:
         n = len(lessons["overconfidence_patterns"])
         lines.append(f"Overconfidence: {n}x high-conf bets were wrong — stay disciplined on catalyst quality.")
 
-    return "\n".join(lines)
+    return "\n".join(lines)[:800]  # cap at 800 chars to save tokens
 
 
 def _load_lessons(filepath: str) -> dict:

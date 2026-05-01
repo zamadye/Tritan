@@ -1,12 +1,13 @@
 {
   "market_id": "0x5072d0bf27763754b734c63255c4cbbba79d9d09b214accf33ecc79b88b1d108",
   "question": "Will Anthropic have the best AI model at the end of May 2026?",
-  "market_price": 0.84,
-  "generated_at": "2026-05-01T02:47:44.614118+00:00",
+  "market_price": 0.83,
+  "generated_at": "2026-05-01T06:24:04.027411+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -22,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76546,
-      "btc_24h": 1.2739034987895146,
+      "btc_price": 77086,
+      "btc_24h": 1.9645360138999317,
       "risk_signal": "risk-ON"
     }
   },

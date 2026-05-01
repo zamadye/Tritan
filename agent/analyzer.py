@@ -5,14 +5,14 @@ from agent.llm import chat
 
 
 def _load_knowledge() -> str:
-    """Load condensed knowledge base (max 800 chars to save tokens)."""
+    """Load condensed knowledge base (max 400 chars to save tokens)."""
     from pathlib import Path as _Path
     kb = _Path(__file__).parent / "KNOWLEDGE.md"
     if not kb.exists():
         return ""
+    # Only return entry strategy section (most critical)
     text = kb.read_text()
-    # Return only first 800 chars (entry strategy + catalyst types)
-    return text[:800]
+    return text[:400]
 
 
 def estimate_probability(market: dict, news_context: str = "", evolution_context: str = "", prev_loss: bool = False) -> dict:
@@ -91,7 +91,7 @@ RULE 5 — SKIP FREELY:
 - We make money on 3-5 high-quality momentum trades per day, not 20 random bets
 
 ━━━ OUTPUT FORMAT ━━━
-Output ONLY valid JSON:
+IMPORTANT: Output ONLY the JSON object. No text before or after. Start with {{ and end with }}
 {{
   "p_true": <float 0-1, where you think YES price will move TO>,
   "confidence": <float 0-1, how strong is the momentum catalyst>,
@@ -111,8 +111,27 @@ Output ONLY valid JSON:
 
     try:
         raw = chat(prompt)
+        # Robust JSON extraction
         raw = raw.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-        result = json.loads(raw)
+        # Extract JSON block between first { and last }
+        start = raw.find("{")
+        end   = raw.rfind("}") + 1
+        if start != -1 and end > start:
+            raw = raw[start:end]
+
+        # Try standard parse first
+        try:
+            result = json.loads(raw)
+        except json.JSONDecodeError:
+            # Fallback: fix common LLM JSON issues
+            import re
+            # Remove trailing commas before } or ]
+            raw = re.sub(r",\s*([}\]])", r"\1", raw)
+            # Replace single quotes with double quotes (careful with apostrophes)
+            raw = re.sub(r"(?<![a-zA-Z])'([^']*)'(?![a-zA-Z])", r'"\1"', raw)
+            # Remove comments
+            raw = re.sub(r"//[^\n]*", "", raw)
+            result = json.loads(raw)
 
         # Enforce confidence caps based on evidence quality
         clarity = result.get("resolution_clarity", "medium")

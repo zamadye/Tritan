@@ -1,0 +1,42 @@
+{
+  "market_id": "0x4bab360a81b57047b48c0dd7c6c1377706129e3e6b9fa3f079cc28d310ec4cec",
+  "question": "Will WTI Crude Oil (WTI) hit (HIGH) $110 in May?",
+  "market_price": 0.83,
+  "generated_at": "2026-05-01T06:38:45.693636+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "26/100 (Fear)",
+      "7d_trend": "deteriorating",
+      "values": [
+        26,
+        29,
+        26,
+        33,
+        47,
+        33,
+        31
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 77102,
+      "btc_24h": 1.7390657045045805,
+      "risk_signal": "risk-ON"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [
+    "OPEC production cut \u2192 oil price +5-15%",
+    "OPEC production increase \u2192 oil price -5-10%",
+    "US shale production rises \u2192 oil price ceiling effect",
+    "Oil above $90 \u2192 inflation pressure \u2192 Fed hawkish \u2192 BTC falls",
+    "Oil below $60 \u2192 deflation risk \u2192 Fed dovish \u2192 BTC rallies",
+    "Oil price spike \u2192 airline/shipping stocks fall \u2192 consumer discretionary falls"
+  ],
+  "summary": ""
+}

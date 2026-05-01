@@ -1,6 +1,6 @@
 {
-  "total_resolved": 153,
-  "overall_win_rate": 0.359,
+  "total_resolved": 154,
+  "overall_win_rate": 0.357,
   "momentum_lessons": [
     {
       "category": "sports",
@@ -56,8 +56,8 @@
     },
     "70-80%": {
       "win_rate": 0.05,
-      "avg_pnl": -1.3,
-      "n": 19
+      "avg_pnl": -1.25,
+      "n": 20
     },
     "30-40%": {
       "win_rate": 0.31,
@@ -93,7 +93,7 @@
   "exit_patterns": {
     "RESOLVED": 67,
     "TAKE_PROFIT": 26,
-    "STOP_LOSS": 37,
+    "STOP_LOSS": 38,
     "TIME_LIMIT": 4,
     "TRAILING_STOP": 19
   },
@@ -111,8 +111,8 @@
       "n": 15
     },
     "20%": {
-      "actual_wr": 0.36,
-      "n": 36
+      "actual_wr": 0.35,
+      "n": 37
     },
     "60%": {
       "actual_wr": 0.25,
@@ -392,6 +392,13 @@
       "question": "NBA Playoffs: Who Will Win Series? - Lakers vs. Rockets ",
       "category": "sports",
       "entry_price": 0.746,
+      "reasoning": "CATALYST: Vegas odds discrepancy (Lakers implied 40% vs market 74.6%) suggests market may be overval",
+      "lesson": "Momentum thesis failed in sports at entry 0.75. Review what catalyst was missing."
+    },
+    {
+      "question": "NBA Playoffs: Who Will Win Series? - Lakers vs. Rockets ",
+      "category": "sports",
+      "entry_price": 0.746,
       "reasoning": "CATALYST: Lakers stars LeBron James and Anthony Davis listed OUT for Game 3 while betting markets fa",
       "lesson": "Momentum thesis failed in sports at entry 0.75. Review what catalyst was missing."
     },
@@ -401,13 +408,6 @@
       "entry_price": 0.45,
       "reasoning": "CATALYST: Live game tied 2-2 with Angels showing prior-night momentum vs weaker White Sox \u2192 DIRECTIO",
       "lesson": "Momentum thesis failed in sports at entry 0.45. Review what catalyst was missing."
-    },
-    {
-      "question": "Miami Marlins vs. Los Angeles Dodgers",
-      "category": "sports",
-      "entry_price": 0.32,
-      "reasoning": "CATALYST: Live MLB game tied early with Dodgers superior record vs Marlins \u2192 DIRECTION: up \u2192 TARGET:",
-      "lesson": "Momentum thesis failed in sports at entry 0.32. Review what catalyst was missing."
     }
   ]
 }
