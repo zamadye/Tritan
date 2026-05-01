@@ -15,56 +15,59 @@ from agent.llm import chat
 
 def get_statistical_prior(market: dict) -> dict:
     """
-    Get base rate from 19,624 resolved Polymarket markets.
-    Minimum n=20 for category-specific, n=50 for overall.
-    Also returns entry_price momentum signal.
+    Get calibrated p_base using logistic regression model per category.
+    Falls back to bucket-based prior if model not available.
     """
     prior_file = Path("data/statistical_prior.json")
-    if not prior_file.exists():
-        return {"p_base": market["price"], "n": 0, "source": "fallback", "momentum_signal": "NEUTRAL"}
+    cal_file   = Path("data/calibration_model.json")
 
-    prior = json.loads(prior_file.read_text())
     price = market["price"]
-    bucket = f"{int(price*10)*10}-{int(price*10)*10+10}%"
-
     from agent.learner import _infer_category
     cat = _infer_category({"category": market.get("category",""), "market_question": market.get("question","")})
 
-    # Entry price momentum signal (24h before resolve)
-    ep = prior.get("entry_price_prior",{}).get(bucket,{})
-    momentum_signal = ep.get("momentum_signal","NEUTRAL") if ep.get("n",0) >= 20 else "NEUTRAL"
-    momentum_yes_rate = ep.get("yes_rate", 0.5)
+    # Entry price momentum signal
+    ep_signal = {"momentum_signal": "NEUTRAL", "momentum_yes_rate": 0.5, "momentum_n": 0}
+    if prior_file.exists():
+        prior = json.loads(prior_file.read_text())
+        bucket = f"{int(price*10)*10}-{int(price*10)*10+10}%"
+        ep = prior.get("entry_price_prior",{}).get(bucket,{})
+        if ep.get("n",0) >= 20:
+            ep_signal = {"momentum_signal": ep.get("momentum_signal","NEUTRAL"),
+                         "momentum_yes_rate": ep.get("yes_rate",0.5),
+                         "momentum_n": ep.get("n",0)}
 
-    # Category-specific: require n >= 20
-    cat_data = prior.get("categories",{}).get(cat,{}).get(bucket)
-    if cat_data and cat_data["n"] >= 20:
-        return {
-            "p_base": cat_data["yes_rate"],
-            "n": cat_data["n"],
-            "source": f"category:{cat}",
-            "calibration_error": cat_data["calibration_error"],
-            "momentum_signal": momentum_signal,
-            "momentum_yes_rate": momentum_yes_rate,
-            "momentum_n": ep.get("n",0),
-        }
+    # Logistic regression calibration (primary)
+    if cal_file.exists() and 0 < price < 1:
+        cal = json.loads(cal_file.read_text())
+        model = cal.get(cat) or cal.get("other")
+        if model and model["n"] >= 50:
+            import math
+            def sigmoid(x): return 1/(1+math.exp(-max(-500,min(500,x))))
+            def logit(p): return math.log(p/(1-p))
+            a, b = model["a"], model["b"]
+            p_cal = round(sigmoid(a * logit(price) + b), 4)
+            return {
+                "p_base": p_cal,
+                "n": model["n"],
+                "source": f"logistic:{cat}",
+                "brier_improvement": model["improvement"],
+                **ep_signal,
+            }
 
-    # Overall: require n >= 50
-    overall = prior.get("overall",{}).get(bucket)
-    if overall and overall["n"] >= 50:
-        return {
-            "p_base": overall["yes_rate"],
-            "n": overall["n"],
-            "source": "overall",
-            "calibration_error": overall["calibration_error"],
-            "momentum_signal": momentum_signal,
-            "momentum_yes_rate": momentum_yes_rate,
-            "momentum_n": ep.get("n",0),
-        }
+    # Fallback: bucket-based prior
+    if prior_file.exists():
+        prior = json.loads(prior_file.read_text())
+        bucket = f"{int(price*10)*10}-{int(price*10)*10+10}%"
+        cat_data = prior.get("categories",{}).get(cat,{}).get(bucket)
+        if cat_data and cat_data["n"] >= 20:
+            return {"p_base": cat_data["yes_rate"], "n": cat_data["n"],
+                    "source": f"bucket:{cat}", **ep_signal}
+        overall = prior.get("overall",{}).get(bucket)
+        if overall and overall["n"] >= 50:
+            return {"p_base": overall["yes_rate"], "n": overall["n"],
+                    "source": "bucket:overall", **ep_signal}
 
-    # Fallback: use market price (no reliable prior)
-    return {"p_base": market["price"], "n": 0, "source": "fallback",
-            "momentum_signal": momentum_signal, "momentum_yes_rate": momentum_yes_rate,
-            "momentum_n": ep.get("n",0)}
+    return {"p_base": price, "n": 0, "source": "fallback", **ep_signal}
 
 
 # ── Layer 2: LLM Catalyst Evaluator ──────────────────────────────────────────
@@ -149,7 +152,11 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         # Force SKIP if no data or weak catalyst without crowd error
         if dq == "none":
             action = "SKIP"
+        # Strict validation gate (per architecture spec):
+        # Edge valid ONLY IF: p_calibrated diff > 8% AND specific information exists
         if catalyst_score < 0.4 and not crowd_error:
+            action = "SKIP"
+        if catalyst_score < 0.2:  # no catalyst at all → always skip
             action = "SKIP"
 
         # Calculate p_true from base rate + catalyst adjustment
