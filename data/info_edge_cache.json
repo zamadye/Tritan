@@ -1,19 +1,11 @@
 {
-  "Baltimore Orioles vs. New York Yankees": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1777673129.8854525
-  },
   "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel": {
     "has_edge": false,
     "signal": "none",
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777673257.9414873
+    "ts": 1777679471.623046
   },
   "UFC Fight Night: Themba Gorimbo vs. Jonathan Micallef (Welte": {
     "has_edge": false,
@@ -21,7 +13,7 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777673268.5630922
+    "ts": 1777679492.6706243
   },
   "Will Scottie Scheffler win the 2026 Cadillac Championship?": {
     "has_edge": false,
@@ -29,7 +21,23 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777673276.2632937
+    "ts": 1777679505.5912602
+  },
+  "Texas Rangers vs. Detroit Tigers": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777679628.705971
+  },
+  "Houston Astros vs. Boston Red Sox": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777679640.5497375
   },
   "NBA Playoffs: Who Will Win Series? - Lakers vs. Rockets ": {
     "has_edge": false,
@@ -37,6 +45,6 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777673293.0939221
+    "ts": 1777679736.645253
   }
 }

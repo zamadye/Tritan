@@ -71,7 +71,8 @@ def chat(prompt: str, max_tokens: int = None) -> str:
     client    = get_client()
     model     = os.getenv("AI_MODEL", "mimo-v2.5")
     max_tokens = max_tokens or int(os.getenv("LLM_MAX_TOKENS", 1500))
-    retries   = int(os.getenv("API_MAX_RETRIES", 3))
+    retries   = int(os.getenv("API_MAX_RETRIES", 2))  # reduced from 3
+    timeout   = int(os.getenv("LLM_TIMEOUT_SECONDS", 20))  # 20s timeout per call
 
     # Daily cost guard — stop if >$2/day
     daily = get_daily_usage()
@@ -84,6 +85,7 @@ def chat(prompt: str, max_tokens: int = None) -> str:
             response = client.chat.completions.create(
                 model=model,
                 max_tokens=max_tokens,
+                timeout=timeout,
                 messages=[{"role": "user", "content": prompt}],
             )
             content = response.choices[0].message.content

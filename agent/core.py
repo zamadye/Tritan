@@ -213,6 +213,9 @@ def run_scan_cycle(mode: str, clob_client=None):
 
         # Correlation filter: skip if category already at limit
         mcat = _infer_category({"category": market.get("category",""), "market_question": market.get("question","")})
+        # Backfill category into market dict for executor
+        if not market.get("category"):
+            market["category"] = mcat
         if cat_open_count.get(mcat, 0) >= MAX_PER_CATEGORY:
             console.print(f"[dim]⛔ Corr limit ({mcat} {cat_open_count[mcat]}/{MAX_PER_CATEGORY}): {market['question'][:45]}[/dim]")
             continue

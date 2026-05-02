@@ -2,7 +2,7 @@
   "market_id": "0xf0743dab081a4dc6d7d455fafeb3281e5605ba3802acc7122f2b319abf60ef7b",
   "question": "Baltimore Orioles vs. New York Yankees",
   "market_price": 0.38,
-  "generated_at": "2026-05-01T21:57:27.906410+00:00",
+  "generated_at": "2026-05-01T22:43:50.287376+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
@@ -23,8 +23,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78150,
-      "btc_24h": 2.5168864245050413,
+      "btc_price": 78220,
+      "btc_24h": 2.548986021863672,
       "risk_signal": "risk-ON"
     }
   },
@@ -38,14 +38,56 @@
       "?: A.J. Puk \u2014 60-Day-IL (Surgery)",
       "?: Jeffrey Springs \u2014 Day-To-Day (Soreness)",
       "?: Denzel Clarke \u2014 10-Day-IL (Bruise)",
-      "?: Tyler Soderstrom \u2014 Day-To-Day (Soreness)",
+      "?: Max Muncy \u2014 10-Day-IL (Fracture)",
       "?: Michael Harris II \u2014 Day-To-Day (Soreness)",
       "?: Sean Murphy \u2014 10-Day-IL (Surgery)",
       "?: Raisel Iglesias \u2014 15-Day-IL (Inflammation)",
       "?: Ryan Helsley \u2014 15-Day-IL (Inflammation)"
     ]
   },
-  "news_articles": [],
-  "causal_chains": [],
+  "news_articles": [
+    {
+      "source": "NewsAPI",
+      "title": "What happened to Trevor Rogers? Orioles' Opening Day starter hits injured list",
+      "description": "This isn't ideal for Baltimore.",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Yankees can't complete sweep of Rangers, record just five hits in 3-0 loss",
+      "description": "The Yankees' bats were nonexistent on Wednesday afternoon, managing just five hits in a 3-0 loss to the Texas Rangers.",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "AL MVP looks like Aaron Judge vs. Yordan Alvarez, but these players still have a chance",
+      "description": "Who\u2019s your favorite for AL MVP right now?",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Yankees' Aaron Boone provides vague Anthony Volpe timeline that's good news for Jose Caballero",
+      "description": "Volpe is nearing a return from his rehab assignment.",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Yankees expected to cut ties with one of two veterans when Anthony Volpe and Giancarlo Stanton are healthy",
+      "description": "Which one will it be?",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Martinez pitches Rays past Guardians 1-0 for their 6th straight win",
+      "description": "Nick Martinez pitched three-hit ball into the eighth inning, Jonathan Aranda drove in a run for the third straight game and the Tampa Bay Rays defeated the Cleveland Guardians 1-0 on Tuesday night to extend their winning streak to six games. The Rays are 13-1\u2026",
+      "published": "2026-04-29"
+    }
+  ],
+  "causal_chains": [
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
+    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term",
+    "AI chip shortage \u2192 NVIDIA revenue beats \u2192 AI infrastructure stocks rally",
+    "AI energy demand \u2192 data center power stocks rally"
+  ],
   "summary": ""
 }

@@ -1,13 +1,13 @@
 {
   "market_id": "0x13d364597429089ef5020c69e41c4fc15703541f9d33e33db4a031f153721540",
   "question": "UFC Fight Night: Themba Gorimbo vs. Jonathan Micallef (Welterweight, Prelims)",
-  "market_price": 0.33,
-  "generated_at": "2026-05-01T22:04:37.220606+00:00",
+  "market_price": 0.34,
+  "generated_at": "2026-05-01T23:46:22.156628+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
-      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%"
+      "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -23,18 +23,57 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78234,
-      "btc_24h": 2.626911488385119,
+      "btc_price": 78112,
+      "btc_24h": 2.374879076891186,
       "risk_signal": "risk-ON"
     }
   },
   "sports": {},
-  "news_articles": [],
+  "news_articles": [
+    {
+      "source": "NewsAPI",
+      "title": "UFC Perth Live Streaming: Maddalena vs Prates headlines main fight card - Preview, Date, Start Time, Full Card, Venue and More",
+      "description": "UFC returns to Perth with a stacked card headlined by hometown hero Jack Della Maddalena facing dangerous finisher Carlos Prates. Maddalena aims to rebound from his title loss against Islam Makhachev, while Prates seeks to build momentum after consecutive hig\u2026",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "UFC Perth best betting props, parlays and picks | Jack Della vs. Prates",
+      "description": "Checkout our comprehensive UFC Perth: \u201cJack Della vs. Prates\u201d betting guide right here.",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Marwan Rahiki gets late replacement for UFC Perth",
+      "description": "Marwan Rahiki will still get his wish of competing in Australia \u2013 but against a new opponent.",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "UFC Perth Fight Card Set With Early Start Time",
+      "description": "This weekend's UFC Perth fight card is headlined by Jack Della Maddalena vs. Carlos Prates. The event has a special early start time.",
+      "published": "2026-04-27"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "UFC Perth: How to watch Della Maddalena vs. Prates, lineup, odds, more",
+      "description": "Here's what you need to know to watch UFC Perth on Paramount+.",
+      "published": "2026-04-27"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Louie Sutherland steps up for Sharaf, meets Tai Tuivasa\u00a0at UFC Perth",
+      "description": "Thanks to a late opponent change, Tai Tuivasa still will have a chance to snap a lengthy skid at home.",
+      "published": "2026-04-24"
+    }
+  ],
   "causal_chains": [
     "Grappler vs striker \u2192 grappler wins if fight goes to ground",
     "Significant strike differential \u2192 striker wins 70% if +50 strikes/round",
     "Late replacement fighter \u2192 -15% win probability due to camp disruption",
-    "Weight cut issues \u2192 performance degradation in later rounds"
+    "Weight cut issues \u2192 performance degradation in later rounds",
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
+    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term"
   ],
   "summary": ""
 }

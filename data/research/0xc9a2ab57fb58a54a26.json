@@ -1,13 +1,13 @@
 {
   "market_id": "0xc9a2ab57fb58a54a26acc74b53ba4457a5dec5cdde863f77b9c5bfc9edb7ea8f",
   "question": "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Welterweight, Main Card)",
-  "market_price": 0.51,
-  "generated_at": "2026-05-01T21:48:11.328642+00:00",
+  "market_price": 0.52,
+  "generated_at": "2026-05-01T23:45:59.616193+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
-      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%"
+      "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "26/100 (Fear)",
@@ -23,13 +23,50 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78118,
-      "btc_24h": 2.4063122142462627,
+      "btc_price": 78112,
+      "btc_24h": 2.374879076891186,
       "risk_signal": "risk-ON"
     }
   },
   "sports": {},
-  "news_articles": [],
+  "news_articles": [
+    {
+      "source": "NewsAPI",
+      "title": "Mailbag: The case for and against setting an early-morning alarm to catch UFC Perth live on Saturday",
+      "description": "Plus: Why Jack Della Maddalena is in a very tough spot against Carlos Prates in the main event.",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Carlos Prates promises violent finish of Jack Della Maddalena at UFC Fight Night: 'I will knock him out'",
+      "description": "The fan-favorite Brazilian slugger promises to deliver another KO in Australia as he inches closer to a welterweight title shot",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "UFC Perth video: Jack Della Maddalena, Carlos Prates inch closer to showdown",
+      "description": "Watch the UFC Perth headliners get face to face after their press conference.",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "UFC Perth full fight: Jack Della Maddalena dethrones Belal Muhammad",
+      "description": "Watch Jack Della Maddalena UFC title-winning performance ahead of his return at Saturday's UFC Perth.",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Staredowns! Carlos Prates and Jack Della Maddalena refuse to break gaze during UFC Perth faceoff",
+      "description": "Jack Della Maddalena and Carlos Prates are set to headline this weekend\u2019s UFC Perth Fight Night event, and both men clearly understand what a pivotal point in their lives this is. Following a press conference for the event, the UFC lined up a few of the main \u2026",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "UFC Perth Live Streaming: Maddalena vs Prates headlines main fight card - Preview, Date, Start Time, Full Card, Venue and More",
+      "description": "UFC returns to Perth with a stacked card headlined by hometown hero Jack Della Maddalena facing dangerous finisher Carlos Prates. Maddalena aims to rebound from his title loss against Islam Makhachev, while Prates seeks to build momentum after consecutive hig\u2026",
+      "published": "2026-04-30"
+    }
+  ],
   "causal_chains": [
     "Grappler vs striker \u2192 grappler wins if fight goes to ground",
     "Significant strike differential \u2192 striker wins 70% if +50 strikes/round",
