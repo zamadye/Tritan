@@ -1,0 +1,95 @@
+{
+  "market_id": "0x63664ab9ed86591928f9e2ff1b56e7528df6068701c76a65914d9d38a5785743",
+  "question": "Philadelphia Phillies vs. Miami Marlins",
+  "market_price": 0.36,
+  "generated_at": "2026-05-02T00:09:21.518330+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "39/100 (Fear)",
+      "7d_trend": "improving",
+      "values": [
+        39,
+        26,
+        29,
+        26,
+        33,
+        47,
+        33
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 78233,
+      "btc_24h": 2.36181213114677,
+      "risk_signal": "risk-ON"
+    }
+  },
+  "sports": {
+    "recent_games": [
+      "PHI @ MIA | In Progress | Miami Marlins(home) 15-16 score:1 vs Philadelphia Phillies(away) 12-19 score:0"
+    ],
+    "injuries": [
+      "?: Tyler Locklear \u2014 10-Day-IL (Surgery)",
+      "?: Corbin Burnes \u2014 60-Day-IL (Surgery)",
+      "?: A.J. Puk \u2014 60-Day-IL (Surgery)",
+      "?: Jeffrey Springs \u2014 Day-To-Day (Soreness)",
+      "?: Denzel Clarke \u2014 10-Day-IL (Bruise)",
+      "?: Max Muncy \u2014 10-Day-IL (Fracture)",
+      "?: Michael Harris II \u2014 Day-To-Day (Soreness)",
+      "?: Sean Murphy \u2014 10-Day-IL (Surgery)",
+      "?: Raisel Iglesias \u2014 15-Day-IL (Inflammation)",
+      "?: Ryan Helsley \u2014 15-Day-IL (Inflammation)"
+    ]
+  },
+  "news_articles": [
+    {
+      "source": "NewsAPI",
+      "title": "Phillies players viciously booed by Philadelphia faithful at Flyers playoff game",
+      "description": "The Philadelphia Phillies were booed after being shown on the jumbotron during the Flyers' playoff win over the Pittsburgh Penguins amid their brutal start.",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Former Blue Jays pitcher gets another MLB shot with Phillies",
+      "description": "The 32-year-old right-hander will try to carry over his success from Triple-A to his eighth MLB team The Philadelphia Phillies made their biggest move of the week when they replaced manager Rob Thomson with bench coach Don Mattingly on an\u2026",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Kyle Schwarber becomes ninth active MLB player to hit 350 home runs, then Phillies walk off Giants to start doubleheader",
+      "description": "Since Don Mattingly took over as interim manager, Philadelphia has won back-to-back games.",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Fantasy Baseball Closer Report: Daniel Palencia nearing a return, Mason Miller snaps scoreless inning streak",
+      "description": "Jorge Montanez breaks down the last week in saves from around the league with updated closer rankings.",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "What's next for the Philadelphia Phillies?",
+      "description": "With Rob Thomson out as manager and Don Mattingly taking over as interim, how can the Phillies bounce back?",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Phillies' Dave Dombrowski reveals exciting trade update from around MLB",
+      "description": "Trade activity might be starting up earlier than usual this season.",
+      "published": "2026-04-29"
+    }
+  ],
+  "causal_chains": [
+    "Starting pitcher ERA below 3.0 \u2192 team win probability +15%",
+    "Bullpen ERA above 5.0 \u2192 late-game collapse risk",
+    "Home run park factor \u2192 high-scoring game more likely",
+    "Day game after night game \u2192 fatigue factor for hitters",
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
+    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term"
+  ],
+  "summary": ""
+}

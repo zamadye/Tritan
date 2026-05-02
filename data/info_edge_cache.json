@@ -5,7 +5,7 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777679471.623046
+    "ts": 1777680524.2536838
   },
   "UFC Fight Night: Themba Gorimbo vs. Jonathan Micallef (Welte": {
     "has_edge": false,
@@ -13,15 +13,7 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777679492.6706243
-  },
-  "Will Scottie Scheffler win the 2026 Cadillac Championship?": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1777679505.5912602
+    "ts": 1777680538.6937575
   },
   "Texas Rangers vs. Detroit Tigers": {
     "has_edge": false,
@@ -29,22 +21,22 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777679628.705971
+    "ts": 1777680554.1455808
   },
-  "Houston Astros vs. Boston Red Sox": {
+  "Philadelphia Phillies vs. Miami Marlins": {
     "has_edge": false,
     "signal": "none",
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777679640.5497375
+    "ts": 1777680569.5183978
   },
-  "NBA Playoffs: Who Will Win Series? - Lakers vs. Rockets ": {
+  "Milwaukee Brewers vs. Washington Nationals": {
     "has_edge": false,
     "signal": "none",
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777679736.645253
+    "ts": 1777680587.5057127
   }
 }

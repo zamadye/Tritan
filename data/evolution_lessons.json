@@ -1,6 +1,6 @@
 {
-  "total_resolved": 36,
-  "overall_win_rate": 0.389,
+  "total_resolved": 38,
+  "overall_win_rate": 0.368,
   "momentum_lessons": [
     {
       "category": "sports",
@@ -45,9 +45,9 @@
       "n": 9
     },
     "20-30%": {
-      "win_rate": 0.5,
-      "avg_pnl": 0.02,
-      "n": 8
+      "win_rate": 0.4,
+      "avg_pnl": -0.04,
+      "n": 10
     },
     "0-10%": {
       "win_rate": 0.0,
@@ -81,15 +81,15 @@
     }
   },
   "exit_patterns": {
-    "TAKE_PROFIT": 9,
+    "TAKE_PROFIT": 11,
     "STOP_LOSS": 17,
     "TIME_LIMIT": 2,
     "TRAILING_STOP": 8
   },
   "edge_reality": {
     "10%": {
-      "actual_wr": 0.43,
-      "n": 23
+      "actual_wr": 0.4,
+      "n": 25
     },
     "20%": {
       "actual_wr": 0.36,
@@ -105,25 +105,25 @@
   "overconfidence_patterns": [],
   "recent_mistakes": [
     {
+      "question": "Houston Astros vs. Boston Red Sox",
+      "category": "sports",
+      "entry_price": 0.21,
+      "reasoning": "Statistical mispricing: p_base=12% vs market=21% gap=9% (n=6077)",
+      "lesson": "Momentum thesis failed in sports at entry 0.21. Review what catalyst was missing."
+    },
+    {
+      "question": "Houston Astros vs. Boston Red Sox",
+      "category": "sports",
+      "entry_price": 0.21,
+      "reasoning": "Statistical mispricing: p_base=12% vs market=21% gap=9% (n=6077)",
+      "lesson": "Momentum thesis failed in sports at entry 0.21. Review what catalyst was missing."
+    },
+    {
       "question": "NBA Playoffs: Who Will Win Series? - Lakers vs. Rockets ",
       "category": "sports",
       "entry_price": 0.746,
       "reasoning": "CATALYST: Vegas odds discrepancy (Lakers implied 40% vs market 74.6%) suggests market may be overval",
       "lesson": "Momentum thesis failed in sports at entry 0.75. Review what catalyst was missing."
-    },
-    {
-      "question": "NBA Playoffs: Who Will Win Series? - Lakers vs. Rockets ",
-      "category": "sports",
-      "entry_price": 0.746,
-      "reasoning": "CATALYST: Lakers stars LeBron James and Anthony Davis listed OUT for Game 3 while betting markets fa",
-      "lesson": "Momentum thesis failed in sports at entry 0.75. Review what catalyst was missing."
-    },
-    {
-      "question": "Los Angeles Angels vs. Chicago White Sox",
-      "category": "sports",
-      "entry_price": 0.45,
-      "reasoning": "CATALYST: Live game tied 2-2 with Angels showing prior-night momentum vs weaker White Sox \u2192 DIRECTIO",
-      "lesson": "Momentum thesis failed in sports at entry 0.45. Review what catalyst was missing."
     }
   ]
 }
