@@ -14,24 +14,22 @@ def calculate_position(p_true: float, p_market: float, bankroll: float) -> tuple
     edge_no  = (1 - p_true) - (1 - p_market)
 
     if edge_yes >= edge_no and edge_yes > edge_threshold:
-        side = "YES"
-        edge = edge_yes
-        rr   = (1 / p_market) - 1
+        side       = "YES"
+        edge       = edge_yes
+        entry_price = p_market          # YES price
+        rr         = (1 / p_market) - 1
     elif edge_no > edge_threshold:
-        side = "NO"
-        edge = edge_no
-        rr   = (1 / (1 - p_market)) - 1
+        side       = "NO"
+        edge       = edge_no
+        entry_price = 1 - p_market      # NO price
+        rr         = (1 / (1 - p_market)) - 1
     else:
         return 0.0, "SKIP", 0.0
 
     if rr < min_rr:
         return 0.0, "SKIP", 0.0
 
-    # Kelly-fractional: size = bankroll × 0.25 × edge × confidence_multiplier
-    # confidence injected via get_kelly_multiplier (streak-based)
-    mult = get_kelly_multiplier()  # 0.8x–2.0x based on win/loss streak
+    mult = get_kelly_multiplier()
     size = bankroll * 0.25 * edge * mult
-
-    # Clamp to min/max and 5% bankroll
     size = min(max(size, min_bet), max_bet, bankroll * 0.05)
     return round(size, 2), side, round(edge, 4)

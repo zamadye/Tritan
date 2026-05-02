@@ -1,14 +1,13 @@
 """
-Auto-exit monitor — checks open positions every cycle and exits on:
-- TRAILING_STOP: harga turun dari peak melewati trailing distance
-- TAKE_PROFIT: nilai posisi mencapai 2x modal
-- STOP_LOSS: nilai posisi turun -33% dari modal (hanya jika belum ada profit)
-- TIME_LIMIT: held >48h
+Auto-exit monitor — P&L-based exit conditions (works correctly for both YES and NO bets).
+
+All SL/TP/Trail calculations use P&L % of capital, NOT price levels.
+This avoids the bug where NO bets at high YES prices trigger SL immediately.
 """
 import os
 import json
 import requests
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from pathlib import Path
 from agent.bankroll import update_streak
 from agent.learner import _generate_evolution_lessons
@@ -32,71 +31,58 @@ def _get_current_price(numeric_id: str) -> tuple:
     if not numeric_id:
         return None, None
     try:
-        base = os.getenv("POLYMARKET_GAMMA_API","https://gamma-api.polymarket.com")
+        base = os.getenv("POLYMARKET_GAMMA_API", "https://gamma-api.polymarket.com")
         m = requests.get(f"{base}/markets/{numeric_id}", timeout=6).json()
-        op_raw = m.get("outcomePrices","[]")
+        op_raw = m.get("outcomePrices", "[]")
         op = op_raw if isinstance(op_raw, list) else json.loads(str(op_raw))
-        return float(op[0]), float(op[1]) if len(op)>1 else 0.0
+        return float(op[0]), float(op[1]) if len(op) > 1 else 0.0
     except Exception:
         return None, None
 
 
-def _simulate_exit(trade: dict, exit_price: float, reason: str) -> dict:
-    """
-    Simulate selling the position at exit_price.
-    In demo: calculate P&L from price movement (not resolution).
-    In live: would call CLOB sell order.
-    """
+def _simulate_exit(trade: dict, yes_price: float, reason: str) -> dict:
+    """Calculate P&L and mark trade as exited. yes_price is always the YES side price."""
     entry = trade["price_at_entry"]
     size  = trade["size_usd"]
     side  = trade["side"]
 
-    # Shares bought = size / entry_price
-    shares = size / entry
-
-    # Current value of shares
-    current_value = shares * exit_price if side == "YES" else shares * (1 - exit_price)
+    # P&L: use correct shares for each side
+    if side == "YES":
+        shares = size / entry
+        current_value = shares * yes_price
+    else:
+        no_entry = 1 - entry  # NO price at entry
+        no_shares = size / no_entry if no_entry > 0 else size / entry
+        current_value = no_shares * (1 - yes_price)
     pnl = round(current_value - size, 2)
 
-    trade["actual_outcome"]      = "EXIT"  # not resolved, but exited
-    trade["exit_price"]          = exit_price
-    trade["exit_reason"]         = reason
-    trade["pnl"]                 = pnl
-    trade["prediction_correct"]  = pnl > 0  # profitable exit = "correct"
-    trade["resolved_at"]         = datetime.now(timezone.utc).isoformat()
-
-    # Brier score approximation
+    trade["actual_outcome"]     = "EXIT"
+    trade["exit_price"]         = yes_price
+    trade["exit_reason"]        = reason
+    trade["pnl"]                = pnl
+    trade["prediction_correct"] = pnl > 0
+    trade["resolved_at"]        = datetime.now(timezone.utc).isoformat()
     p = entry if side == "YES" else 1 - entry
     trade["brier_score"] = round((p - (1 if pnl > 0 else 0)) ** 2, 4)
-
     return trade
 
 
 def _get_event_deadline(trade: dict) -> float:
-    """
-    Return max hours to hold based on event type, not arbitrary 4h.
-    - Sports: hold until game ends (typically 3-4h from start)
-    - Crypto: hold 6h (price moves fast)
-    - Geopolitik/politics: hold until end_date or 24h max
-    - Default: use EXIT_MAX_HOURS env
-    """
+    """Event-driven time limit per category."""
     from agent.learner import _infer_category
     cat = _infer_category(trade)
-    end_date = trade.get("end_date","")
-
+    end_date = trade.get("end_date", "")
     if cat == "sports":
-        return 4.0   # game resolves within 4h of start
+        return 4.0
     if cat == "crypto":
-        return 6.0   # crypto moves fast, don't overstay
-    if cat in ("geopolitik","politics"):
-        # Hold until end_date if within 48h, else 24h
+        return 6.0
+    if cat in ("geopolitik", "politics"):
         if end_date:
             try:
-                from datetime import datetime, timezone
-                end_dt = datetime.fromisoformat(end_date.replace("Z","+00:00"))
+                end_dt = datetime.fromisoformat(end_date.replace("Z", "+00:00"))
                 hours_to_end = (end_dt - datetime.now(timezone.utc)).total_seconds() / 3600
                 if 0 < hours_to_end <= 48:
-                    return hours_to_end  # hold until event
+                    return hours_to_end
             except Exception:
                 pass
         return 24.0
@@ -104,16 +90,13 @@ def _get_event_deadline(trade: dict) -> float:
 
 
 def check_and_exit(mode: str = "demo", clob_client=None) -> int:
-    """
-    Check all open positions for exit conditions.
-    Time limit is event-driven, not arbitrary.
-    """
-    trades    = _load_trades(mode)
-    open_t    = [t for t in trades if not t.get("actual_outcome")]
-    now       = datetime.now(timezone.utc)
+    trades = _load_trades(mode)
+    open_t = [t for t in trades if not t.get("actual_outcome")]
+    now    = datetime.now(timezone.utc)
 
-    trail_pct  = float(os.getenv("TRAILING_STOP_PCT", 0.10))
-    tp_return  = float(os.getenv("EXIT_TAKE_PROFIT",  0.50))
+    tp_return  = float(os.getenv("EXIT_TAKE_PROFIT", 0.50))   # +50% return
+    sl_pct     = float(os.getenv("EXIT_STOP_LOSS",   0.33))   # -33% return
+    trail_pct  = float(os.getenv("TRAILING_STOP_PCT", 0.10))  # 10% from peak
 
     exited = 0
 
@@ -127,24 +110,31 @@ def check_and_exit(mode: str = "demo", clob_client=None) -> int:
         if yes_p is None:
             continue
 
-        now_p   = yes_p if side == "YES" else no_p
-        shares  = size / entry
+        shares = size / entry
 
-        # Update peak price (high watermark) — persist ke disk setiap cycle
-        peak = trade.get("peak_price", entry)
-        if now_p > peak:
-            peak = now_p
-            trade["peak_price"] = peak
+        # Current P&L % — works correctly for both YES and NO
+        # shares = size / entry_YES, tapi untuk NO bet kita beli NO shares
+        # NO shares = size / (1 - entry_YES) = size / no_price
+        if side == "YES":
+            current_value = shares * yes_p
+        else:
+            no_entry = 1 - entry  # NO price at entry
+            no_shares = size / no_entry if no_entry > 0 else shares
+            current_value = no_shares * (1 - yes_p)
+        pnl_pct = (current_value - size) / size
 
-        # Trailing stop level = peak × (1 - trail_pct)
-        # Tapi tidak boleh lebih rendah dari initial SL (entry × 0.67)
-        initial_sl  = entry * (1 - float(os.getenv("EXIT_STOP_LOSS", 0.33)))
-        trailing_sl = peak * (1 - trail_pct)
-        effective_sl = max(trailing_sl, initial_sl)
+        # Peak P&L tracking (for trailing stop)
+        peak_pnl = trade.get("peak_pnl_pct", 0.0)
+        if pnl_pct > peak_pnl:
+            peak_pnl = pnl_pct
+            trade["peak_pnl_pct"] = peak_pnl
+            # Store display price
+            trade["peak_price"] = yes_p if side == "YES" else (1 - yes_p)
 
-        # Current return
-        now_value  = shares * now_p
-        pnl_pct    = (now_value - size) / size
+        # Trailing SL: exit if pnl drops trail_pct below peak
+        # But never worse than initial SL
+        trail_sl = peak_pnl - trail_pct        # e.g. peak=+30%, trail=10% → SL at +20%
+        effective_sl = max(trail_sl, -sl_pct)  # floor at -33%
 
         # Time held
         try:
@@ -155,24 +145,21 @@ def check_and_exit(mode: str = "demo", clob_client=None) -> int:
         except Exception:
             hours_held = 0
 
-        exit_reason = None
-        exit_price  = now_p
-        partial     = False
-
         max_hours = _get_event_deadline(trade)
+
+        exit_reason = None
+        partial     = False
 
         if pnl_pct >= tp_return:
             exit_reason = f"TAKE_PROFIT (+{pnl_pct:.0%})"
         elif pnl_pct >= 0.20 and not trade.get("partial_exited"):
             exit_reason = f"PARTIAL_EXIT_50% (+{pnl_pct:.0%})"
             partial = True
-        elif now_p <= effective_sl:
-            if peak > entry:
-                locked_pnl = shares * effective_sl - size
-                exit_reason = f"TRAILING_STOP (peak={peak:.2f}->sl={effective_sl:.2f}, locked ${locked_pnl:+.2f})"
+        elif pnl_pct <= effective_sl:
+            if peak_pnl > 0.05:  # only trailing stop if we had meaningful profit
+                exit_reason = f"TRAILING_STOP (peak={peak_pnl:+.0%} sl={effective_sl:+.0%} now={pnl_pct:+.0%})"
             else:
                 exit_reason = f"STOP_LOSS ({pnl_pct:.0%})"
-            exit_price = effective_sl
         elif hours_held >= max_hours:
             from agent.learner import _infer_category
             cat = _infer_category(trade)
@@ -180,19 +167,17 @@ def check_and_exit(mode: str = "demo", clob_client=None) -> int:
 
         if exit_reason:
             if partial:
-                # Partial: hanya exit 50%, update size_usd sisanya
-                half_size   = size / 2
+                half_size = size / 2
                 half_shares = shares / 2
-                partial_pnl = round(half_shares * now_p - half_size, 2)
-                trade["size_usd"]       = round(size / 2, 2)   # sisa 50%
+                partial_pnl = round(half_shares * (yes_p if side=="YES" else (1-yes_p)) - half_size, 2)
+                trade["size_usd"]       = round(size / 2, 2)
                 trade["partial_exited"] = True
                 trade["partial_pnl"]    = partial_pnl
-                trade["peak_price"]     = peak  # reset peak untuk trailing sisa
+                trade["peak_pnl_pct"]   = peak_pnl
                 icon = "✅"
                 print(f"[EXIT] {icon} {exit_reason} | {side} partial P&L=${partial_pnl:+.2f} | {trade['market_question'][:50]}")
-                # Tidak update streak untuk partial exit
             else:
-                _simulate_exit(trade, exit_price, exit_reason)
+                _simulate_exit(trade, yes_p, exit_reason)
                 icon = "✅" if trade["pnl"] > 0 else "❌"
                 print(f"[EXIT] {icon} {exit_reason} | {side} P&L=${trade['pnl']:+.2f} | {trade['market_question'][:50]}")
                 update_streak(trade["prediction_correct"])
@@ -206,8 +191,7 @@ def check_and_exit(mode: str = "demo", clob_client=None) -> int:
         pnl  = sum(t.get("pnl", 0) for t in resolved)
         print(f"[EXIT] 📊 {exited} exits | Win: {len(wins)/len(resolved):.0%} | P&L: ${pnl:+.2f}")
     else:
-        # Tetap save untuk persist peak_price updates
-        _save_trades(trades, mode)
+        _save_trades(trades, mode)  # persist peak_pnl_pct updates
         print(f"[EXIT] No exit conditions triggered ({len(open_t)} open)")
 
     return exited

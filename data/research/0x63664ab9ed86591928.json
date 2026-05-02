@@ -1,8 +1,8 @@
 {
   "market_id": "0x63664ab9ed86591928f9e2ff1b56e7528df6068701c76a65914d9d38a5785743",
   "question": "Philadelphia Phillies vs. Miami Marlins",
-  "market_price": 0.36,
-  "generated_at": "2026-05-02T00:09:21.518330+00:00",
+  "market_price": 0.65,
+  "generated_at": "2026-05-02T00:39:32.046847+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
@@ -23,14 +23,14 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78233,
-      "btc_24h": 2.36181213114677,
+      "btc_price": 78259,
+      "btc_24h": 2.3868827417146576,
       "risk_signal": "risk-ON"
     }
   },
   "sports": {
     "recent_games": [
-      "PHI @ MIA | In Progress | Miami Marlins(home) 15-16 score:1 vs Philadelphia Phillies(away) 12-19 score:0"
+      "PHI @ MIA | In Progress | Miami Marlins(home) 15-16 score:1 vs Philadelphia Phillies(away) 12-19 score:2"
     ],
     "injuries": [
       "?: Tyler Locklear \u2014 10-Day-IL (Surgery)",

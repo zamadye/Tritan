@@ -5,7 +5,7 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777680524.2536838
+    "ts": 1777684224.9488084
   },
   "UFC Fight Night: Themba Gorimbo vs. Jonathan Micallef (Welte": {
     "has_edge": false,
@@ -13,7 +13,15 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777680538.6937575
+    "ts": 1777684246.380704
+  },
+  "UFC Fight Night: Wes Schultz vs. Ben Johnston (Middleweight,": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777684263.429448
   },
   "Texas Rangers vs. Detroit Tigers": {
     "has_edge": false,
@@ -21,22 +29,14 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777680554.1455808
+    "ts": 1777684284.184481
   },
-  "Philadelphia Phillies vs. Miami Marlins": {
+  "Los Angeles Dodgers vs. St. Louis Cardinals": {
     "has_edge": false,
     "signal": "none",
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777680569.5183978
-  },
-  "Milwaukee Brewers vs. Washington Nationals": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1777680587.5057127
+    "ts": 1777684309.2951157
   }
 }
