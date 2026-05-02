@@ -189,9 +189,20 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
 
         # Validation gate — two valid paths to bet:
         # Path A: catalyst-driven (score >= 0.4)
-        # Path B: statistical mispricing (|p_base - market| >= 8%, even without catalyst)
+        # Path B: statistical mispricing — requires n>=100 AND gap>=8%
         statistical_gap = abs(prior["p_base"] - p_market)
-        has_stat_edge   = statistical_gap >= 0.08 and prior["n"] >= 50
+        has_stat_edge   = (statistical_gap >= 0.08 and prior["n"] >= 100)
+
+        # Filter: skip if market resolves in <2h (too late to act)
+        try:
+            from datetime import datetime, timezone as _tz
+            end_dt = datetime.fromisoformat(market.get("end_date","").replace("Z","+00:00"))
+            hours_to_resolve = (end_dt - datetime.now(_tz.utc)).total_seconds() / 3600
+            if 0 < hours_to_resolve < 2:
+                action = "SKIP"
+                reason = f"Too close to resolution ({hours_to_resolve:.1f}h remaining)"
+        except Exception:
+            pass
 
         if dq == "none" and not has_stat_edge:
             action = "SKIP"

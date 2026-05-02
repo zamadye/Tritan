@@ -5,7 +5,7 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777684224.9488084
+    "ts": 1777685384.772635
   },
   "UFC Fight Night: Themba Gorimbo vs. Jonathan Micallef (Welte": {
     "has_edge": false,
@@ -13,7 +13,7 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777684246.380704
+    "ts": 1777685400.2305076
   },
   "UFC Fight Night: Wes Schultz vs. Ben Johnston (Middleweight,": {
     "has_edge": false,
@@ -21,7 +21,15 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777684263.429448
+    "ts": 1777685414.7273276
+  },
+  "Will Elon Musk post 120-139 tweets from April 28 to May 5, 2": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777685427.5871482
   },
   "Texas Rangers vs. Detroit Tigers": {
     "has_edge": false,
@@ -29,14 +37,6 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777684284.184481
-  },
-  "Los Angeles Dodgers vs. St. Louis Cardinals": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1777684309.2951157
+    "ts": 1777685442.0137508
   }
 }

@@ -4717,5 +4717,30 @@
     "prediction_correct": false,
     "resolved_at": "2026-05-02T00:08:36.211455+00:00",
     "brier_score": 0.6241
+  },
+  {
+    "trade_id": "112ea33a-f6c8-40e5-a84f-7251ea666570",
+    "timestamp": "2026-05-02T01:30:49.416254",
+    "mode": "demo",
+    "market_id": "0xa1693715d3cf225919651aef8903dc8ccedf5534d1b18643ef41941d42f265ce",
+    "market_numeric_id": "2077453",
+    "market_question": "Texas Rangers vs. Detroit Tigers",
+    "end_date": "2026-05-08T22:40:00Z",
+    "category": "sports",
+    "side": "YES",
+    "size_usd": 1.0,
+    "price_at_entry": 0.82,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.9067,
+    "confidence_at_bet": 0.44,
+    "edge_at_bet": 0.0867,
+    "base_rate": 0.9067,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "Statistical mispricing: p_base=91% vs market=82% gap=9% (n=6077)",
+    "calibration_applied": "p_base=90.67%(n=6077,logistic:sports) + catalyst_adj=+0.00% = p_true=90.67%",
+    "key_factors_for": [],
+    "key_factors_against": []
   }
 ]
