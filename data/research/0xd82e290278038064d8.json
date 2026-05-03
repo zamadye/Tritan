@@ -1,8 +1,8 @@
 {
   "market_id": "0xd82e290278038064d836ea912e3989fb7bae996b73d5a5e6910e3c5ac01ae136",
   "question": "Will Paris Saint-Germain FC win on 2026-05-06?",
-  "market_price": 0.26,
-  "generated_at": "2026-05-03T21:44:54.940382+00:00",
+  "market_price": 0.25,
+  "generated_at": "2026-05-03T23:36:17.528397+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"

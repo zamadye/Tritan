@@ -1,8 +1,8 @@
 {
   "market_id": "0xc0b2acd094ebce0630fa9b3e899eb90c6a77424ebf01f67baf12b843af35f719",
   "question": "Will Donald Trump announce that the United States blockade of the Strait of Hormuz has been lifted by May 8, 2026?",
-  "market_price": 0.084,
-  "generated_at": "2026-05-03T21:45:27.718761+00:00",
+  "market_price": 0.082,
+  "generated_at": "2026-05-03T23:05:14.395831+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
@@ -21,8 +21,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 0,
-      "btc_24h": 0,
+      "btc_price": 79218,
+      "btc_24h": 0.5927101792594199,
       "risk_signal": "neutral"
     }
   },

@@ -1,8 +1,8 @@
 {
-  "market_id": "0xa1c94df7f989e183b1ae482492667bfb1e212924ea34641b73aa2a26a3ac21de",
-  "question": "Houston Astros vs. Boston Red Sox",
-  "market_price": 0.38,
-  "generated_at": "2026-05-03T20:37:02.246441+00:00",
+  "market_id": "0x2a84175445297debbf4c140b17a1bc78d1d4bca51aa3e6d0ead8956c25df8422",
+  "question": "Texas Rangers vs. Detroit Tigers",
+  "market_price": 0.45,
+  "generated_at": "2026-05-03T23:36:32.123870+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
@@ -27,8 +27,12 @@
     }
   },
   "sports": {
-    "recent_games": [
-      "HOU @ BOS | In Progress | Boston Red Sox(home) 13-20 score:1 vs Houston Astros(away) 13-21 score:1"
+    "todays_games": [
+      "TOR @ MIN | Final",
+      "BAL @ NYY | Final",
+      "CIN @ PIT | Final",
+      "HOU @ BOS | Final",
+      "MIL @ WSH | Final"
     ],
     "injuries": [
       "?: Carlos Santana \u2014 10-Day-IL (Strain)",
@@ -37,9 +41,9 @@
       "?: Shea Langeliers \u2014 Day-To-Day ()",
       "?: Denzel Clarke \u2014 10-Day-IL (Bruise)",
       "?: Max Muncy \u2014 10-Day-IL (Fracture)",
-      "?: Ronald Acuna Jr. \u2014 10-Day-IL (Strain)",
-      "?: Sean Murphy \u2014 10-Day-IL (Surgery)",
       "?: Raisel Iglesias \u2014 15-Day-IL (Inflammation)",
+      "?: Dylan Dodd \u2014 15-Day-IL (Inflammation)",
+      "?: Ronald Acuna Jr. \u2014 10-Day-IL (Strain)",
       "?: Ryan Helsley \u2014 15-Day-IL (Inflammation)"
     ]
   },

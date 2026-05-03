@@ -1,15 +1,36 @@
 {
-  "last_updated": "2026-05-03T20:52:54.497398",
+  "last_updated": "2026-05-03T23:03:35.724866",
   "mode": "demo",
-  "total_resolved": 203,
-  "wins": 86,
+  "total_resolved": 206,
+  "wins": 89,
   "losses": 117,
-  "win_rate": 0.4236,
-  "total_pnl": 123.74,
-  "avg_brier": 0.2711,
+  "win_rate": 0.432,
+  "total_pnl": 126.4,
+  "avg_brier": 0.2701,
   "biggest_win": 73.33,
   "biggest_loss": -10.0,
   "recent": [
+    {
+      "question": "Chicago White Sox vs. San Diego Padres",
+      "side": "NO",
+      "outcome": "NO",
+      "pnl": 2.33,
+      "correct": true
+    },
+    {
+      "question": "New York Mets vs. Los Angeles Angels",
+      "side": "YES",
+      "outcome": "YES",
+      "pnl": 0.19,
+      "correct": true
+    },
+    {
+      "question": "Kansas City Royals vs. Seattle Mariners",
+      "side": "YES",
+      "outcome": "YES",
+      "pnl": 0.14,
+      "correct": true
+    },
     {
       "question": "Los Angeles Dodgers vs. St. Louis Cardinals",
       "side": "YES",
@@ -57,27 +78,6 @@
       "side": "NO",
       "outcome": "EXIT",
       "pnl": -0.18,
-      "correct": false
-    },
-    {
-      "question": "Baltimore Orioles vs. New York Yankees",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": -0.15,
-      "correct": false
-    },
-    {
-      "question": "Indian Premier League: Gujarat Titans vs Punjab Kings",
-      "side": "YES",
-      "outcome": "YES",
-      "pnl": 0.39,
-      "correct": true
-    },
-    {
-      "question": "Indian Premier League: Gujarat Titans vs Punjab Kings",
-      "side": "YES",
-      "outcome": "EXIT",
-      "pnl": -0.13,
       "correct": false
     }
   ]

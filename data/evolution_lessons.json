@@ -1,20 +1,20 @@
 {
-  "total_resolved": 84,
-  "overall_win_rate": 0.524,
+  "total_resolved": 87,
+  "overall_win_rate": 0.54,
   "momentum_lessons": [
     {
       "category": "sports",
-      "entry_price": 0.19,
-      "pnl": 4.26,
+      "entry_price": 0.3,
+      "pnl": 2.33,
       "exit_reason": "RESOLVED",
-      "catalyst": "Statistical mispricing: p_base=10% vs market=19% gap=9% (n=6077)"
+      "catalyst": "Statistical mispricing: p_base=22% vs market=30% gap=8% (n=6077)"
     },
     {
       "category": "sports",
-      "entry_price": 0.19,
-      "pnl": 4.26,
+      "entry_price": 0.72,
+      "pnl": 0.19,
       "exit_reason": "RESOLVED",
-      "catalyst": "Statistical mispricing: p_base=10% vs market=19% gap=9% (n=6077)"
+      "catalyst": "Statistical mispricing: p_base=80% vs market=72% gap=8% (n=6077)"
     },
     {
       "category": "sports",
@@ -25,17 +25,17 @@
     },
     {
       "category": "sports",
-      "entry_price": 0.72,
-      "pnl": 0.39,
+      "entry_price": 0.19,
+      "pnl": 4.26,
       "exit_reason": "RESOLVED",
-      "catalyst": "Statistical mispricing: p_base=80% vs market=72% gap=8% (n=6077)"
+      "catalyst": "Statistical mispricing: p_base=10% vs market=19% gap=9% (n=6077)"
     },
     {
-      "category": "other",
-      "entry_price": 0.394,
-      "pnl": 0.01,
-      "exit_reason": "TRAILING_STOP (peak=+11% sl=+1% now=+1%)",
-      "catalyst": "Statistical mispricing: p_base=31% vs market=39% gap=8% (n=7829)"
+      "category": "sports",
+      "entry_price": 0.19,
+      "pnl": 4.26,
+      "exit_reason": "RESOLVED",
+      "catalyst": "Statistical mispricing: p_base=10% vs market=19% gap=9% (n=6077)"
     }
   ],
   "price_movement_patterns": {
@@ -60,9 +60,9 @@
       "n": 6
     },
     "30-40%": {
-      "win_rate": 0.4,
-      "avg_pnl": 0.11,
-      "n": 10
+      "win_rate": 0.45,
+      "avg_pnl": 0.31,
+      "n": 11
     },
     "50-60%": {
       "win_rate": 0.67,
@@ -70,9 +70,9 @@
       "n": 3
     },
     "70-80%": {
-      "win_rate": 0.56,
-      "avg_pnl": 0.04,
-      "n": 18
+      "win_rate": 0.6,
+      "avg_pnl": 0.05,
+      "n": 20
     },
     "40-50%": {
       "win_rate": 0.5,
@@ -90,12 +90,12 @@
     "STOP_LOSS": 25,
     "TIME_LIMIT": 2,
     "TRAILING_STOP": 10,
-    "RESOLVED": 36
+    "RESOLVED": 39
   },
   "edge_reality": {
     "10%": {
-      "actual_wr": 0.55,
-      "n": 65
+      "actual_wr": 0.57,
+      "n": 68
     },
     "20%": {
       "actual_wr": 0.44,
