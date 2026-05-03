@@ -22,7 +22,7 @@ export function PnLChart({ data }: { data: any[] }) {
         <YAxis tick={{ fill: '#6b7280', fontSize: 11 }} tickFormatter={v => `$${v}`} />
         <Tooltip
           contentStyle={{ background: '#16162a', border: '1px solid #2a2a4a', borderRadius: 8, fontSize: 12 }}
-          formatter={(v: any) => [`$${Number(v).toFixed(2)}`, 'Cumulative P&L']}
+          formatter={(v: any) => [`$${Number(v).toFixed(2)}`, 'Portfolio Growth']}
           labelFormatter={(i) => `Trade #${i}`}
         />
         <Line type="monotone" dataKey="pnl" stroke="#6366f1" strokeWidth={2} dot={false} />

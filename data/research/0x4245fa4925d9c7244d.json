@@ -1,8 +1,8 @@
 {
-  "market_id": "0x998d69f881036ac580f6dc0a18b6c3ec48f167fd00799db9e58bf43e07b4b27e",
-  "question": "Will Manchester City FC win on 2026-05-04?",
-  "market_price": 0.66,
-  "generated_at": "2026-05-03T15:45:10.738375+00:00",
+  "market_id": "0x4245fa4925d9c7244d40c6dbdd7b55545ed4bd15f6659fbce48300b42d466fe6",
+  "question": "Will Elon Musk post 160-179 tweets from April 28 to May 5, 2026?",
+  "market_price": 0.295,
+  "generated_at": "2026-05-03T21:44:28.458834+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
@@ -21,8 +21,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78683,
-      "btc_24h": 0.34786288755979927,
+      "btc_price": 0,
+      "btc_24h": 0,
       "risk_signal": "neutral"
     }
   },

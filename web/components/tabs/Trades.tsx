@@ -63,12 +63,12 @@ export function Trades({ data }: { data: DashboardData }) {
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <Badge text={t.side} color={t.side==='YES'?'green':'red'} />
                   <Badge text={t.category||'other'} color="purple" />
-                  {t.calibration?.includes('logistic') && <Badge text="STAT EDGE" color="blue" />}
+                  {t.calibration?.includes('logistic') && <Badge text="MODEL PICK" color="blue" />}
                   <span className="text-[#94a3b8] truncate flex-1">{t.market?.slice(0,60)}</span>
                 </div>
                 <div className="grid grid-cols-5 gap-2 text-[10px] text-[#6b7280]">
                   <span>Entry <span className="text-[#94a3b8] font-mono">{((t.entry||0)*100).toFixed(0)}%</span></span>
-                  <span>p_base <span className="text-[#a5b4fc] font-mono">{t.p_base||'—'}</span></span>
+                  <span>Prob. Model <span className="text-[#a5b4fc] font-mono">{t.p_base||'—'}</span></span>
                   <span>Edge <span className="text-[#94a3b8] font-mono">{t.edge?`${(t.edge*100).toFixed(1)}%`:'—'}</span></span>
                   <span>Conf <span className="text-[#94a3b8] font-mono">{t.confidence?`${(t.confidence*100).toFixed(0)}%`:'—'}</span></span>
                   <span>Brier <span className="text-[#94a3b8] font-mono">{t.brier?.toFixed(3)||'—'}</span></span>

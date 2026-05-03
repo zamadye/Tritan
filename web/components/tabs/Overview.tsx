@@ -31,16 +31,16 @@ export function Overview({ data, account }: { data: DashboardData; account?: any
         <Metric label="Total P&L" value={`$${stats.pnl >= 0 ? '+' : ''}${stats.pnl.toFixed(2)}`}
           color={stats.pnl >= 0 ? '#22c55e' : '#ef4444'} badge="+506%" />
         <Metric label="Win Rate" value={`${(stats.wr * 100).toFixed(1)}%`} sub={`${stats.wins}W / ${stats.losses}L`} />
-        <Metric label="R:R Ratio" value={`${stats.rr.toFixed(2)}:1`} sub={`BEP: ${(1/(1+stats.rr)*100).toFixed(0)}%`} />
-        <Metric label="EV/Trade" value={`$${stats.ev >= 0 ? '+' : ''}${stats.ev.toFixed(3)}`}
+        <Metric label="R:R Ratio" value={`${stats.rr.toFixed(2)}:1`} sub={`Break-even: ${(1/(1+stats.rr)*100).toFixed(0)}%`} />
+        <Metric label="Avg Profit/Trade" value={`$${stats.ev >= 0 ? '+' : ''}${stats.ev.toFixed(3)}`}
           color={stats.ev >= 0 ? '#22c55e' : '#ef4444'} />
-        <Metric label="Bankroll" value={`$${stats.bankroll.toFixed(2)}`} sub={`-$${stats.deployed.toFixed(2)} deployed`} />
+        <Metric label="Bankroll" value={`$${stats.bankroll.toFixed(2)}`} sub={`-$${stats.deployed.toFixed(2)} in active trades`} />
         <Metric label="Open" value={`${stats.open}`} sub={`${stats.resolved} resolved`} />
       </div>
 
       <div className="grid-3-1">
         <div className="col-span-2">
-          <Card title="Cumulative P&L">
+          <Card title="Portfolio Growth">
             <PnLChart data={pnl_series} />
           </Card>
         </div>
@@ -48,13 +48,13 @@ export function Overview({ data, account }: { data: DashboardData; account?: any
         <div className="space-y-3">
           {/* Model proof */}
           <Card>
-            <div className="text-[10px] font-semibold text-[#6b7280] uppercase tracking-widest mb-2">Model Edge Proof</div>
+            <div className="text-[10px] font-semibold text-[#6b7280] uppercase tracking-widest mb-2">Accuracy vs Market</div>
             <div className="space-y-1.5 text-xs">
-              <div className="flex justify-between"><span className="text-[#94a3b8]">Model Brier</span><span className="text-green-400 font-mono font-bold">{brier.model}</span></div>
-              <div className="flex justify-between"><span className="text-[#94a3b8]">Naive Brier</span><span className="text-[#6b7280] font-mono">{brier.naive}</span></div>
+              <div className="flex justify-between"><span className="text-[#94a3b8]">Our Model</span><span className="text-green-400 font-mono font-bold">{brier.model}</span></div>
+              <div className="flex justify-between"><span className="text-[#94a3b8]">Market Baseline</span><span className="text-[#6b7280] font-mono">{brier.naive}</span></div>
               <div className="h-px bg-[#1e1e3a]" />
               <div className="text-green-400 font-semibold">+{brier.improvement}% vs market ✓</div>
-              <div className="text-[10px] text-[#6b7280]">19,624 resolved markets</div>
+              <div className="text-[10px] text-[#6b7280]">19,624 historical outcomes analyzed</div>
             </div>
           </Card>
 
@@ -83,10 +83,10 @@ export function Overview({ data, account }: { data: DashboardData; account?: any
       </div>
 
       <div className="grid-2">
-        <Card title="Performance by Category">
+        <Card title="Results by Market Type">
           <CategoryChart data={cat_breakdown} />
         </Card>
-        <Card title="Recent Activity">
+        <Card title="Latest Trades">
           <div className="space-y-1">
             {(recent_full || []).slice(0, 8).map((t, i) => (
               <div key={i} className="flex items-center gap-2 text-xs py-1.5 border-b border-[#1a1a3a] last:border-0">

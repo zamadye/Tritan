@@ -9,18 +9,18 @@ export function Learning({ data }: { data: DashboardData }) {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-base font-semibold text-[#e2e8f0] mb-1">🧠 Evolution Learning</h2>
-        <p className="text-xs text-[#6b7280]">Agent learns from every resolved trade. Lessons injected into LLM each cycle.</p>
+        <h2 className="text-base font-semibold text-[#e2e8f0] mb-1">🧠 AI Learning System</h2>
+        <p className="text-xs text-[#6b7280]">The system continuously improves — every trade outcome refines future decisions automatically.</p>
       </div>
       <div className="grid grid-cols-4 gap-3">
         <Metric label="Resolved Trades" value={String(evolution?.total_resolved||0)} />
         <Metric label="Overall WR" value={`${((evolution?.overall_win_rate||0)*100).toFixed(0)}%`} />
-        <Metric label="Model Improvement" value={`+${brier.improvement}%`} color="#22c55e" sub="vs naive baseline" />
-        <Metric label="New Arch WR" value={`${((stats.new_arch?.wr||0)*100).toFixed(0)}%`} sub={`${stats.new_arch?.total||0} trades (May1+)`} color={stats.new_arch?.wr >= 0.54 ? '#22c55e' : '#f59e0b'} />
+        <Metric label="Accuracy Gain" value={`+${brier.improvement}%`} color="#22c55e" sub="vs market baseline" />
+        <Metric label="Current System WR" value={`${((stats.new_arch?.wr||0)*100).toFixed(0)}%`} sub={`${stats.new_arch?.total||0} trades (May1+)`} color={stats.new_arch?.wr >= 0.54 ? '#22c55e' : '#f59e0b'} />
       </div>
       <div className="grid grid-cols-2 gap-5">
-        <Card title="Exit Breakdown"><ExitChart data={exit_breakdown||{}} /></Card>
-        <Card title="Entry Price → Win Rate">
+        <Card title="How Trades Close"><ExitChart data={exit_breakdown||{}} /></Card>
+        <Card title="Best Entry Zones">
           <div className="space-y-2">
             {Object.entries(evolution?.price_movement_patterns||{}).map(([b, d]: any) => (
               <div key={b} className="flex items-center gap-3 text-xs">
@@ -37,7 +37,7 @@ export function Learning({ data }: { data: DashboardData }) {
         </Card>
       </div>
       <div className="grid grid-cols-2 gap-5">
-        <Card title="What Worked">
+        <Card title="Winning Patterns">
           {!(evolution?.momentum_lessons?.length) ? <div className="text-xs text-[#6b7280]">Collecting data...</div> : (
             <div className="space-y-2">
               {(evolution.momentum_lessons||[]).map((m: any, i: number) => (
@@ -53,7 +53,7 @@ export function Learning({ data }: { data: DashboardData }) {
             </div>
           )}
         </Card>
-        <Card title="Recent Losses">
+        <Card title="Learning from Mistakes">
           {!(evolution?.recent_mistakes?.length) ? <div className="text-xs text-[#6b7280]">No mistakes yet</div> : (
             <div className="space-y-2">
               {(evolution.recent_mistakes||[]).map((m: any, i: number) => (

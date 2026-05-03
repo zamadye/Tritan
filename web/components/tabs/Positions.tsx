@@ -12,8 +12,8 @@ export function Positions({ data }: { data: DashboardData }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <h2 className="text-base font-semibold">Open Positions ({open_positions.length})</h2>
-        <span className="text-xs text-[#6b7280]">${stats.deployed.toFixed(2)} deployed</span>
+        <h2 className="text-base font-semibold">Active Trades ({open_positions.length})</h2>
+        <span className="text-xs text-[#6b7280]">${stats.deployed.toFixed(2)} in active trades</span>
       </div>
       {open_positions.map((t: any, i: number) => (
         <Card key={i} className={`border-l-4 ${t.side==='YES' ? 'border-l-green-500' : 'border-l-red-500'}`}>

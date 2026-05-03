@@ -1,48 +1,48 @@
 {
-  "total_resolved": 71,
-  "overall_win_rate": 0.521,
+  "total_resolved": 84,
+  "overall_win_rate": 0.524,
   "momentum_lessons": [
     {
       "category": "sports",
-      "entry_price": 0.81,
-      "pnl": 0.12,
+      "entry_price": 0.19,
+      "pnl": 4.26,
       "exit_reason": "RESOLVED",
-      "catalyst": "Statistical mispricing: p_base=90% vs market=81% gap=9% (n=6077)"
+      "catalyst": "Statistical mispricing: p_base=10% vs market=19% gap=9% (n=6077)"
     },
     {
       "category": "sports",
-      "entry_price": 0.21,
-      "pnl": 1.88,
+      "entry_price": 0.19,
+      "pnl": 4.26,
       "exit_reason": "RESOLVED",
-      "catalyst": "Statistical mispricing: p_base=12% vs market=21% gap=9% (n=6077)"
+      "catalyst": "Statistical mispricing: p_base=10% vs market=19% gap=9% (n=6077)"
     },
     {
       "category": "sports",
-      "entry_price": 0.2,
-      "pnl": 0.02,
-      "exit_reason": "EVENT_DEADLINE (sports 4h/4h)",
-      "catalyst": "Statistical mispricing: p_base=11% vs market=20% gap=9% (n=6077)"
+      "entry_price": 0.78,
+      "pnl": 0.14,
+      "exit_reason": "RESOLVED",
+      "catalyst": "Statistical mispricing: p_base=87% vs market=78% gap=9% (n=6077)"
     },
     {
       "category": "sports",
-      "entry_price": 0.23,
-      "pnl": 3.35,
+      "entry_price": 0.72,
+      "pnl": 0.39,
       "exit_reason": "RESOLVED",
-      "catalyst": "Statistical mispricing: p_base=14% vs market=23% gap=9% (n=6077)"
+      "catalyst": "Statistical mispricing: p_base=80% vs market=72% gap=8% (n=6077)"
     },
     {
-      "category": "sports",
-      "entry_price": 0.3,
-      "pnl": 1.17,
-      "exit_reason": "RESOLVED",
-      "catalyst": "Statistical mispricing: p_base=22% vs market=30% gap=8% (n=6077)"
+      "category": "other",
+      "entry_price": 0.394,
+      "pnl": 0.01,
+      "exit_reason": "TRAILING_STOP (peak=+11% sl=+1% now=+1%)",
+      "catalyst": "Statistical mispricing: p_base=31% vs market=39% gap=8% (n=7829)"
     }
   ],
   "price_movement_patterns": {
     "10-20%": {
-      "win_rate": 0.55,
-      "avg_pnl": 0.52,
-      "n": 11
+      "win_rate": 0.53,
+      "avg_pnl": 0.94,
+      "n": 15
     },
     "20-30%": {
       "win_rate": 0.48,
@@ -60,9 +60,9 @@
       "n": 6
     },
     "30-40%": {
-      "win_rate": 0.43,
-      "avg_pnl": 0.16,
-      "n": 7
+      "win_rate": 0.4,
+      "avg_pnl": 0.11,
+      "n": 10
     },
     "50-60%": {
       "win_rate": 0.67,
@@ -70,9 +70,9 @@
       "n": 3
     },
     "70-80%": {
-      "win_rate": 0.57,
-      "avg_pnl": 0.03,
-      "n": 14
+      "win_rate": 0.56,
+      "avg_pnl": 0.04,
+      "n": 18
     },
     "40-50%": {
       "win_rate": 0.5,
@@ -80,30 +80,34 @@
       "n": 6
     },
     "60-70%": {
-      "win_rate": 0.5,
+      "win_rate": 0.75,
       "avg_pnl": 0.01,
-      "n": 2
+      "n": 4
     }
   },
   "exit_patterns": {
     "TAKE_PROFIT": 11,
-    "STOP_LOSS": 23,
+    "STOP_LOSS": 25,
     "TIME_LIMIT": 2,
-    "TRAILING_STOP": 8,
-    "RESOLVED": 27
+    "TRAILING_STOP": 10,
+    "RESOLVED": 36
   },
   "edge_reality": {
     "10%": {
-      "actual_wr": 0.56,
-      "n": 55
+      "actual_wr": 0.55,
+      "n": 65
     },
     "20%": {
-      "actual_wr": 0.43,
-      "n": 14
+      "actual_wr": 0.44,
+      "n": 16
     },
     "0%": {
       "actual_wr": 0.0,
       "n": 2
+    },
+    "40%": {
+      "actual_wr": 1.0,
+      "n": 1
     }
   },
   "category_bias": {},
@@ -111,25 +115,25 @@
   "overconfidence_patterns": [],
   "recent_mistakes": [
     {
-      "question": "Will Manchester City FC win on 2026-05-04?",
-      "category": "other",
-      "entry_price": 0.66,
-      "reasoning": "Statistical mispricing: p_base=49% vs market=66% gap=17% (n=7829)",
-      "lesson": "Momentum thesis failed in other at entry 0.66. Review what catalyst was missing."
-    },
-    {
-      "question": "Spread: Spurs (-13.5)",
-      "category": "other",
-      "entry_price": 0.51,
-      "reasoning": "Statistical mispricing: p_base=38% vs market=51% gap=13% (n=7829)",
-      "lesson": "Momentum thesis failed in other at entry 0.51. Review what catalyst was missing."
-    },
-    {
-      "question": "Cleveland Guardians vs. Athletics",
+      "question": "Los Angeles Dodgers vs. St. Louis Cardinals",
       "category": "sports",
-      "entry_price": 0.2,
-      "reasoning": "Statistical mispricing: p_base=11% vs market=20% gap=9% (n=6077)",
-      "lesson": "Momentum thesis failed in sports at entry 0.20. Review what catalyst was missing."
+      "entry_price": 0.75,
+      "reasoning": "Based on the provided data, the Los Angeles Dodgers vs. St. Louis Cardinals prediction market shows ",
+      "lesson": "Used base rate instead of real catalyst in sports. No momentum signal = no bet."
+    },
+    {
+      "question": "Baltimore Orioles vs. New York Yankees",
+      "category": "sports",
+      "entry_price": 0.18,
+      "reasoning": "Statistical mispricing: p_base=9% vs market=18% gap=9% (n=6077)",
+      "lesson": "Momentum thesis failed in sports at entry 0.18. Review what catalyst was missing."
+    },
+    {
+      "question": "UFC 328: Sean Strickland vs. Khamzat Chimaev (Middleweight, Main Card)",
+      "category": "sports",
+      "entry_price": 0.18,
+      "reasoning": "Statistical mispricing: p_base=9% vs market=18% gap=9% (n=6077)",
+      "lesson": "Momentum thesis failed in sports at entry 0.18. Review what catalyst was missing."
     }
   ]
 }

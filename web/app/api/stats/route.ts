@@ -73,7 +73,7 @@ export async function GET() {
 
   // Signal A proof: which trades used statistical prior
   const stat_edge_trades = resolved.filter(t =>
-    t.calibration_applied && t.calibration_applied.includes('logistic'))
+    t.calibration && t.calibration.includes('logistic'))
   const stat_edge_wins = stat_edge_trades.filter(t => t.prediction_correct)
 
   // Recent trades with full audit trail
@@ -94,7 +94,7 @@ export async function GET() {
       brier: t.brier_score,
       exit_reason: t.exit_reason,
       catalyst: t.reasoning_summary?.slice(0, 120),
-      calibration: t.calibration_applied?.slice(0, 100),
+      calibration: t.calibration?.slice(0, 100),
       category: t.category,
       date: (t.resolved_at || '').slice(0, 16),
     }))

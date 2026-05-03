@@ -7,11 +7,11 @@ export function Proof({ data }: { data: DashboardData }) {
 
   const sources = [
     { name: 'ESPN Sports API', desc: 'Live scores, injuries, standings, playoff series', ok: data_sources?.espn, icon: '🏀' },
-    { name: 'NewsAPI', desc: 'Breaking news <15 min — info delay detection', ok: data_sources?.newsapi, icon: '📰' },
-    { name: 'Twitter/X API', desc: 'Social sentiment volume spikes', ok: data_sources?.twitter, icon: '🐦' },
-    { name: 'CoinGecko', desc: 'Crypto price + 1h/24h change (lag detector)', ok: data_sources?.coingecko, icon: '₿' },
-    { name: 'Fear & Greed', desc: '7-day trend — macro risk signal', ok: data_sources?.fear_greed, icon: '📊' },
-    { name: 'Polymarket Gamma', desc: 'Market prices, volume, liquidity', ok: true, icon: '🎯' },
+    { name: 'NewsAPI', desc: 'Breaking news within 15 min — before market reacts', ok: data_sources?.newsapi, icon: '📰' },
+    { name: 'Twitter/X API', desc: 'Social media momentum signals', ok: data_sources?.twitter, icon: '🐦' },
+    { name: 'CoinGecko', desc: 'Real-time price movement detection', ok: data_sources?.coingecko, icon: '₿' },
+    { name: 'Fear & Greed', desc: 'Market sentiment trend (7-day)', ok: data_sources?.fear_greed, icon: '📊' },
+    { name: 'Polymarket Gamma', desc: 'Live market data & pricing', ok: true, icon: '🎯' },
   ]
 
   const auditTrades = (recent_full || []).filter(t => t.calibration?.includes('logistic')).slice(0, 10)
@@ -20,7 +20,7 @@ export function Proof({ data }: { data: DashboardData }) {
     <div className="space-y-5">
       <div>
         <h2 className="text-base font-semibold text-[#e2e8f0] flex items-center gap-2 mb-1">
-          🛡 Edge Proof & Audit Trail
+          🛡 Performance Verification & Track Record
         </h2>
         <p className="text-xs text-[#6b7280]">
           Verifiable proof that Tritan has a statistical edge over naive market pricing.
@@ -32,25 +32,24 @@ export function Proof({ data }: { data: DashboardData }) {
       <div className="grid grid-cols-4 gap-3">
         <Metric label="Markets Analyzed" value={(data_sources?.markets_analyzed||0).toLocaleString()}
           sub="Resolved Polymarket markets" badge="REAL DATA" />
-        <Metric label="Model Brier Score" value={brier.model.toString()}
-          sub={`vs naive ${brier.naive} (+${brier.improvement}%)`} color="#22c55e" />
-        <Metric label="New Arch WR" value={`${((stats.new_arch?.wr||0)*100).toFixed(0)}%`}
+        <Metric label="Prediction Accuracy Score" value={brier.model.toString()}
+          sub={`vs market baseline (+${brier.improvement}% better)`} color="#22c55e" />
+        <Metric label="Current System WR" value={`${((stats.new_arch?.wr||0)*100).toFixed(0)}%`}
           sub={`${stats.new_arch?.total||0} trades (May 1+)`} />
-        <Metric label="Stat Edge Trades" value={`${stats.stat_edge?.total||0}`}
-          sub={`WR: ${((stats.stat_edge?.wr||0)*100).toFixed(0)}% (p_calibrated)`} />
+        <Metric label="Model-Driven Trades" value={`${stats.stat_edge?.total||0}`}
+          sub={`WR: ${((stats.stat_edge?.wr||0)*100).toFixed(0)}% (probability model)`} />
       </div>
 
       {/* Calibration model table */}
-      <Card title="Logistic Regression Calibration Model — Per Category">
+      <Card title="Probability Model Results by Market Type">
         <p className="text-xs text-[#6b7280] mb-3">
-          Model fitted on 19,624 resolved markets. Lower Brier = better prediction.
-          Improvement % = proof of edge over naive market price.
+          Trained on 19,624 real market outcomes. Shows how much more accurate our model is vs simply using the market price.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
               <tr className="text-[#6b7280] border-b border-[#1e1e3a] text-left">
-                {['Category','N Markets','Model Brier','Naive Brier','Improvement','Valid?'].map(h => (
+                {['Category','N Markets','Our Model','Market Baseline','Improvement','Status'].map(h => (
                   <th key={h} className="py-2 pr-4 font-semibold">{h}</th>
                 ))}
               </tr>
@@ -65,7 +64,7 @@ export function Proof({ data }: { data: DashboardData }) {
                   <td className={`pr-4 font-mono font-semibold ${c.improvement > 0 ? 'text-green-400' : 'text-red-400'}`}>
                     {c.improvement > 0 ? '+' : ''}{c.improvement?.toFixed(1)}%
                   </td>
-                  <td>{c.n >= 100 ? <Badge text="✓ n≥100" color="green" /> : <Badge text={`n=${c.n}`} color="yellow" />}</td>
+                  <td>{c.n >= 100 ? <Badge text="✓ ✓ Validated" color="green" /> : <Badge text={`n=${c.n}`} color="yellow" />}</td>
                 </tr>
               ))}
             </tbody>
@@ -92,7 +91,7 @@ export function Proof({ data }: { data: DashboardData }) {
       </Card>
 
       {/* Audit trail */}
-      <Card title="Trade Audit Trail — Statistical Edge Bets">
+      <Card title="Trade History — Model-Driven Decisions">
         <p className="text-xs text-[#6b7280] mb-3">
           Trades where p_calibrated (from logistic model) differed &gt;8% from market price.
           Each row is independently verifiable.
@@ -112,7 +111,7 @@ export function Proof({ data }: { data: DashboardData }) {
                 </div>
                 <div className="grid grid-cols-5 gap-2 text-[10px] text-[#6b7280] mb-1">
                   <span>Entry: <span className="text-[#94a3b8] font-mono">{((t.entry||0)*100).toFixed(0)}%</span></span>
-                  <span>p_base: <span className="text-[#a5b4fc] font-mono">{t.p_base||'—'}</span></span>
+                  <span>Prob. Model: <span className="text-[#a5b4fc] font-mono">{t.p_base||'—'}</span></span>
                   <span>Edge: <span className="text-[#94a3b8] font-mono">{t.edge?`${(t.edge*100).toFixed(1)}%`:'—'}</span></span>
                   <span>Conf: <span className="text-[#94a3b8] font-mono">{t.confidence?`${(t.confidence*100).toFixed(0)}%`:'—'}</span></span>
                   <span>Brier: <span className="text-[#94a3b8] font-mono">{t.brier?.toFixed(3)||'—'}</span></span>

@@ -1,8 +1,8 @@
 {
   "market_id": "0xf7c0303b0dd61a800a83276a711506dc6b056104f2141d49e9b915324ac9d454",
   "question": "Will Elon Musk post 120-139 tweets from April 28 to May 5, 2026?",
-  "market_price": 0.136,
-  "generated_at": "2026-05-03T11:39:53.652087+00:00",
+  "market_price": 0.089,
+  "generated_at": "2026-05-03T18:22:17.319888+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
@@ -21,8 +21,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 0,
-      "btc_24h": 0,
+      "btc_price": 78671,
+      "btc_24h": 0.38228781147638413,
       "risk_signal": "neutral"
     }
   },

@@ -1,83 +1,83 @@
 {
-  "last_updated": "2026-05-02T23:03:29.615202",
+  "last_updated": "2026-05-03T20:52:54.497398",
   "mode": "demo",
-  "total_resolved": 185,
-  "wins": 77,
-  "losses": 108,
-  "win_rate": 0.4162,
-  "total_pnl": 115.11,
-  "avg_brier": 0.2629,
+  "total_resolved": 203,
+  "wins": 86,
+  "losses": 117,
+  "win_rate": 0.4236,
+  "total_pnl": 123.74,
+  "avg_brier": 0.2711,
   "biggest_win": 73.33,
   "biggest_loss": -10.0,
   "recent": [
     {
-      "question": "Milwaukee Brewers vs. Washington Nationals",
+      "question": "Los Angeles Dodgers vs. St. Louis Cardinals",
       "side": "YES",
       "outcome": "YES",
-      "pnl": 0.12,
+      "pnl": 0.14,
       "correct": true
     },
     {
-      "question": "Philadelphia Phillies vs. Miami Marlins",
+      "question": "San Francisco Giants vs. Tampa Bay Rays",
       "side": "NO",
       "outcome": "NO",
-      "pnl": 1.88,
-      "correct": true
-    },
-    {
-      "question": "Will Manchester City FC win on 2026-05-04?",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": 0.02,
-      "correct": true
-    },
-    {
-      "question": "Spread: Spurs (-13.5)",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": 0.09,
-      "correct": true
-    },
-    {
-      "question": "Cleveland Guardians vs. Athletics",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": -0.62,
-      "correct": false
-    },
-    {
-      "question": "Cleveland Guardians vs. Athletics",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": -0.15,
-      "correct": false
-    },
-    {
-      "question": "Will NVIDIA be the largest company in the world by market ca",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": 0.11,
-      "correct": true
-    },
-    {
-      "question": "Arizona Diamondbacks vs. Chicago Cubs",
-      "side": "NO",
-      "outcome": "NO",
-      "pnl": 3.35,
+      "pnl": 4.26,
       "correct": true
     },
     {
       "question": "Baltimore Orioles vs. New York Yankees",
       "side": "NO",
       "outcome": "NO",
-      "pnl": 1.17,
+      "pnl": 4.26,
       "correct": true
     },
     {
-      "question": "Toronto Blue Jays vs. Minnesota Twins",
+      "question": "UFC 328: Sean Strickland vs. Khamzat Chimaev (Middleweight, ",
       "side": "NO",
       "outcome": "EXIT",
-      "pnl": -0.16,
+      "pnl": -0.01,
+      "correct": false
+    },
+    {
+      "question": "Will Elon Musk post 140-159 tweets from April 28 to May 5, 2",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": 0.01,
+      "correct": true
+    },
+    {
+      "question": "Will Manchester City FC win on 2026-05-04?",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": 0.01,
+      "correct": true
+    },
+    {
+      "question": "Los Angeles Dodgers vs. St. Louis Cardinals",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": -0.18,
+      "correct": false
+    },
+    {
+      "question": "Baltimore Orioles vs. New York Yankees",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": -0.15,
+      "correct": false
+    },
+    {
+      "question": "Indian Premier League: Gujarat Titans vs Punjab Kings",
+      "side": "YES",
+      "outcome": "YES",
+      "pnl": 0.39,
+      "correct": true
+    },
+    {
+      "question": "Indian Premier League: Gujarat Titans vs Punjab Kings",
+      "side": "YES",
+      "outcome": "EXIT",
+      "pnl": -0.13,
       "correct": false
     }
   ]

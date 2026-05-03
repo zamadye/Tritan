@@ -41,8 +41,8 @@ export function Settings() {
 
       <Card title="Strategy">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <Field label="Min Confidence" envKey="MIN_CONFIDENCE" value={env.MIN_CONFIDENCE||''} onChange={set} />
-          <Field label="Edge Threshold" envKey="EDGE_THRESHOLD" value={env.EDGE_THRESHOLD||''} onChange={set} />
+          <Field label="Signal Strength Threshold" envKey="MIN_CONFIDENCE" value={env.MIN_CONFIDENCE||''} onChange={set} />
+          <Field label="Min Price Gap Required" envKey="EDGE_THRESHOLD" value={env.EDGE_THRESHOLD||''} onChange={set} />
           <Field label="Min Bet ($)" envKey="MIN_BET_SIZE" value={env.MIN_BET_SIZE||''} onChange={set} />
           <Field label="Max Bet ($)" envKey="MAX_BET_SIZE" value={env.MAX_BET_SIZE||''} onChange={set} />
         </div>
@@ -59,12 +59,12 @@ export function Settings() {
         <SaveBtn onClick={() => save(['EXIT_TAKE_PROFIT','TRAILING_STOP_PCT','EXIT_STOP_LOSS','EXIT_MAX_HOURS'])} />
       </Card>
 
-      <Card title="Scan & LLM">
+      <Card title="Scan & AI Settings">
         <div className="grid grid-cols-2 gap-4 mb-4">
           <Field label="Scan off-peak (min)" envKey="SCAN_INTERVAL_MINUTES" value={env.SCAN_INTERVAL_MINUTES||''} onChange={set} />
           <Field label="Scan active (min)" envKey="SCAN_INTERVAL_ACTIVE_MINUTES" value={env.SCAN_INTERVAL_ACTIVE_MINUTES||''} onChange={set} />
-          <Field label="Max LLM calls/cycle" envKey="MAX_LLM_CALLS_PER_CYCLE" value={env.MAX_LLM_CALLS_PER_CYCLE||''} onChange={set} />
-          <Field label="Daily LLM limit ($)" envKey="LLM_DAILY_COST_LIMIT_USD" value={env.LLM_DAILY_COST_LIMIT_USD||''} onChange={set} />
+          <Field label="Max AI Analyses per Scan" envKey="MAX_LLM_CALLS_PER_CYCLE" value={env.MAX_LLM_CALLS_PER_CYCLE||''} onChange={set} />
+          <Field label="Daily AI Budget ($)" envKey="LLM_DAILY_COST_LIMIT_USD" value={env.LLM_DAILY_COST_LIMIT_USD||''} onChange={set} />
         </div>
         <SaveBtn onClick={() => save(['SCAN_INTERVAL_MINUTES','SCAN_INTERVAL_ACTIVE_MINUTES','MAX_LLM_CALLS_PER_CYCLE','LLM_DAILY_COST_LIMIT_USD'])} />
       </Card>
