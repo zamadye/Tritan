@@ -1,13 +1,13 @@
 {
   "market_id": "0x13d364597429089ef5020c69e41c4fc15703541f9d33e33db4a031f153721540",
   "question": "UFC Fight Night: Themba Gorimbo vs. Jonathan Micallef (Welterweight, Prelims)",
-  "market_price": 0.33,
-  "generated_at": "2026-05-02T01:10:39.654688+00:00",
+  "market_price": 0.32,
+  "generated_at": "2026-05-02T03:51:53.215278+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
       "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "39/100 (Fear)",

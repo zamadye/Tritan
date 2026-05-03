@@ -1,0 +1,35 @@
+{
+  "market_id": "0xfaa686c0c95ae8acd2b3dd25307e7fda58cfdb98b6dcdd24579eb44220058d10",
+  "question": "La Bisbal: Tamara Korpatsch vs Marina Bassols Ribera",
+  "market_price": 0.79,
+  "generated_at": "2026-05-02T13:34:08.408742+00:00",
+  "macro": {
+    "fed_expectations": [
+      "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
+      "Jerome Powell out as Fed Chair by May 14, 2026? \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "39/100 (Fear)",
+      "7d_trend": "improving",
+      "values": [
+        39,
+        26,
+        29,
+        26,
+        33,
+        47,
+        33
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 78291,
+      "btc_24h": -0.17423252520128477,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

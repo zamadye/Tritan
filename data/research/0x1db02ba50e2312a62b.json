@@ -2,27 +2,29 @@
   "market_id": "0x1db02ba50e2312a62b4104de691cc7a76065d8d0da40decf93eb1b914a3217b7",
   "question": "US x Iran permanent peace deal by May 15, 2026?",
   "market_price": 0.08,
-  "generated_at": "2026-05-01T02:10:12.574204+00:00",
+  "generated_at": "2026-05-02T14:41:53.724124+00:00",
   "macro": {
     "fed_expectations": [
-      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%"
+      "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel \u2192 YES=50%",
+      "Jerome Powell out as Fed Chair by May 14, 2026? \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
     ],
     "fear_greed": {
-      "current": "26/100 (Fear)",
-      "7d_trend": "deteriorating",
+      "current": "39/100 (Fear)",
+      "7d_trend": "improving",
       "values": [
+        39,
         26,
         29,
         26,
         33,
         47,
-        33,
-        31
+        33
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76657,
-      "btc_24h": 0.5125176315460246,
+      "btc_price": 78370,
+      "btc_24h": 0.25524769370482714,
       "risk_signal": "neutral"
     }
   },

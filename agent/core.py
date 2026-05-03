@@ -138,16 +138,19 @@ def run_scan_cycle(mode: str, clob_client=None):
     if evo_context:
         console.print(f"\n[dim]🧠 Evolution context loaded[/dim]")
 
-    # Step 3b: Regime filter — skip if market is dead (no point trading noise)
+    # Step 3b: Regime filter — only skip if ALL markets are dead
+    # Statistical edge (sports/geopolitik) doesn't depend on BTC movement
+    # Only skip if BTC very flat AND no sports/geo markets available
     try:
         from agent.research import get_macro_context as _gmc
         _macro = _gmc()
         _btc_change = abs(_macro.get("crypto_sentiment",{}).get("btc_24h", 99))
         _fg = _macro.get("fear_greed",{}).get("values",[50])
         _fg_val = _fg[0] if _fg else 50
-        if _btc_change < 0.5 and 45 <= _fg_val <= 55:
-            console.print("[yellow]💤 Regime filter: market dead (BTC flat + F&G neutral). Skipping cycle.[/yellow]")
-            return
+        # Only skip crypto-only cycles, not sports/geo
+        if _btc_change < 0.3 and 48 <= _fg_val <= 52:
+            console.print("[dim]💤 Regime: BTC very flat, will skip crypto-only markets[/dim]")
+            # Don't return — still scan for sports/geo statistical edge
     except Exception:
         pass
 

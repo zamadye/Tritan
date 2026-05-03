@@ -1,31 +1,29 @@
 {
   "market_id": "0x828aaec481308550a867fff3bd1e497ca1ebb5998fcf1fb40aaa4abfeb85db26",
   "question": "Will WTI Crude Oil (WTI) hit (HIGH) $130 in May?",
-  "market_price": 0.32,
-  "generated_at": "2026-05-01T06:55:00.893363+00:00",
+  "market_price": 0.22,
+  "generated_at": "2026-05-02T20:21:28.815899+00:00",
   "macro": {
     "fed_expectations": [
-      "Will the Fed increase interest rates by 50+ bps after the Ju \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
-      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%"
+      "Jerome Powell out as Fed Chair by May 14, 2026? \u2192 YES=50%"
     ],
     "fear_greed": {
-      "current": "26/100 (Fear)",
-      "7d_trend": "deteriorating",
+      "current": "39/100 (Fear)",
+      "7d_trend": "improving",
       "values": [
+        39,
         26,
         29,
         26,
         33,
         47,
-        33,
-        31
+        33
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 76944,
-      "btc_24h": 1.5969846052216348,
-      "risk_signal": "risk-ON"
+      "btc_price": 78418,
+      "btc_24h": 0.34925598203851044,
+      "risk_signal": "neutral"
     }
   },
   "sports": {},

@@ -1,13 +1,13 @@
 {
   "market_id": "0x8f2d92bffe6dd3ed3de223c5440e8edb9dbb83a4262caff14d3b46edf4f4a8a3",
   "question": "Los Angeles Dodgers vs. St. Louis Cardinals",
-  "market_price": 0.36,
-  "generated_at": "2026-05-02T01:11:40.257159+00:00",
+  "market_price": 0.19,
+  "generated_at": "2026-05-02T01:44:18.924734+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
       "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "39/100 (Fear)",
@@ -23,9 +23,9 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78350,
-      "btc_24h": 2.3566192632267247,
-      "risk_signal": "risk-ON"
+      "btc_price": 0,
+      "btc_24h": 0,
+      "risk_signal": "neutral"
     }
   },
   "sports": {
@@ -45,49 +45,7 @@
       "?: Ryan Helsley \u2014 15-Day-IL (Inflammation)"
     ]
   },
-  "news_articles": [
-    {
-      "source": "NewsAPI",
-      "title": "Dodgers Open May With Six-Game Road Trip",
-      "description": "Los Angeles Dodgers hit the road for series against St. Louis Cardinals, Houston Astros.",
-      "published": "2026-04-30"
-    },
-    {
-      "source": "NewsAPI",
-      "title": "Cardinals get to Skenes early as St. Louis completes 4-game sweep in Pittsburgh with 10-5 victory",
-      "description": "JJ Wetherholt led off with a home run against Pirates ace Paul Skenes, and the St. Louis Cardinals finished off a four-game sweep of the Pittsburgh Pirates with a 10-5 win on Thursday. Skenes (4-2) fell to 0-5 against the Cardinals after allowing five runs, f\u2026",
-      "published": "2026-04-30"
-    },
-    {
-      "source": "NewsAPI",
-      "title": "The Reds ended April with 20 wins. Now, they face NL Central contenders",
-      "description": "April was good to the Cincinnati Reds, but the stiffest test of the young season is up next.",
-      "published": "2026-04-30"
-    },
-    {
-      "source": "NewsAPI",
-      "title": "Fantasy Baseball Closer Report: Daniel Palencia nearing a return, Mason Miller snaps scoreless inning streak",
-      "description": "Jorge Montanez breaks down the last week in saves from around the league with updated closer rankings.",
-      "published": "2026-04-30"
-    },
-    {
-      "source": "NewsAPI",
-      "title": "Roto Riteup: April 30, 2026",
-      "description": "Crochet to the IL, but it's not all bad news in today's Roto Riteup!\nSource",
-      "published": "2026-04-30"
-    },
-    {
-      "source": "NewsAPI",
-      "title": "Olson's 2-run walk-off homer sends Braves over Tigers 4-3",
-      "description": "Matt Olson hit a two-run homer in the ninth inning off Kenley Jansen, ruining a dominant performance by Tarik Skubal and rallying the Atlanta Braves to a 4-3 victory over the Detroit Tigers on Wednesday night. Jansen, who blew his third save in nine chances, \u2026",
-      "published": "2026-04-30"
-    }
-  ],
-  "causal_chains": [
-    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
-    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term",
-    "AI chip shortage \u2192 NVIDIA revenue beats \u2192 AI infrastructure stocks rally",
-    "AI energy demand \u2192 data center power stocks rally"
-  ],
+  "news_articles": [],
+  "causal_chains": [],
   "summary": ""
 }

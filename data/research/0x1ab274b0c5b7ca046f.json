@@ -1,0 +1,99 @@
+{
+  "market_id": "0x1ab274b0c5b7ca046fccc5f7c36c33579d0ed038a2e8a52f5d60f742f8614aaf",
+  "question": "Kansas City Royals vs. Seattle Mariners",
+  "market_price": 0.79,
+  "generated_at": "2026-05-02T04:23:18.076201+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
+      "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "39/100 (Fear)",
+      "7d_trend": "improving",
+      "values": [
+        39,
+        26,
+        29,
+        26,
+        33,
+        47,
+        33
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 78274,
+      "btc_24h": 1.5071495470706195,
+      "risk_signal": "risk-ON"
+    }
+  },
+  "sports": {
+    "todays_games": [
+      "ARI @ CHC | Final",
+      "TEX @ DET | Final",
+      "CIN @ PIT | Final",
+      "MIL @ WSH | Final",
+      "BAL @ NYY | Final"
+    ],
+    "injuries": [
+      "?: Tyler Locklear \u2014 10-Day-IL (Surgery)",
+      "?: Corbin Burnes \u2014 60-Day-IL (Surgery)",
+      "?: A.J. Puk \u2014 60-Day-IL (Surgery)",
+      "?: Jeffrey Springs \u2014 Day-To-Day (Soreness)",
+      "?: Denzel Clarke \u2014 10-Day-IL (Bruise)",
+      "?: Max Muncy \u2014 10-Day-IL (Fracture)",
+      "?: Michael Harris II \u2014 Day-To-Day (Soreness)",
+      "?: Sean Murphy \u2014 10-Day-IL (Surgery)",
+      "?: Raisel Iglesias \u2014 15-Day-IL (Inflammation)",
+      "?: Ryan Helsley \u2014 15-Day-IL (Inflammation)"
+    ]
+  },
+  "news_articles": [
+    {
+      "source": "NewsAPI",
+      "title": "Kansas City Royals' Matt Quatraro Shares Maikel Garcia Update After Injury Scare",
+      "description": "Maikel Garcia had an injury scare in the Royals' game on Thursday.",
+      "published": "2026-05-01"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Noah Cameron\u2019s ERA Balloons to 5.40 in Kansas City Royals\u2019 Loss",
+      "description": "The 26-year-old has not gotten off to a strong start this season.",
+      "published": "2026-05-01"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Elephant Rumblings: A\u2019s Navigating First Injury Wave",
+      "description": "MLB News Roundup",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Kansas City Royals' Jonathan India Dealt Unfortunate Injury News on Tuesday",
+      "description": "The Royals will have to find a way to win without Jonathan India this season.",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "1 Kansas City Royals Player Who Could Lift Team To Title Contention",
+      "description": "The Royals' win over the Angels on Sunday revealed a truth.",
+      "published": "2026-04-28"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Can the Struggling Astros Turn Their Season Around?",
+      "description": "Houston is an old team with the worst record in the AL. Its window is closing fast.",
+      "published": "2026-04-27"
+    }
+  ],
+  "causal_chains": [
+    "Starting pitcher ERA below 3.0 \u2192 team win probability +15%",
+    "Bullpen ERA above 5.0 \u2192 late-game collapse risk",
+    "Home run park factor \u2192 high-scoring game more likely",
+    "Day game after night game \u2192 fatigue factor for hitters",
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
+    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term"
+  ],
+  "summary": ""
+}

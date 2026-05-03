@@ -1,13 +1,13 @@
 {
   "market_id": "0xc234b7c376a02514b6e933ce0051973fa7b141bdb0da33e5e9bf08ff91fbd04f",
   "question": "UFC Fight Night: Wes Schultz vs. Ben Johnston (Middleweight, Prelims)",
-  "market_price": 0.43,
-  "generated_at": "2026-05-02T01:10:56.282658+00:00",
+  "market_price": 0.41,
+  "generated_at": "2026-05-02T03:52:09.304641+00:00",
   "macro": {
     "fed_expectations": [
       "Will the Fed decrease interest rates by 25 bps after the Jun \u2192 YES=50%",
       "UFC Fight Night: Carlos Prates vs. Jack Della Maddalena (Wel \u2192 YES=50%",
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%"
     ],
     "fear_greed": {
       "current": "39/100 (Fear)",

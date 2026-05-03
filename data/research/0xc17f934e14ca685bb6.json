@@ -1,0 +1,34 @@
+{
+  "market_id": "0xc17f934e14ca685bb69bc5b7a791f704b38c0eb34337a0776ec1278d7d640f2e",
+  "question": "Abidjan 2: Niels Visker vs Michael Mmoh",
+  "market_price": 0.65,
+  "generated_at": "2026-05-02T21:28:35.386719+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Cincinnati Reds vs. Pittsburgh Pirates \u2192 YES=50%",
+      "Jerome Powell out as Fed Chair by May 14, 2026? \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "39/100 (Fear)",
+      "7d_trend": "improving",
+      "values": [
+        39,
+        26,
+        29,
+        26,
+        33,
+        47,
+        33
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 78467,
+      "btc_24h": 0.5864540209739213,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [],
+  "summary": ""
+}

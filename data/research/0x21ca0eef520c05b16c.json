@@ -1,0 +1,77 @@
+{
+  "market_id": "0x21ca0eef520c05b16c00315eeb2b8d2fcdcdd06a0a682cc3a90b5062cc129c46",
+  "question": "Will Elon Musk post <40 tweets from May 2 to May 4, 2026?",
+  "market_price": 0.14,
+  "generated_at": "2026-05-03T11:38:43.383876+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "47/100 (Neutral)",
+      "7d_trend": "improving",
+      "values": [
+        47,
+        39,
+        26,
+        29,
+        26,
+        33,
+        47
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 78547,
+      "btc_24h": 0.5068077380059635,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {},
+  "news_articles": [
+    {
+      "source": "NewsAPI",
+      "title": "Top 5 Crypto Projects Linked to Elon Musk in 2026: Tesla, X, Dogecoin Influence, and Emerging Blockchain Speculation",
+      "description": "Elon Musk crypto 2026 remains one of the strangest forces in digital assets: part corporate strategy, part social media reflex, part meme-market ignition system. The...\nThe post Top 5 Crypto Projects Linked to Elon Musk in 2026: Tesla, X, Dogecoin Influence, \u2026",
+      "published": "2026-05-02"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Elon Musk likes Bitcoin\u2014but he just told a jury most crypto coins are scams",
+      "description": "The billionaire\u2019s thoughts on crypto came up during the OpenAI trial",
+      "published": "2026-04-30"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Link 4/29/2026",
+      "description": "Our sensatonal daily links: ghosts 'spained, ego depletion. Charles disses Trump, El Ni\u00f1o dangers, OpenAI miss, EU food freakout, moar Lebanon bombing, UAE to exit OPEC, MAHA betreayed, DoJ prosecutes Comey again, FCC review over Kimmel, Trump v. disabled",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Russell\u2019s Teapot: Dispatches From the Final Stage of the AI Bubble",
+      "description": "The AI future sold to markets rests on claims that cannot survive scrutiny, not foresight but hype dressed up as inevitability.",
+      "published": "2026-04-29"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Top 10 Crypto X Influencers to Follow in 2026. Best Twitter Accounts for Signals & Insights",
+      "description": "Why Should You Follow Crypto & Blockchain Influencers in 2026? Today, X is more than a social media platform \u2014 it\u2019s also an active marketplace...\nThe post Top 10 Crypto X Influencers to Follow in 2026. Best Twitter Accounts for Signals & Insights appeared fir\u2026",
+      "published": "2026-04-27"
+    },
+    {
+      "source": "NewsAPI",
+      "title": "Behind the unraveling of Dan Crenshaw",
+      "description": "In 2019, a 36-year-old Rep. Dan Crenshaw (R-TX), newly elected to Congress, was photographed for the inaugural Time 100 Next List, wearing a dashing eye patch and looking upwards with hope. A Harvard-educated Navy SEAL who'd lost his legs while fighting the T\u2026",
+      "published": "2026-04-21"
+    }
+  ],
+  "causal_chains": [
+    "BTC within 3% of round number ($80k/$90k) \u2192 gamma squeeze \u2192 price accelerates",
+    "BTC ETF inflows spike \u2192 institutional buying \u2192 price +5-15%",
+    "BTC ETF outflows \u2192 selling pressure \u2192 price -5-10%",
+    "BTC halving approaching \u2192 supply shock narrative \u2192 price rally",
+    "Crypto exchange hack/collapse \u2192 panic selling \u2192 BTC -15-30%",
+    "Whale accumulation (on-chain) \u2192 supply squeeze \u2192 price up"
+  ],
+  "summary": ""
+}
