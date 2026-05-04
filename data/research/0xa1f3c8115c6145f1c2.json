@@ -2,7 +2,7 @@
   "market_id": "0xa1f3c8115c6145f1c2bde3328ce1a21e89d0dd00385667cdf76bfb89a993e00b",
   "question": "Lakers vs. Thunder",
   "market_price": 0.12,
-  "generated_at": "2026-05-04T00:06:51.712889+00:00",
+  "generated_at": "2026-05-04T01:46:01.587884+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
@@ -21,8 +21,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78507,
-      "btc_24h": -0.13526036755434806,
+      "btc_price": 78796,
+      "btc_24h": 0.7079052429451305,
       "risk_signal": "neutral"
     }
   },

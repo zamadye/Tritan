@@ -1,8 +1,8 @@
 {
   "market_id": "0x2a84175445297debbf4c140b17a1bc78d1d4bca51aa3e6d0ead8956c25df8422",
   "question": "Texas Rangers vs. Detroit Tigers",
-  "market_price": 0.46,
-  "generated_at": "2026-05-04T00:16:34.262305+00:00",
+  "market_price": 0.08,
+  "generated_at": "2026-05-04T00:59:14.624084+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
@@ -21,8 +21,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78490,
-      "btc_24h": -0.10805469767478992,
+      "btc_price": 78502,
+      "btc_24h": -0.029217196003907688,
       "risk_signal": "neutral"
     }
   },

@@ -1,8 +1,8 @@
 {
-  "market_id": "0x70d706fe084905dbafb95dfff13b727e4073efc3ef590adc8330562bac5d26de",
-  "question": "US x Iran diplomatic meeting by May 15, 2026?",
-  "market_price": 0.21,
-  "generated_at": "2026-05-04T01:03:07.409082+00:00",
+  "market_id": "0x2135ffcb43ba9103bb6acf7116d2d5aa98bef6d9eb3dc9c85ea00cb79513f3ec",
+  "question": "Iran closes its airspace by May 8?",
+  "market_price": 0.17,
+  "generated_at": "2026-05-04T01:48:54.445833+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
@@ -21,8 +21,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78466,
-      "btc_24h": -0.07559357452187436,
+      "btc_price": 78840,
+      "btc_24h": 0.764015246604147,
       "risk_signal": "neutral"
     }
   },
@@ -33,7 +33,8 @@
     "Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls",
     "Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally",
     "Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
-    "Iran sanctions tighten \u2192 crypto adoption in Iran increases (capital flight)"
+    "Iran sanctions tighten \u2192 crypto adoption in Iran increases (capital flight)",
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement"
   ],
   "summary": ""
 }

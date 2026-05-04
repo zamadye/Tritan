@@ -1,8 +1,8 @@
 {
   "market_id": "0xd82e290278038064d836ea912e3989fb7bae996b73d5a5e6910e3c5ac01ae136",
   "question": "Will Paris Saint-Germain FC win on 2026-05-06?",
-  "market_price": 0.24,
-  "generated_at": "2026-05-04T00:07:41.563402+00:00",
+  "market_price": 0.26,
+  "generated_at": "2026-05-04T01:47:19.548417+00:00",
   "macro": {
     "fed_expectations": [
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
@@ -21,8 +21,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78507,
-      "btc_24h": -0.13526036755434806,
+      "btc_price": 0,
+      "btc_24h": 0,
       "risk_signal": "neutral"
     }
   },

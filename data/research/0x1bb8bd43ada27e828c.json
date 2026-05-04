@@ -1,0 +1,40 @@
+{
+  "market_id": "0x1bb8bd43ada27e828ce693a5dc2896cd918b64869570761a61048ec78471ce9a",
+  "question": "Jerome Powell out as Fed Chair by May 15, 2026?",
+  "market_price": 0.26,
+  "generated_at": "2026-05-04T01:48:18.281969+00:00",
+  "macro": {
+    "fed_expectations": [
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
+    ],
+    "fear_greed": {
+      "current": "40/100 (Fear)",
+      "7d_trend": "improving",
+      "values": [
+        40,
+        47,
+        39,
+        26,
+        29,
+        26,
+        33
+      ]
+    },
+    "crypto_sentiment": {
+      "btc_price": 78840,
+      "btc_24h": 0.764015246604147,
+      "risk_signal": "neutral"
+    }
+  },
+  "sports": {},
+  "news_articles": [],
+  "causal_chains": [
+    "FOMC meeting \u2192 market volatility spikes 24h before and after",
+    "Fed pause (hold) \u2192 uncertainty \u2192 BTC sideways, then direction from guidance",
+    "Fed hawkish language \u2192 USD up \u2192 BTC/gold down",
+    "Fed dovish language \u2192 USD down \u2192 BTC/gold up",
+    "Major AI model release \u2192 benchmark competition \u2192 sector excitement",
+    "AI regulation proposed \u2192 uncertainty \u2192 AI stocks fall short-term"
+  ],
+  "summary": ""
+}

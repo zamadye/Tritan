@@ -1,10 +1,66 @@
 {
-  "Will Donald Trump announce that the United States blockade o": {
+  "Lakers vs. Thunder": {
     "has_edge": false,
     "signal": "none",
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1777855128.4133089
+    "ts": 1777859171.500548
+  },
+  "Will Elon Musk post 160-179 tweets from April 28 to May 5, 2": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777859188.045043
+  },
+  "Will Elon Musk post 180-199 tweets from April 28 to May 5, 2": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777859224.1506038
+  },
+  "Will Paris Saint-Germain FC win on 2026-05-06?": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777859247.7688797
+  },
+  "US x Iran diplomatic meeting by May 31, 2026?": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777859289.0848682
+  },
+  "Jerome Powell out as Fed Chair by May 15, 2026?": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777859306.286272
+  },
+  "Strait of Hormuz traffic returns to normal by end of May?": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777859325.4156463
+  },
+  "Iran closes its airspace by May 8?": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1777859342.670638
   }
 }
