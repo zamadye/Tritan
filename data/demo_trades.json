@@ -6093,8 +6093,8 @@
     "size_usd": 1.0,
     "price_at_entry": 0.388,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": -0.01,
     "p_true_estimated": 0.306,
     "confidence_at_bet": 0.45,
     "edge_at_bet": -0.082,
@@ -6105,7 +6105,12 @@
     "key_factors_for": [],
     "key_factors_against": [],
     "peak_pnl_pct": 0.03676470588235303,
-    "peak_price": 0.6345000000000001
+    "peak_price": 0.6345000000000001,
+    "exit_price": 0.392,
+    "exit_reason": "EVENT_DEADLINE (other 4h/4h)",
+    "prediction_correct": false,
+    "resolved_at": "2026-05-04T00:06:48.624327+00:00",
+    "brier_score": 0.3745
   },
   {
     "trade_id": "3fc5b4f4-6593-4290-8c61-5325468a2f85",
