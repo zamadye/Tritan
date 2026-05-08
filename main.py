@@ -3,6 +3,8 @@
 import argparse
 import os
 import sys
+import warnings
+warnings.filterwarnings("ignore", message="Unverified HTTPS request")
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"), override=True)

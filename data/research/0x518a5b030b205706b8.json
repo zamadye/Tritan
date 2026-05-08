@@ -1,29 +1,30 @@
 {
   "market_id": "0x518a5b030b205706b8ffe6bbad9bd3de59548348e5c0471827f5de21e513333c",
   "question": "Strait of Hormuz traffic returns to normal by end of May?",
-  "market_price": 0.22,
-  "generated_at": "2026-05-04T01:48:39.921372+00:00",
+  "market_price": 0.34,
+  "generated_at": "2026-05-07T11:22:48.072298+00:00",
   "macro": {
     "fed_expectations": [
+      "MicroStrategy sells any Bitcoin by June 30, 2026? \u2192 YES=50%",
       "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
     ],
     "fear_greed": {
-      "current": "40/100 (Fear)",
+      "current": "47/100 (Neutral)",
       "7d_trend": "improving",
       "values": [
+        47,
+        46,
+        50,
         40,
         47,
         39,
-        26,
-        29,
-        26,
-        33
+        26
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78840,
-      "btc_24h": 0.764015246604147,
-      "risk_signal": "neutral"
+      "btc_price": 80888,
+      "btc_24h": -2.2522409179785323,
+      "risk_signal": "risk-OFF"
     }
   },
   "sports": {},

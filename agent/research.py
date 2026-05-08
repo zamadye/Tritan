@@ -413,46 +413,27 @@ def fetch_multi_source_news(question: str) -> list:
     except Exception:
         pass
 
-    # Serper (only if NewsAPI returned nothing)
+    # Tavily (fallback if NewsAPI returned nothing — replaces Serper)
     if not articles:
         try:
-            api_key = os.getenv("SERPER_API_KEY","")
+            api_key = os.getenv("TAVILY_API_KEY","")
             if api_key:
-                r = requests.post("https://google.serper.dev/news",
-                    headers={"X-API-KEY": api_key, "Content-Type": "application/json"},
-                    json={"q": query, "num": 6}, timeout=8)
+                r = requests.post("https://api.tavily.com/search",
+                    json={"api_key": api_key, "query": query,
+                          "max_results": 5, "search_depth": "basic"}, timeout=8)
                 if r.status_code == 200:
-                    for item in r.json().get("news",[]):
+                    for item in r.json().get("results",[]):
                         articles.append({
-                            "source": "Serper",
+                            "source": "Tavily",
                             "title": item.get("title",""),
-                            "description": item.get("snippet",""),
-                            "published": item.get("date",""),
+                            "description": item.get("content","")[:200],
+                            "published": item.get("published_date",""),
                         })
         except Exception:
             pass
 
-    # Twitter (always try, low rate limit risk)
-    try:
-        bearer = os.getenv("TWITTER_BEARER_TOKEN","")
-        if bearer and words:
-            tw_query = " OR ".join(words[:3]) + " lang:en -is:retweet"
-            r = requests.get(
-                "https://api.twitter.com/2/tweets/search/recent",
-                params={"query": tw_query, "max_results": 10,
-                        "tweet.fields": "public_metrics,created_at"},
-                headers={"Authorization": f"Bearer {bearer}"}, timeout=6)
-            if r.status_code == 200:
-                for t in r.json().get("data",[]):
-                    m = t.get("public_metrics",{})
-                    articles.append({
-                        "source": "Twitter",
-                        "title": t["text"][:100],
-                        "description": f"likes={m.get('like_count',0)} rt={m.get('retweet_count',0)}",
-                        "published": t.get("created_at","")[:10],
-                    })
-    except Exception:
-        pass
+    # Twitter — skip silently if no access (requires Pro tier)
+    # Status: Basic access only, search endpoint returns 403
 
     return articles
 

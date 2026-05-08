@@ -13,11 +13,18 @@ from pathlib import Path
 
 
 WIN_STREAK_TO_INCREASE  = int(os.getenv("WIN_STREAK_TO_INCREASE", 3))
-LOSS_STREAK_TO_DECREASE = int(os.getenv("LOSS_STREAK_TO_DECREASE", 3))  # 3 loss baru turun level
+LOSS_STREAK_TO_DECREASE = int(os.getenv("LOSS_STREAK_TO_DECREASE", 3))
 STEP_SIZE               = float(os.getenv("BANKROLL_STEP_SIZE", 0.10))
 MAX_LEVEL               = int(os.getenv("MAX_BANKROLL_LEVEL", 5))
 MIN_LEVEL               = int(os.getenv("MIN_BANKROLL_LEVEL", -2))
 STATE_FILE              = os.getenv("BANKROLL_STATE_FILE", "./data/bankroll_state.json")
+
+
+def _get_state_file(mode: str = None) -> str:
+    """Return mode-specific state file so demo and live bankroll levels never mix."""
+    if mode == "live":
+        return os.getenv("BANKROLL_STATE_FILE_LIVE", "./data/bankroll_state_live.json")
+    return STATE_FILE
 
 
 def _wins_needed(current_level: int) -> int:
@@ -35,21 +42,21 @@ def _wins_needed(current_level: int) -> int:
         return 1
 
 
-def _load_state() -> dict:
-    p = Path(STATE_FILE)
+def _load_state(mode: str = None) -> dict:
+    p = Path(_get_state_file(mode))
     if p.exists():
         return json.loads(p.read_text())
     return {"level": 0, "win_streak": 0, "loss_streak": 0, "total_trades": 0}
 
 
-def _save_state(state: dict):
-    Path(STATE_FILE).parent.mkdir(parents=True, exist_ok=True)
-    Path(STATE_FILE).write_text(json.dumps(state, indent=2))
+def _save_state(state: dict, mode: str = None):
+    Path(_get_state_file(mode)).parent.mkdir(parents=True, exist_ok=True)
+    Path(_get_state_file(mode)).write_text(json.dumps(state, indent=2))
 
 
-def update_streak(won: bool):
+def update_streak(won: bool, mode: str = None):
     """Call after each resolved trade to update streak and level."""
-    state = _load_state()
+    state = _load_state(mode)
 
     if won:
         state["win_streak"]  += 1
@@ -66,33 +73,25 @@ def update_streak(won: bool):
         if state["loss_streak"] >= LOSS_STREAK_TO_DECREASE:
             if state["level"] > MIN_LEVEL:
                 state["level"] -= 1
-                state["loss_streak"] = 0  # reset streak after level down
+                state["loss_streak"] = 0
                 print(f"[BANKROLL] 📉 Level DOWN → {state['level']} (after {LOSS_STREAK_TO_DECREASE} losses)")
 
     state["total_trades"] += 1
-    _save_state(state)
+    _save_state(state, mode)
     return state
 
 
-def get_kelly_multiplier() -> float:
-    """
-    Returns Kelly fraction multiplier based on current level.
-    Level 0  = base (0.25 Kelly)
-    Level +1 = 0.25 * 1.10 = 0.275
-    Level +2 = 0.25 * 1.20 = 0.30
-    Level -1 = 0.25 * 0.90 = 0.225
-    Level -2 = 0.25 * 0.80 = 0.20
-    """
-    state = _load_state()
+def get_kelly_multiplier(mode: str = None) -> float:
+    state = _load_state(mode)
     level = state.get("level", 0)
     multiplier = 1.0 + (level * STEP_SIZE)
-    multiplier = max(0.5, min(2.0, multiplier))  # clamp 0.5x to 2.0x
+    multiplier = max(0.5, min(2.0, multiplier))
     return round(multiplier, 3)
 
 
-def get_status() -> dict:
-    state = _load_state()
-    mult = get_kelly_multiplier()
+def get_status(mode: str = None) -> dict:
+    state = _load_state(mode)
+    mult = get_kelly_multiplier(mode)
     base_kelly = float(os.getenv("KELLY_FRACTION", 0.25))
     effective_kelly = round(base_kelly * mult, 4)
     return {

@@ -126,10 +126,11 @@ def check_and_resolve(mode: str = "demo") -> int:
 
         trade["actual_outcome"] = outcome
         trade["prediction_correct"] = trade["side"] == outcome
-        trade["resolved_at"] = datetime.now().isoformat()
+        trade["resolved_at"] = datetime.now(timezone.utc).isoformat()
 
         if trade["prediction_correct"]:
-            payout = trade["size_usd"] / trade["price_at_entry"]
+            entry_price = trade["price_at_entry"] if trade["side"] == "YES" else 1 - trade["price_at_entry"]
+            payout = trade["size_usd"] / entry_price
             trade["pnl"] = round(payout - trade["size_usd"], 2)
         else:
             trade["pnl"] = -trade["size_usd"]
@@ -149,7 +150,7 @@ def check_and_resolve(mode: str = "demo") -> int:
         )
         # Update streak for stepped compounding
         from agent.bankroll import update_streak
-        update_streak(trade["prediction_correct"])
+        update_streak(trade["prediction_correct"], mode)
         resolved_count += 1
 
     if resolved_count > 0:
@@ -163,10 +164,31 @@ def check_and_resolve(mode: str = "demo") -> int:
             f"Brier: {stats['avg_brier']:.3f}"
         )
         _save_pnl_summary(trades, mode)
+        _trigger_assistant(trades, resolved_count)
     else:
         print("[RESOLVER] No new resolutions found.")
 
     return resolved_count
+
+
+def _trigger_assistant(trades: list, resolved_count: int):
+    """Notify assistant after trade closes — fire and forget."""
+    try:
+        import requests as _req
+        dashboard_url = os.getenv("DASHBOARD_URL", "http://localhost:3000")
+        resolved = [t for t in trades if t.get("actual_outcome")]
+        recent = sorted(resolved, key=lambda x: x.get("resolved_at",""), reverse=True)[:resolved_count]
+        summary = ", ".join(
+            f"{'WIN' if t.get('prediction_correct') else 'LOSS'} {t['side']} ${t.get('pnl',0):+.2f}"
+            for t in recent
+        )
+        _req.post(
+            f"{dashboard_url}/api/assistant",
+            json={"message": f"Just closed {resolved_count} trade(s): {summary}. Analyze and give brief insight.", "mode": "trade_close"},
+            timeout=15,
+        )
+    except Exception:
+        pass
 
 
 def _save_pnl_summary(trades: list, mode: str):
@@ -176,7 +198,7 @@ def _save_pnl_summary(trades: list, mode: str):
     wins = [t for t in resolved if t.get("prediction_correct")]
     total_pnl = sum(t.get("pnl", 0) for t in resolved)
     summary = {
-        "last_updated": datetime.now().isoformat(),
+        "last_updated": datetime.now(timezone.utc).isoformat(),
         "mode": mode,
         "total_resolved": len(resolved),
         "wins": len(wins),

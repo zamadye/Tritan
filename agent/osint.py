@@ -290,12 +290,12 @@ def get_osint_signals(question: str) -> str:
             else:
                 lines.append(f"  {label}: {value}")
 
-    # Always add: news, twitter, related markets, fear&greed trend
+    # Always add: news, reddit sentiment, related markets, fear&greed trend
     news = get_newsapi_signals(question)
     if news: lines.append(news)
 
-    twitter = get_twitter_signals(question)
-    if twitter: lines.append(twitter)
+    reddit = get_reddit_signals(question, category)
+    if reddit: lines.append(reddit)
 
     related = get_polymarket_related_markets(question)
     if related: lines.append(related)
@@ -377,6 +377,8 @@ def get_twitter_signals(question: str) -> str:
             headers={"Authorization": f"Bearer {bearer}"},
             timeout=6,
         )
+        if r.status_code != 200:
+            return ""
         tweets = r.json().get("data", [])
         if not tweets:
             return ""
@@ -384,6 +386,48 @@ def get_twitter_signals(question: str) -> str:
         for t in tweets[:5]:
             m = t.get("public_metrics", {})
             lines.append(f"  likes={m.get('like_count',0)} rt={m.get('retweet_count',0)}: {t['text'][:100]}")
+        return "\n".join(lines)
+    except Exception:
+        return ""
+
+
+def get_reddit_signals(question: str, category: str = "general") -> str:
+    """Fetch Reddit sentiment — free, no auth required for public posts."""
+    stopwords = {"will","the","and","for","are","was","has","have","been","that",
+                 "this","with","from","they","their","does","would","could","should"}
+    words = [w.strip("?.,!()") for w in question.split()
+             if len(w) > 3 and w.lower() not in stopwords]
+    if not words:
+        return ""
+
+    # Pick subreddit by category
+    sub_map = {
+        "sports":    "sportsbook",
+        "crypto":    "CryptoCurrency",
+        "politics":  "politics",
+        "geopolitik":"geopolitics",
+        "economics": "economics",
+    }
+    subreddit = sub_map.get(category, "polymarket")
+    query = " ".join(words[:3])
+
+    try:
+        r = requests.get(
+            f"https://www.reddit.com/r/{subreddit}/search.json",
+            params={"q": query, "sort": "new", "limit": 5, "t": "day"},
+            headers={"User-Agent": "tritan-agent/1.0"},
+            timeout=6, verify=False,
+        )
+        if r.status_code != 200:
+            return ""
+        posts = r.json().get("data", {}).get("children", [])
+        if not posts:
+            return ""
+        lines = [f"[REDDIT r/{subreddit}] {len(posts)} posts about: {query}"]
+        for p in posts[:3]:
+            d = p["data"]
+            score = d.get("score", 0)
+            lines.append(f"  [{score:+d}] {d.get('title','')[:80]}")
         return "\n".join(lines)
     except Exception:
         return ""

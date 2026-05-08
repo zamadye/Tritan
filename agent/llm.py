@@ -88,7 +88,11 @@ def chat(prompt: str, max_tokens: int = None) -> str:
                 timeout=timeout,
                 messages=[{"role": "user", "content": prompt}],
             )
-            content = response.choices[0].message.content
+            msg     = response.choices[0].message
+            content = msg.content
+            # MiMo reasoning model: content may be empty if reasoning_content has the answer
+            if not content or not content.strip():
+                content = getattr(msg, "reasoning_content", "") or ""
 
             # Track usage from response
             usage = getattr(response, "usage", None)
@@ -115,3 +119,96 @@ def chat(prompt: str, max_tokens: int = None) -> str:
                 raise Exception(f"[LLM] Account suspended/no balance: {err[:100]}")
             else:
                 raise
+
+
+def chat_with_tools(prompt: str, tools: list, max_iterations: int = 5) -> tuple[str, list]:
+    """
+    Agentic loop: LLM can call tools to fetch real-time data before giving final answer.
+    Returns: (final_text_response, tool_call_log)
+    Hard limits: max_iterations=5, total_timeout=45s per market.
+    """
+    from dotenv import load_dotenv
+    import time
+    load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"), override=True)
+
+    from agent.tools import execute_tool
+
+    client     = get_client()
+    model      = os.getenv("AI_MODEL", "mimo-v2.5")
+    max_tokens = int(os.getenv("LLM_MAX_TOKENS", 1500))
+
+    # Daily cost guard
+    daily = get_daily_usage()
+    daily_limit = float(os.getenv("LLM_DAILY_COST_LIMIT_USD", 2.0))
+    if daily["cost_usd"] >= daily_limit:
+        raise Exception(f"[LLM] Daily cost limit reached.")
+
+    messages   = [{"role": "user", "content": prompt}]
+    tool_log   = []  # audit trail: [{tool, args, result}]
+    start_time = time.time()
+    TOTAL_TIMEOUT = 45  # seconds hard limit
+
+    for iteration in range(max_iterations):
+        if time.time() - start_time > TOTAL_TIMEOUT:
+            break
+
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                max_tokens=max_tokens,
+                timeout=15,
+                messages=messages,
+                tools=tools,
+                tool_choice="auto",
+            )
+        except Exception as e:
+            break
+
+        msg = response.choices[0].message
+        # MiMo reasoning model: use reasoning_content if content empty
+        if not msg.content and hasattr(msg, "reasoning_content"):
+            msg.content = msg.reasoning_content or ""
+
+        # Track tokens
+        usage = getattr(response, "usage", None)
+        if usage:
+            _track(usage.prompt_tokens, usage.completion_tokens)
+
+        # No tool call → LLM is done
+        if not msg.tool_calls:
+            return msg.content or "", tool_log
+
+        # Execute each tool call
+        messages.append({"role": "assistant", "content": msg.content, "tool_calls": [
+            {"id": tc.id, "type": "function",
+             "function": {"name": tc.function.name, "arguments": tc.function.arguments}}
+            for tc in msg.tool_calls
+        ]})
+
+        for tc in msg.tool_calls:
+            args   = {}
+            try:
+                args = __import__("json").loads(tc.function.arguments)
+            except Exception:
+                pass
+
+            result = execute_tool(tc.function.name, args)
+            tool_log.append({"tool": tc.function.name, "args": args, "result": result[:300]})
+
+            messages.append({
+                "role": "tool",
+                "tool_call_id": tc.id,
+                "content": result,
+            })
+
+    # Max iterations reached — ask LLM to finalize with what it has
+    messages.append({"role": "user", "content": "Based on the data collected, provide your final JSON answer now."})
+    try:
+        final = client.chat.completions.create(
+            model=model, max_tokens=max_tokens, timeout=15, messages=messages)
+        usage = getattr(final, "usage", None)
+        if usage:
+            _track(usage.prompt_tokens, usage.completion_tokens)
+        return final.choices[0].message.content or "", tool_log
+    except Exception:
+        return "", tool_log

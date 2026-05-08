@@ -1,29 +1,26 @@
 {
   "market_id": "0x70d706fe084905dbafb95dfff13b727e4073efc3ef590adc8330562bac5d26de",
   "question": "US x Iran diplomatic meeting by May 15, 2026?",
-  "market_price": 0.21,
-  "generated_at": "2026-05-04T01:03:07.409082+00:00",
+  "market_price": 0.11,
+  "generated_at": "2026-05-08T13:19:00.170784+00:00",
   "macro": {
-    "fed_expectations": [
-      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%"
-    ],
     "fear_greed": {
-      "current": "40/100 (Fear)",
-      "7d_trend": "improving",
+      "current": "38/100 (Fear)",
+      "7d_trend": "deteriorating",
       "values": [
+        38,
+        47,
+        46,
+        50,
         40,
         47,
-        39,
-        26,
-        29,
-        26,
-        33
+        39
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 78466,
-      "btc_24h": -0.07559357452187436,
-      "risk_signal": "neutral"
+      "btc_price": 79785,
+      "btc_24h": -1.5153533326039217,
+      "risk_signal": "risk-OFF"
     }
   },
   "sports": {},

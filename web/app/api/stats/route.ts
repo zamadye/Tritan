@@ -16,6 +16,7 @@ export async function GET() {
   const llm_usage         = readJSON('llm_usage.json') || {}
   const calibration_model = readJSON('calibration_model.json') || {}
   const statistical_prior = readJSON('statistical_prior.json') || {}
+  const assistant_lessons = (readJSON('assistant_lessons.json') || []).slice(-5)
 
   const resolved = trades.filter(t => t.actual_outcome)
   const open     = trades.filter(t => !t.actual_outcome)
@@ -23,7 +24,15 @@ export async function GET() {
   const losses   = resolved.filter(t => !t.prediction_correct)
   const pnl      = resolved.reduce((s, t) => s + (t.pnl || 0), 0)
   const deployed = open.reduce((s, t) => s + t.size_usd, 0)
-  const bankroll = Math.max(20 - deployed + pnl, 0)
+  const baseBankroll = parseFloat(readJSON('../.env.json')?.DEMO_BANKROLL || '0') ||
+    (() => {
+      try {
+        const envContent = fs.readFileSync(path.join(DATA_DIR, '../.env'), 'utf-8')
+        const m = envContent.match(/^DEMO_BANKROLL=(.+)$/m)
+        return parseFloat(m?.[1] || '500')
+      } catch { return 500 }
+    })()
+  const bankroll = Math.max(baseBankroll - deployed + pnl, 0)
   const avg_win  = wins.length ? wins.reduce((s, t) => s + t.pnl, 0) / wins.length : 0
   const avg_loss = losses.length ? Math.abs(losses.reduce((s, t) => s + t.pnl, 0) / losses.length) : 0
   const wr       = resolved.length ? wins.length / resolved.length : 0
@@ -76,10 +85,9 @@ export async function GET() {
     t.calibration && t.calibration.includes('logistic'))
   const stat_edge_wins = stat_edge_trades.filter(t => t.prediction_correct)
 
-  // Recent trades with full audit trail
+  // Recent trades with full audit trail — ALL resolved, sorted newest first
   const recent_full = [...resolved]
-    .sort((a, b) => (b.resolved_at || '').localeCompare(a.resolved_at || ''))
-    .slice(0, 20)
+    .sort((a, b) => (b.resolved_at || b.timestamp || '').localeCompare(a.resolved_at || a.timestamp || ''))
     .map(t => ({
       market: t.market_question,
       side: t.side,
@@ -94,9 +102,9 @@ export async function GET() {
       brier: t.brier_score,
       exit_reason: t.exit_reason,
       catalyst: t.reasoning_summary?.slice(0, 120),
-      calibration: t.calibration?.slice(0, 100),
+      calibration: t.calibration_applied?.slice(0, 100),
       category: t.category,
-      date: (t.resolved_at || '').slice(0, 16),
+      date: (t.resolved_at || t.timestamp || '').slice(0, 16),
     }))
 
   // LLM today
@@ -128,6 +136,7 @@ export async function GET() {
     recent_full,
     llm: { daily: daily_llm, total: llm_usage },
     calibration_model: cal_summary,
+    assistant_lessons,
     data_sources: {
       markets_analyzed: statistical_prior?.total_markets || 0,
       categories: Object.keys(calibration_model).length,

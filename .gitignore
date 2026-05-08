@@ -1,7 +1,33 @@
+# Secrets
 .env
-data/live_trades.json
-data/*.log
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+.venv/
+*.egg-info/
+
+# Runtime data (not for distribution)
+data/live_trades.json
+data/live_bankroll_state.json
+data/*.log
+data/archive_*/
+data/research/
+data/info_edge_cache.json
+data/arb_cache.json
+data/assistant_lessons.json
+data/llm_usage.json
+
+# OS
 .DS_Store
-data/resolved_markets_raw.json
+.DS_Store?
+
+# Node / Next.js
+web/node_modules/
+web/.next/
+web/.env.local
+
+# Internal workspace
+.openclaw/
+skills/

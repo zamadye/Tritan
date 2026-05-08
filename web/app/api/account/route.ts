@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 
-// Load .env from parent directory
 function getEnv(key: string): string {
   try {
     const envFile = fs.readFileSync(path.join(process.cwd(), '..', '.env'), 'utf-8')
@@ -14,9 +13,11 @@ function getEnv(key: string): string {
 export async function GET() {
   try {
     const wallet = getEnv('POLYGON_WALLET_ADDRESS')
-    const rpc    = 'https://polygon-mainnet.g.alchemy.com/v2/-LJWrAuXvUC8QszJzGzs0'
-    const USDC   = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
-    const data   = '0x70a08231000000000000000000000000' + wallet.slice(2).padStart(64, '0')
+    const rpc    = getEnv('ALCHEMY_RPC_URL') || getEnv('POLYGON_RPC_URL')
+    if (!rpc) return NextResponse.json({ usdc_balance: 0, positions: [], wallet: '—', error: 'RPC not configured' })
+
+    const USDC = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+    const data = '0x70a08231000000000000000000000000' + wallet.slice(2).padStart(64, '0')
 
     const res = await fetch(rpc, {
       method: 'POST',
@@ -27,7 +28,6 @@ export async function GET() {
     const json = await res.json()
     const balance = parseInt(json.result || '0x0', 16) / 1e6
 
-    // Polymarket positions
     let positions: any[] = []
     try {
       if (wallet) {
@@ -39,15 +39,13 @@ export async function GET() {
       }
     } catch { /* optional */ }
 
-    const mode = getEnv('AGENT_MODE') || 'demo'
-
     return NextResponse.json({
       wallet: wallet ? wallet.slice(0, 8) + '...' + wallet.slice(-6) : '—',
       usdc_balance: Math.round(balance * 100) / 100,
       positions,
-      mode,
+      mode: getEnv('AGENT_MODE') || 'demo',
     })
-  } catch (e: any) {
-    return NextResponse.json({ usdc_balance: 0, positions: [], wallet: '—', error: e.message })
+  } catch {
+    return NextResponse.json({ usdc_balance: 0, positions: [], wallet: '—' })
   }
 }

@@ -28,7 +28,8 @@ def process_resolved_market(trade_id: str, actual_outcome: str, mode: str = "dem
             trade["prediction_correct"] = trade["side"] == actual_outcome
 
             if trade["prediction_correct"]:
-                payout = trade["size_usd"] / trade["price_at_entry"]
+                entry_price = trade["price_at_entry"] if trade["side"] == "YES" else 1 - trade["price_at_entry"]
+                payout = trade["size_usd"] / entry_price
                 trade["pnl"] = round(payout - trade["size_usd"], 2)
             else:
                 trade["pnl"] = -trade["size_usd"]
@@ -55,14 +56,23 @@ def _infer_category(trade: dict) -> str:
     if cat and cat.strip():
         return cat.strip().lower()
     q = trade.get("market_question", "").lower()
-    if any(x in q for x in ["vs.", "vs ", "tennis", "open:", "ipl", "ufc", "nba", "nfl", "mlb", "nhl", "grand prix", "soccer", "football", "basketball", "baseball", "hockey", "playoffs", "series", "match", "game", "fight", "bout", "tournament", "championship"]):
+    # Geopolitik FIRST — before sports to avoid misclassification
+    if any(x in q for x in ["iran", "trump", "war", "ceasefire", "hezbollah", "ukraine",
+                              "nato", "sanctions", "diplomatic", "blockade", "military",
+                              "peace deal", "nuclear", "missile", "invasion", "conflict",
+                              "israel", "russia", "china", "taiwan", "north korea"]):
+        return "geopolitik"
+    if any(x in q for x in ["election", "president", "congress", "senate", "vote", "poll",
+                              "party", "minister", "arrested", "indicted", "impeach",
+                              "resign", "appointed", "confirmed", "nominated"]):
+        return "politics"
+    if any(x in q for x in ["vs.", "vs ", "tennis", "open:", "ipl", "ufc", "nba", "nfl",
+                              "mlb", "nhl", "grand prix", "soccer", "football", "basketball",
+                              "baseball", "hockey", "playoffs", "series", "match", "game",
+                              "fight", "bout", "tournament", "championship"]):
         return "sports"
     if any(x in q for x in ["bitcoin", "btc", "eth", "crypto", "wti", "oil", "gold", "nasdaq"]):
         return "crypto"
-    if any(x in q for x in ["iran", "trump", "war", "ceasefire", "hezbollah", "ukraine", "nato", "sanctions"]):
-        return "geopolitik"
-    if any(x in q for x in ["election", "president", "congress", "senate", "vote", "poll", "party", "minister", "arrested", "indicted", "impeach", "resign", "appointed", "confirmed", "nominated"]):
-        return "politics"
     if any(x in q for x in ["gdp", "inflation", "fed", "rate", "economy", "recession", "unemployment"]):
         return "economics"
     if any(x in q for x in ["openai", "gpt", "claude", "gemini", "ai model", "llm"]):
@@ -70,6 +80,7 @@ def _infer_category(trade: dict) -> str:
     return "other"
 
 
+def _update_calibration(trades: list):
     cal_file = os.getenv("CALIBRATION_FILE", "./data/calibration.json")
     stats = defaultdict(lambda: {"bets": 0, "wins": 0, "total_brier": 0.0, "overconfident": 0})
 

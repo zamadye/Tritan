@@ -8,12 +8,31 @@ import json
 import os
 import re
 from pathlib import Path
-from agent.llm import chat
+from agent.llm import chat, chat_with_tools
 
 
 # ── Layer 1: Statistical Prior ────────────────────────────────────────────────
 
 def get_statistical_prior(market: dict) -> dict:
+    """Compute calibrated base probability using logistic regression per category.
+
+    Layer 1 of the edge framework. Trained on 19,624 resolved Polymarket markets.
+    Falls back to bucket-based prior if model unavailable.
+
+    Returns:
+        dict with p_base, n, source, brier_improvement, momentum_signal.
+    """
+    """Compute calibrated base probability using logistic regression per category.
+
+    Layer 1 of the edge framework. Uses a model trained on 19,624 resolved
+    Polymarket markets. Falls back to bucket-based prior if model unavailable.
+
+    Args:
+        market: Dict with keys 'price', 'category', 'question'.
+
+    Returns:
+        dict: {p_base, n, source, brier_improvement, momentum_signal, ...}
+    """
     """
     Get calibrated p_base using logistic regression model per category.
     Falls back to bucket-based prior if model not available.
@@ -78,6 +97,22 @@ def _load_knowledge() -> str:
 
 
 def estimate_probability(market: dict, news_context: str = "", evolution_context: str = "", prev_loss: bool = False) -> dict:
+    """Run agentic LLM analysis to detect information gaps and estimate p_true.
+
+    Layer 2 of the edge framework. LLM autonomously calls tools (search_web,
+    get_crypto_price, get_sports_data, get_market_context) to verify data,
+    then classifies whether an information gap exists vs market price.
+
+    Args:
+        market: Market dict with question, price, category.
+        news_context: Pre-fetched macro + news context string.
+        evolution_context: Lessons from past trades for this category.
+        prev_loss: True if this market was previously bet and lost.
+
+    Returns:
+        dict with p_true, confidence, recommended_side, information_gap,
+              information_gap_reason, tool_calls_log, brier_score fields.
+    """
     from agent.sports import get_sports_context
     from agent.osint import get_osint_signals
 
@@ -114,25 +149,50 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
     data_summary = full_context[:300] if full_context else "No data."
     info_note = f" {info_edge_ctx.strip()}" if info_edge_ctx else ""
     lesson_note = evolution_context[:150] if evolution_context else ""
-    prev_note = "Previous bet on this market was wrong. " if prev_loss else ""
+    prev_note   = "Previous bet on this market was wrong. " if prev_loss else ""
+    # Statistical bias signal from scanner
+    stat_bias   = ""
+    if market.get("bet_no_signal"):
+        stat_bias = f"STAT SIGNAL: Markets at {p_market:.0%} historically resolve YES only 44.7% of time (n=13,967) — market overprices YES. "
+    # Historical pattern context
+    from agent.patterns import get_pattern_context, refresh_patterns
+    from agent.learner import _infer_category as _cat
+    mcat = _cat({"category": market.get("category",""), "market_question": market.get("question","")})
+    pattern_ctx = get_pattern_context(mcat, p_base, p_market)
 
     prompt = (
-        f"{prev_note}Analyze this prediction market: {market['question']}. "
-        f"Current price: {p_market:.0%}. Statistical base rate: {p_base:.0%} (n={prior['n']}). "
-        f"Momentum: {prior.get('momentum_signal','?')} ({prior.get('momentum_yes_rate',0.5):.0%} resolve YES). "
+        f"{prev_note}Prediction market: {market['question']}. "
+        f"Current YES price: {p_market:.0%}. Statistical base rate: {p_base:.0%} (n={prior['n']}). "
         f"Price gap: {p_base-p_market:+.0%}. Category: {market.get('category','?')}. "
-        f"Data: {data_summary}{info_note} "
-        f"Lessons: {lesson_note} "
-        f"Is there a specific catalyst that will move this price in the next 4 hours? "
-        f"Reply with a JSON object."
+        f"{stat_bias}"
+        f"Data: {data_summary}{info_note} Lessons: {lesson_note} "
+        f"{pattern_ctx + chr(10) if pattern_ctx else ''}"
+        f"Goal: predict SHORT-TERM PRICE MOVEMENT of YES/NO in next 4-24 hours. "
+        f"NOT predicting final outcome — predicting which direction price will move. "
+        f"Focus on: (1) is there fresh catalyst/news that market hasn't priced in yet? "
+        f"(2) is sentiment shifting YES or NO right now? "
+        f"(3) which side (YES or NO) has momentum — will its price rise? "
+        f"confidence = how certain price will move in your predicted direction (0-1). "
+        f"Reply JSON: {{action: BET_YES/BET_NO/SKIP, confidence: 0-1, p_true: 0-1, "
+        f"information_gap: true/false, gap_reason: str, reason: str}}"
     )
 
+    tool_log = []  # ensure always defined
     try:
-        raw = chat(prompt)
+        from agent.tools import TOOL_DEFINITIONS
+        stat_gap = abs(p_base - p_market)
+        # Use agentic loop for ALL markets that pass gate — tools give real price movement context
+        # Plain chat only as last resort fallback
+        raw, tool_log = chat_with_tools(prompt, TOOL_DEFINITIONS, max_iterations=3)
         if not raw or not raw.strip():
-            raw = chat(f"Analyze: {market['question'][:60]}. Price={p_market:.0%} vs base={p_base:.0%}. Catalyst in 4h? Reply JSON.")
+            raw = chat(f"Market: {market['question'][:60]}. YES={p_market:.0%} base={p_base:.0%}. "
+                       f"Will YES price go UP or DOWN? Reply JSON: {{action,confidence,p_true,reason}}")
         if not raw or not raw.strip():
             raise ValueError("Empty LLM response")
+
+        # Detect MiMo content filter
+        if any(x in raw[:80] for x in ["MiMo", "Xiaomi", "I cannot", "I'm unable", "I am unable"]):
+            raise ValueError("LLM content filter triggered")
 
         raw = raw.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
         start = raw.find("{"); end = raw.rfind("}") + 1
@@ -175,7 +235,8 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         dq             = str(_find(result, "qual","quality","data_quality","evidence_quality", default="weak") or "weak").lower()
         catalyst_str   = str(_find(result, "cat","catalyst","trigger","event", default="none") or "none")
         direction      = str(_find(result, "dir","direction","crowd_error_direction", default="none") or "none").lower()
-        info_edge      = bool(_find(result, "edge","information_edge","info_edge", default=False))
+        info_edge      = bool(_find(result, "edge","information_edge","info_edge","information_gap", default=False))
+        gap_reason     = str(_find(result, "gap_reason","gap_text","info_text","information_text", default="") or "")
         reason         = str(_find(result, "why","reason","reasoning","rationale","analysis","summary", default="") or "")
 
         # Normalize action
@@ -223,9 +284,11 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         edge   = round(p_true - p_market, 4)
 
         # If statistical edge exists, override SKIP from LLM (AFTER p_true calculation)
-        if has_stat_edge and action == "SKIP" and catalyst_score < 0.2:
+        # BUT only if there's also a catalyst — pure stat edge alone is NOT enough
+        # for price movement strategy (price won't move without a catalyst)
+        if has_stat_edge and action == "SKIP" and catalyst_score >= 0.4:
             action = "BET_NO" if prior["p_base"] < p_market else "BET_YES"
-            reason = f"Statistical mispricing: p_base={prior['p_base']:.0%} vs market={p_market:.0%} gap={statistical_gap:.0%} (n={prior['n']})"
+            reason = f"Statistical mispricing + catalyst: p_base={prior['p_base']:.0%} vs market={p_market:.0%} gap={statistical_gap:.0%} (n={prior['n']})"
             confidence = max(confidence, float(os.getenv("MIN_CONFIDENCE", 0.58)))
 
         # Map action to side
@@ -261,6 +324,8 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
             "catalyst_type":      result.get("type", result.get("catalyst_type","none")),
             "crowd_error_detected": crowd_error,
             "information_edge":   info_edge,
+            "information_gap_reason": gap_reason or reason,
+            "tool_calls_log":     tool_log,
             "data_quality":       dq,
             "base_rate":          p_base,
             "calibration_applied": f"p_base={p_base:.2%}(n={prior['n']},{prior['source']}) + catalyst_adj={catalyst_adj:+.2%} = p_true={p_true:.2%}",
@@ -275,13 +340,15 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
             "p_base": p_base, "confidence": 0.0, "confidence_at_bet": 0.0,
             "edge": 0.0, "edge_at_bet": 0.0, "recommended_side": "SKIP",
             "catalyst_score": 0, "data_quality": "none",
+            "tool_calls_log": tool_log,
+            "information_edge": False, "information_gap_reason": "",
             "reasoning_summary": f"Analysis failed: {e}",
             "calibration_applied": "",
         }
 
 
 def fetch_news(market: dict) -> str:
-    """Fetch news - Serper primary, fallback to NewsAPI."""
+    """Fetch recent news for a market. Tries Tavily → NewsAPI in order."""
     q = market.get("question","")
     news = _fetch_serper(q)
     if news: return news

@@ -5,6 +5,15 @@ from datetime import datetime, timezone
 
 
 def get_candidate_markets():
+    """Fetch and filter active Polymarket markets via Gamma API.
+
+    Applies filters: min volume, min liquidity, price range, days to resolve,
+    category blacklist, and bet_no_signal flag for statistically overpriced markets.
+
+    Returns:
+        list[dict]: Sorted candidate markets. Fields include id, question, price,
+                    volume_24h, liquidity, end_date, category, bet_no_signal.
+    """
     min_volume = float(os.getenv("MIN_VOLUME_24H", 5000))
     min_liquidity = float(os.getenv("MIN_LIQUIDITY", 2000))
     min_price = float(os.getenv("MIN_MARKET_PRICE", 0.08))
@@ -93,10 +102,12 @@ def get_candidate_markets():
                 "token_id": m.get("clobTokenIds", []),
                 "description": m.get("description", ""),
                 "priority": category in preferred,
+                # Statistical signal: market 50-60% overprices YES (actual rate 44.7% from 13,967 markets)
+                "bet_no_signal": 0.50 <= price <= 0.60,
             })
         except (ValueError, KeyError):
             continue
 
-    # Sort: soonest resolve first (within priority), then by volume
-    candidates.sort(key=lambda x: (not x["priority"], x.get("days_left") or 99, -x["volume_24h"]))
+    # Sort: bet_no_signal first (highest statistical edge), then priority, then soonest resolve
+    candidates.sort(key=lambda x: (not x["bet_no_signal"], not x["priority"], x.get("days_left") or 99, -x["volume_24h"]))
     return candidates

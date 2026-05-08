@@ -1,83 +1,27 @@
 {
-  "last_updated": "2026-05-03T23:03:35.724866",
+  "last_updated": "2026-05-08T10:56:52.087691+00:00",
   "mode": "demo",
-  "total_resolved": 206,
-  "wins": 89,
-  "losses": 117,
-  "win_rate": 0.432,
-  "total_pnl": 126.4,
-  "avg_brier": 0.2701,
-  "biggest_win": 73.33,
-  "biggest_loss": -10.0,
+  "total_resolved": 2,
+  "wins": 1,
+  "losses": 1,
+  "win_rate": 0.5,
+  "total_pnl": 0.17,
+  "avg_brier": 0.0221,
+  "biggest_win": 1.33,
+  "biggest_loss": -1.16,
   "recent": [
     {
-      "question": "Chicago White Sox vs. San Diego Padres",
-      "side": "NO",
-      "outcome": "NO",
-      "pnl": 2.33,
-      "correct": true
-    },
-    {
-      "question": "New York Mets vs. Los Angeles Angels",
+      "question": "Internazionali BNL d'Italia: Liudmila Samsonova vs Ann Li",
       "side": "YES",
       "outcome": "YES",
-      "pnl": 0.19,
+      "pnl": 1.33,
       "correct": true
     },
     {
-      "question": "Kansas City Royals vs. Seattle Mariners",
-      "side": "YES",
-      "outcome": "YES",
-      "pnl": 0.14,
-      "correct": true
-    },
-    {
-      "question": "Los Angeles Dodgers vs. St. Louis Cardinals",
-      "side": "YES",
-      "outcome": "YES",
-      "pnl": 0.14,
-      "correct": true
-    },
-    {
-      "question": "San Francisco Giants vs. Tampa Bay Rays",
-      "side": "NO",
-      "outcome": "NO",
-      "pnl": 4.26,
-      "correct": true
-    },
-    {
-      "question": "Baltimore Orioles vs. New York Yankees",
-      "side": "NO",
-      "outcome": "NO",
-      "pnl": 4.26,
-      "correct": true
-    },
-    {
-      "question": "UFC 328: Sean Strickland vs. Khamzat Chimaev (Middleweight, ",
+      "question": "Internazionali BNL d'Italia: Nuno Borges vs Rafael Jodar",
       "side": "NO",
       "outcome": "EXIT",
-      "pnl": -0.01,
-      "correct": false
-    },
-    {
-      "question": "Will Elon Musk post 140-159 tweets from April 28 to May 5, 2",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": 0.01,
-      "correct": true
-    },
-    {
-      "question": "Will Manchester City FC win on 2026-05-04?",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": 0.01,
-      "correct": true
-    },
-    {
-      "question": "Los Angeles Dodgers vs. St. Louis Cardinals",
-      "side": "NO",
-      "outcome": "EXIT",
-      "pnl": -0.18,
+      "pnl": -1.16,
       "correct": false
     }
   ]

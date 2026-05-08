@@ -1,8 +1,9 @@
-py-clob-client
-polymarket-apis
-anthropic
-requests
-python-dotenv
-schedule
-colorama
-rich
+py-clob-client==0.34.6
+polymarket-apis==2.0.6
+anthropic==0.97.0
+requests==2.33.1
+python-dotenv==1.2.2
+schedule==1.2.2
+colorama==0.4.6
+rich==15.0.0
+openai==2.33.0
