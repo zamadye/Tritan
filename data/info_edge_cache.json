@@ -1,19 +1,19 @@
 {
+  "Pistons vs. Cavaliers": {
+    "has_edge": false,
+    "signal": "none",
+    "minutes_since_info": 999,
+    "source": "none",
+    "detail": "",
+    "ts": 1778247494.9139047
+  },
   "US x Iran permanent peace deal by May 11, 2026?": {
     "has_edge": false,
     "signal": "none",
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1778246247.49235
-  },
-  "Internazionali BNL d'Italia: Anastasia Potapova vs Karolina ": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1778246304.799873
+    "ts": 1778247533.047233
   },
   "US x Iran diplomatic meeting by May 15, 2026?": {
     "has_edge": false,
@@ -21,7 +21,7 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1778246352.5642226
+    "ts": 1778247602.2347047
   },
   "Internazionali BNL d'Italia: Dino Prizmic vs Novak Djokovic": {
     "has_edge": false,
@@ -29,22 +29,6 @@
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1778246394.7625659
-  },
-  "Internazionali BNL d'Italia: Jan-Lennard Struff vs Jiri Lehe": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1778246455.9156125
-  },
-  "Will Greece win Eurovision 2026?": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1778246520.7528331
+    "ts": 1778247635.07236
   }
 }

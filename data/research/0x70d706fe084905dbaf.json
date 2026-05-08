@@ -1,8 +1,8 @@
 {
   "market_id": "0x70d706fe084905dbafb95dfff13b727e4073efc3ef590adc8330562bac5d26de",
   "question": "US x Iran diplomatic meeting by May 15, 2026?",
-  "market_price": 0.11,
-  "generated_at": "2026-05-08T13:19:00.170784+00:00",
+  "market_price": 0.12,
+  "generated_at": "2026-05-08T13:39:36.194288+00:00",
   "macro": {
     "fear_greed": {
       "current": "38/100 (Fear)",
@@ -18,8 +18,8 @@
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 79785,
-      "btc_24h": -1.5153533326039217,
+      "btc_price": 79774,
+      "btc_24h": -1.1630486322345006,
       "risk_signal": "risk-OFF"
     }
   },
