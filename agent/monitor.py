@@ -136,7 +136,10 @@ def _execute_sell_order(trade: dict, yes_p: float, clob_client, retries: int = 3
 
         entry_price = entry if side == "YES" else 1 - entry
         current_price = yes_p if side == "YES" else (1 - yes_p)
-        sell_size = max(round((size / entry_price) * current_price, 2), 1.0)
+        # shares_held = how many shares we own
+        # In Polymarket CLOB, sell order size = number of shares to sell
+        shares_held = round(size / entry_price, 4) if entry_price > 0 else 1.0
+        sell_size = max(shares_held, 1.0)
 
         tick = "0.01"
         try: tick = str(clob_client.get_market(trade.get("market_id","")).get("minimum_tick_size","0.01"))
