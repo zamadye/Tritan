@@ -3,6 +3,7 @@ export interface Stats {
   bankroll: number; deployed: number
   total: number; resolved: number; open: number
   wins: number; losses: number; avg_win: number; avg_loss: number; avg_brier: number
+  max_drawdown?: number; sharpe?: number
   new_arch: { total: number; wins: number; wr: number }
   stat_edge: { total: number; wins: number; wr: number }
 }
@@ -17,6 +18,9 @@ export interface Trade {
   outcome: string; pnl: number; correct: boolean; brier: number
   exit_reason: string; catalyst: string; calibration: string
   category: string; date: string
+  reasoning?: string; base_rate?: number
+  tool_calls_log?: string | any[]; news_context?: string | any
+  information_gap?: string; information_gap_reason?: string
 }
 
 export interface CalibrationModel {
@@ -34,7 +38,8 @@ export interface DashboardData {
   exit_breakdown: Record<string, number>
   open_positions: any[]
   recent_full: Trade[]
-  llm: { daily: { calls: number; cost_usd: number; input: number; output: number } }
+  llm: { daily: { calls: number; cost_usd: number; input: number; output: number }; daily_limit?: number }
   calibration_model: CalibrationModel[]
   data_sources: { markets_analyzed: number; espn: boolean; newsapi: boolean; twitter: boolean; coingecko: boolean; fear_greed: boolean }
+  agent_mode: 'live' | 'demo'
 }

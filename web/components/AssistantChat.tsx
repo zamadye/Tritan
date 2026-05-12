@@ -1,8 +1,16 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
+import { MessageCircle, X, Send, Sparkles, Settings, TrendingUp, HelpCircle, Lightbulb } from 'lucide-react'
 
 type Suggestion = { key: string; value: string; reason: string }
-type Message = { role: 'user' | 'assistant'; text: string; suggestions?: Suggestion[] }
+type Message = { role: 'user' | 'assistant'; text: string; suggestions?: Suggestion[]; type?: 'analysis' | 'config' | 'general' }
+
+const QUICK_ACTIONS = [
+  { icon: <TrendingUp size={12} />, label: 'Analyze recent trades', msg: 'Analyze my recent trades and tell me what patterns you see.' },
+  { icon: <HelpCircle size={12} />, label: 'Why am I losing?', msg: 'Why am I losing? Analyze my loss patterns and suggest improvements.' },
+  { icon: <Settings size={12} />, label: 'Optimize config', msg: 'Analyze my current config and suggest optimizations based on my trade history.' },
+  { icon: <Lightbulb size={12} />, label: 'Strategy advice', msg: 'Based on my performance data, what strategy changes would you recommend?' },
+]
 
 interface Props {
   onApplySuggestion: (key: string, value: string) => void
@@ -11,7 +19,7 @@ interface Props {
 export function AssistantChat({ onApplySuggestion }: Props) {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', text: '👋 Hi! I\'m your Trade Monitor Assistant. I analyze your trades and suggest strategy improvements. Ask me anything or click the button below to get a quick analysis.' }
+    { role: 'assistant', text: '👋 Hi! I\'m your Trade Monitor Assistant.\n\nI can help you with:\n• Analyzing trade performance\n• Suggesting config improvements\n• Explaining strategy decisions\n• Debugging losing streaks\n\nAsk me anything or use the quick actions below.', type: 'general' }
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -22,21 +30,20 @@ export function AssistantChat({ onApplySuggestion }: Props) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // Poll for new assistant lessons (trade close triggers)
+  // Poll for new assistant lessons
   useEffect(() => {
     const check = async () => {
       try {
         const r = await fetch('/api/stats')
         const d = await r.json()
-        // Check if there's a new lesson saved
         const lessons = d.assistant_lessons
         if (lessons?.length) {
           const last = lessons[lessons.length - 1]
           const lastTs = localStorage.getItem('last_assistant_ts')
           if (last.timestamp !== lastTs) {
             localStorage.setItem('last_assistant_ts', last.timestamp)
-            setNotification('📊 New trade analysis available')
-            setMessages(prev => [...prev, { role: 'assistant', text: `📊 **Trade closed:** ${last.summary}`, suggestions: last.suggestions }])
+            setNotification('New trade analysis available')
+            setMessages(prev => [...prev, { role: 'assistant', text: `📊 **Trade closed:** ${last.summary}`, suggestions: last.suggestions, type: 'analysis' }])
             setTimeout(() => setNotification(null), 5000)
           }
         }
@@ -59,9 +66,14 @@ export function AssistantChat({ onApplySuggestion }: Props) {
         body: JSON.stringify({ message: text }),
       })
       const d = await r.json()
-      setMessages(prev => [...prev, { role: 'assistant', text: d.text || d.error || 'No response', suggestions: d.suggestions }])
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        text: d.text || d.error || 'No response',
+        suggestions: d.suggestions,
+        type: d.suggestions?.length ? 'config' : 'general',
+      }])
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', text: '❌ Connection error' }])
+      setMessages(prev => [...prev, { role: 'assistant', text: '❌ Connection error. Please try again.', type: 'general' }])
     }
     setLoading(false)
   }
@@ -70,8 +82,8 @@ export function AssistantChat({ onApplySuggestion }: Props) {
     <>
       {/* Notification badge */}
       {notification && !open && (
-        <div className="fixed z-50 cursor-pointer"
-          style={{ bottom: 'calc(72px + env(safe-area-inset-bottom, 0px) + 52px)', right: 16, background: '#4f46e5', color: 'white', fontSize: 11, padding: '6px 12px', borderRadius: 20, boxShadow: '0 4px 12px rgba(79,70,229,0.4)' }}
+        <div className="fixed z-50 cursor-pointer fade-in"
+          style={{ bottom: 'calc(80px + env(safe-area-inset-bottom, 0px) + 52px)', right: 16, background: 'var(--accent)', color: 'white', fontSize: 11, padding: '6px 14px', borderRadius: 'var(--radius-full)', boxShadow: '0 4px 12px rgba(99,102,241,0.4)' }}
           onClick={() => setOpen(true)}>
           {notification}
         </div>
@@ -79,47 +91,66 @@ export function AssistantChat({ onApplySuggestion }: Props) {
 
       {/* Floating button */}
       <button onClick={() => setOpen(o => !o)}
-        style={{ position: 'fixed', bottom: 'calc(72px + env(safe-area-inset-bottom, 0px) + 8px)', right: 16, width: 48, height: 48, borderRadius: '50%', background: open ? '#374151' : 'linear-gradient(135deg,#4f46e5,#6366f1)', color: 'white', fontSize: 20, border: 'none', cursor: 'pointer', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px rgba(79,70,229,0.4)', transition: 'all 0.2s' }}
+        style={{
+          position: 'fixed', bottom: 'calc(80px + env(safe-area-inset-bottom, 0px) + 8px)', right: 16,
+          width: 52, height: 52, borderRadius: '50%',
+          background: open ? 'var(--bg3)' : 'linear-gradient(135deg, var(--accent-dark), var(--accent))',
+          color: 'white', border: 'none', cursor: 'pointer', zIndex: 200,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 4px 20px rgba(99,102,241,0.4)', transition: 'all 0.2s',
+        }}
         title="Trade Monitor Assistant">
-        {open ? '✕' : '🤖'}
+        {open ? <X size={20} /> : <MessageCircle size={22} />}
       </button>
 
       {/* Chat panel */}
       {open && (
-        <div style={{ position: 'fixed', bottom: 'calc(72px + env(safe-area-inset-bottom, 0px) + 64px)', right: 16, width: 320, height: 460, background: '#0d0d1a', border: '1px solid #2a2a4a', borderRadius: 20, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div className="assistant-chat-panel" style={{
+          position: 'fixed', bottom: 'calc(80px + env(safe-area-inset-bottom, 0px) + 68px)', right: 16,
+          width: 'min(340px, calc(100vw - 32px))', maxHeight: 'calc(100vh - 200px)', height: 500,
+          background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)',
+          boxShadow: 'var(--shadow-lg)', zIndex: 200,
+          display: 'flex', flexDirection: 'column', overflow: 'hidden',
+        }}>
           {/* Header */}
-          <div className="px-4 py-3 border-b border-[#1e1e3a] flex items-center gap-2">
-            <span className="text-sm">🤖</span>
-            <div>
-              <div className="text-xs font-semibold text-[#e2e8f0]">Trade Monitor Assistant</div>
-              <div className="text-[10px] text-[#4b5563]">Analyzes trades · Suggests config changes</div>
+          <div className="flex items-center gap-2.5 px-4 py-3" style={{ borderBottom: '1px solid var(--border2)' }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent-bg)' }}>
+              <Sparkles size={16} style={{ color: 'var(--accent)' }} />
             </div>
+            <div className="flex-1">
+              <div className="text-xs font-semibold" style={{ color: 'var(--text)' }}>Trade Assistant</div>
+              <div className="text-[10px]" style={{ color: 'var(--dim)' }}>AI-powered trade analysis & config advisor</div>
+            </div>
+            <button onClick={() => setOpen(false)} className="icon-btn" style={{ width: 28, height: 28, background: 'transparent' }}>
+              <X size={14} style={{ color: 'var(--dim)' }} />
+            </button>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-3">
+          <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-3">
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] rounded-xl px-3 py-2 text-xs leading-relaxed ${
-                  m.role === 'user'
-                    ? 'bg-[#4f46e5] text-white'
-                    : 'bg-[#13132a] border border-[#2a2a4a] text-[#e2e8f0]'
-                }`}>
+                <div style={{
+                  maxWidth: '88%', borderRadius: 'var(--radius-md)', padding: '10px 12px',
+                  fontSize: 12, lineHeight: 1.6,
+                  ...(m.role === 'user'
+                    ? { background: 'var(--accent)', color: 'white' }
+                    : { background: 'var(--bg2)', border: '1px solid var(--border)', color: 'var(--text2)' }),
+                }}>
                   <p className="whitespace-pre-wrap">{m.text}</p>
 
                   {/* Config suggestions */}
                   {m.suggestions?.length ? (
-                    <div className="mt-2 space-y-1 border-t border-[#2a2a4a] pt-2">
-                      <div className="text-[10px] text-[#6b7280] mb-1">Suggested config changes:</div>
+                    <div className="mt-2 pt-2 space-y-1.5" style={{ borderTop: '1px solid var(--border2)' }}>
+                      <div className="text-[10px] font-semibold" style={{ color: 'var(--dim)' }}>Suggested config changes:</div>
                       {m.suggestions.map((s, j) => (
-                        <div key={j} className="flex items-center justify-between gap-2 bg-[#0d0d1a] rounded-lg px-2 py-1">
+                        <div key={j} className="flex items-center justify-between gap-2 p-2 rounded-lg" style={{ background: 'var(--bg)' }}>
                           <div className="flex-1 min-w-0">
-                            <span className="text-[#a5b4fc] font-mono text-[10px]">{s.key}={s.value}</span>
-                            <p className="text-[9px] text-[#6b7280] truncate">{s.reason}</p>
+                            <span className="text-[10px] mono font-semibold" style={{ color: 'var(--accent-light)' }}>{s.key}={s.value}</span>
+                            <p className="text-[9px] truncate" style={{ color: 'var(--dim)' }}>{s.reason}</p>
                           </div>
-                          <button
-                            onClick={() => onApplySuggestion(s.key, s.value)}
-                            className="shrink-0 text-[10px] bg-[#4f46e5] hover:bg-[#4338ca] text-white px-2 py-0.5 rounded transition-colors">
+                          <button onClick={() => onApplySuggestion(s.key, s.value)}
+                            className="btn btn-primary btn-sm flex-shrink-0" style={{ padding: '4px 8px', fontSize: 10 }}>
                             Apply
                           </button>
                         </div>
@@ -131,8 +162,8 @@ export function AssistantChat({ onApplySuggestion }: Props) {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-[#13132a] border border-[#2a2a4a] rounded-xl px-3 py-2 text-xs text-[#6b7280]">
-                  ⏳ Analyzing...
+                <div className="px-3 py-2 rounded-xl text-xs" style={{ background: 'var(--bg2)', border: '1px solid var(--border)', color: 'var(--dim)' }}>
+                  <span className="animate-pulse">⏳ Analyzing...</span>
                 </div>
               </div>
             )}
@@ -140,28 +171,25 @@ export function AssistantChat({ onApplySuggestion }: Props) {
           </div>
 
           {/* Quick actions */}
-          <div className="px-3 py-2 border-t border-[#1e1e3a] flex gap-1 flex-wrap">
-            {['Analyze recent trades', 'Why am I losing?', 'Optimize config'].map(q => (
-              <button key={q} onClick={() => send(q)}
-                className="text-[10px] bg-[#13132a] border border-[#2a2a4a] text-[#94a3b8] px-2 py-1 rounded-lg hover:border-[#4f46e5] hover:text-[#a5b4fc] transition-colors">
-                {q}
+          <div className="px-3 py-2 flex gap-1.5 flex-wrap" style={{ borderTop: '1px solid var(--border2)' }}>
+            {QUICK_ACTIONS.map(q => (
+              <button key={q.label} onClick={() => send(q.msg)}
+                className="flex items-center gap-1.5 text-[10px] px-2.5 py-1.5 rounded-lg transition-colors"
+                style={{ background: 'var(--bg2)', border: '1px solid var(--border)', color: 'var(--muted)' }}>
+                {q.icon} {q.label}
               </button>
             ))}
           </div>
 
           {/* Input */}
           <div className="px-3 pb-3 flex gap-2">
-            <input
-              value={input}
-              onChange={e => setInput(e.target.value)}
+            <input value={input} onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
-              placeholder="Ask about your trades..."
-              className="flex-1 bg-[#13132a] border border-[#2a2a4a] rounded-lg px-3 py-2 text-xs text-[#e2e8f0] placeholder-[#4b5563] focus:border-[#4f46e5] outline-none"
-            />
-            <button onClick={() => send()}
-              disabled={loading || !input.trim()}
-              className="bg-[#4f46e5] hover:bg-[#4338ca] disabled:opacity-40 text-white text-xs px-3 py-2 rounded-lg transition-colors">
-              ↑
+              placeholder="Ask about your trades or config..."
+              className="input" style={{ padding: '10px 12px', fontSize: 12 }} />
+            <button onClick={() => send()} disabled={loading || !input.trim()}
+              className="btn btn-primary" style={{ padding: '10px 12px', minWidth: 40 }}>
+              <Send size={14} />
             </button>
           </div>
         </div>

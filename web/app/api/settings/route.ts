@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server'
 import fs from 'fs'
-import path from 'path'
 import { exec } from 'child_process'
 import { promisify } from 'util'
+import { ENV_FILE } from '@/lib/paths'
 
 const execAsync = promisify(exec)
-const ENV_FILE = path.join(process.cwd(), '..', '.env')
 
 // Keys that must never be exposed via API
 const SENSITIVE_KEYS = new Set([
@@ -43,6 +42,17 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const updates: Record<string, string> = await req.json()
+
+  // Handle reset to defaults
+  if (updates._reset) {
+    try {
+      await execAsync('cd /root/Tritan && cp .env.example .env')
+      await execAsync('pm2 restart tritan-dashboard').catch(() => {})
+      return NextResponse.json({ ok: true, updated: ['_reset'] })
+    } catch (e: any) {
+      return NextResponse.json({ ok: false, error: 'Reset failed' }, { status: 500 })
+    }
+  }
 
   // Only allow whitelisted keys
   const filtered: Record<string, string> = {}

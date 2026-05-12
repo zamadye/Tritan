@@ -1,26 +1,31 @@
 {
   "market_id": "0x2bef40a1f62d045527228e699990d1bd1f97906b2458a6f3e4a0daf11124060c",
   "question": "US x Iran diplomatic meeting by May 31, 2026?",
-  "market_price": 0.49,
-  "generated_at": "2026-05-08T08:57:08.660783+00:00",
+  "market_price": 0.28,
+  "generated_at": "2026-05-12T04:31:54.494555+00:00",
   "macro": {
+    "fed_expectations": [
+      "Will Michelle Bowman be confirmed as Fed Chair? \u2192 YES=50%",
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "MicroStrategy sells any Bitcoin by May 31, 2026? \u2192 YES=50%"
+    ],
     "fear_greed": {
-      "current": "38/100 (Fear)",
-      "7d_trend": "deteriorating",
+      "current": "49/100 (Neutral)",
+      "7d_trend": "improving",
       "values": [
+        49,
+        48,
+        47,
+        38,
         38,
         47,
-        46,
-        50,
-        40,
-        47,
-        39
+        46
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 79922,
-      "btc_24h": -1.5890886871027115,
-      "risk_signal": "risk-OFF"
+      "btc_price": 81181,
+      "btc_24h": 0.4995018932860951,
+      "risk_signal": "neutral"
     }
   },
   "sports": {},

@@ -1,26 +1,31 @@
 {
   "market_id": "0x36f665053a7ca5c102f2db15cfc49b1b9f38fa820a5f2bb4bde87bf9fbd9a2ab",
   "question": "Will Donald Trump announce that the United States blockade of the Strait of Hormuz has been lifted by May 15, 2026?",
-  "market_price": 0.2,
-  "generated_at": "2026-05-08T07:15:34.295098+00:00",
+  "market_price": 0.16,
+  "generated_at": "2026-05-10T06:13:21.824037+00:00",
   "macro": {
+    "fed_expectations": [
+      "Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+      "Pittsburgh Pirates vs. San Francisco Giants \u2192 YES=50%",
+      "Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%"
+    ],
     "fear_greed": {
-      "current": "38/100 (Fear)",
+      "current": "47/100 (Neutral)",
       "7d_trend": "deteriorating",
       "values": [
+        47,
+        38,
         38,
         47,
         46,
         50,
-        40,
-        47,
-        39
+        40
       ]
     },
     "crypto_sentiment": {
-      "btc_price": 79353,
-      "btc_24h": -2.7027381868538507,
-      "risk_signal": "risk-OFF"
+      "btc_price": 80699,
+      "btc_24h": 0.37400717924645016,
+      "risk_signal": "neutral"
     }
   },
   "sports": {},

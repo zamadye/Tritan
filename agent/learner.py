@@ -100,8 +100,8 @@ def _update_calibration(trades: list):
 
 def _generate_evolution_lessons(trades: list, mode: str = "demo"):
     """Generate momentum trading lessons — only from momentum-strategy trades (Apr 29+)."""
-    # Filter: only use momentum trades (new strategy), not old base-rate trades
-    momentum_cutoff = "2026-04-29"
+    # Filter: only use new strategy trades (May 8+ = after price filter 0.35-0.65 applied)
+    momentum_cutoff = "2026-05-08"
     momentum_trades = [t for t in trades if (t.get("timestamp","") or "") >= momentum_cutoff]
     resolved = [t for t in momentum_trades if t.get("actual_outcome")]
     if not resolved:

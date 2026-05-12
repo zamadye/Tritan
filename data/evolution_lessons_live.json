@@ -1,28 +1,120 @@
 {
-  "total_resolved": 1,
-  "overall_win_rate": 0.0,
-  "category_bias": {},
-  "overconfidence_patterns": [],
-  "underconfidence_patterns": [],
-  "recent_mistakes": [
+  "total_resolved": 11,
+  "overall_win_rate": 0.364,
+  "momentum_lessons": [
     {
-      "question": "Test market",
-      "category": "test",
-      "predicted_side": "YES",
-      "actual_outcome": "EXIT",
-      "p_true_claimed": "?",
-      "confidence": "?",
-      "data_quality": "unknown",
-      "lesson": "Prediction incorrect in test \u2014 review reasoning methodology."
+      "category": "geopolitik",
+      "entry_price": 0.35,
+      "pnl": 0.69,
+      "exit_reason": "RESOLVED",
+      "catalyst": "Market is overvaluing YES compared to historical base rate. No breaking news or strong catalyst found to justify the pre"
+    },
+    {
+      "category": "geopolitik",
+      "entry_price": 0.61,
+      "pnl": 0.55,
+      "exit_reason": "TAKE_PROFIT (+55%)",
+      "catalyst": "Price is trading at a 15-point premium to the 24% historical base rate with no identifiable catalyst. Geopolitical patte"
+    },
+    {
+      "category": "other",
+      "entry_price": 0.439,
+      "pnl": 0.07,
+      "exit_reason": "EVENT_DEADLINE (other 15h/15h)",
+      "catalyst": "Strong statistical signal shows market overpricing YES (56% price vs 44.7% historical resolution rate at this level). No"
+    },
+    {
+      "category": "geopolitik",
+      "entry_price": 0.71,
+      "pnl": 1.43,
+      "exit_reason": "TAKE_PROFIT (+143%)",
+      "catalyst": "Market is pricing at 29% vs 14% base rate - a 15% premium that suggests overvaluation absent new catalysts. No fresh dip"
     }
   ],
-  "calibration_adjustments": {},
+  "price_movement_patterns": {
+    "30-40%": {
+      "win_rate": 0.5,
+      "avg_pnl": 0.07,
+      "n": 2
+    },
+    "70-80%": {
+      "win_rate": 0.5,
+      "avg_pnl": 0.7,
+      "n": 2
+    },
+    "40-50%": {
+      "win_rate": 0.33,
+      "avg_pnl": -0.14,
+      "n": 3
+    },
+    "80-90%": {
+      "win_rate": 0.0,
+      "avg_pnl": -0.47,
+      "n": 1
+    },
+    "20-30%": {
+      "win_rate": 0.0,
+      "avg_pnl": -0.59,
+      "n": 1
+    },
+    "60-70%": {
+      "win_rate": 1.0,
+      "avg_pnl": 0.55,
+      "n": 1
+    },
+    "10-20%": {
+      "win_rate": 0.0,
+      "avg_pnl": -0.23,
+      "n": 1
+    }
+  },
+  "exit_patterns": {
+    "STOP_LOSS": 7,
+    "TAKE_PROFIT": 2,
+    "RESOLVED": 2
+  },
   "edge_reality": {
-    "0%": {
-      "claimed_edge": "0%",
+    "30%": {
+      "actual_wr": 0.43,
+      "n": 7
+    },
+    "20%": {
+      "actual_wr": 0.0,
+      "n": 2
+    },
+    "40%": {
+      "actual_wr": 1.0,
+      "n": 1
+    },
+    "10%": {
       "actual_wr": 0.0,
       "n": 1
     }
   },
-  "sports_signal_required": true
+  "category_bias": {},
+  "calibration_adjustments": {},
+  "overconfidence_patterns": [],
+  "recent_mistakes": [
+    {
+      "question": "Bengaluru 2: Omar Jasika vs Hamish Stewart",
+      "category": "geopolitik",
+      "entry_price": 0.15,
+      "reasoning": "Current YES price (15%) is significantly above the statistical base rate (4%), creating an 11% price",
+      "lesson": "Used base rate instead of real catalyst in geopolitik. No momentum signal = no bet."
+    },
+    {
+      "question": "Confirmed case of Hantavirus in US by May 15?",
+      "category": "politics",
+      "entry_price": 0.2,
+      "reasoning": "YES price (82%) is 14% above statistical base rate (68%). Searches found no fresh hantavirus news/ca",
+      "lesson": "Used base rate instead of real catalyst in politics. No momentum signal = no bet."
+    },
+    {
+      "question": "Internazionali BNL d'Italia: Coco Gauff vs Iva Jovic",
+      "category": "sports",
+      "entry_price": 0.8,
+      "reasoning": "Significant price gap of 9% below base rate with no identifiable fresh catalyst or news justifying t",
+      "lesson": "Used base rate instead of real catalyst in sports. No momentum signal = no bet."
+    }
+  ]
 }

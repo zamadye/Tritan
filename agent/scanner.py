@@ -65,13 +65,19 @@ def get_candidate_markets():
 
             # Days to resolution filter
             days_left = None
+            hours_left = None
             end_date = m.get("endDate", "")
             if end_date:
                 try:
                     end_dt = datetime.fromisoformat(end_date.replace("Z", "+00:00"))
                     days_left = (end_dt - now).days
+                    hours_left = (end_dt - now).total_seconds() / 3600
                 except Exception:
                     pass
+
+            # Skip micro-markets (resolve in < 1 hour) — noise, not signal
+            if hours_left is not None and hours_left < 1:
+                continue
 
             if category in blacklisted:
                 continue

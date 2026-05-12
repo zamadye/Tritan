@@ -1,8 +1,8 @@
 {
-  "total_input": 6092545,
-  "total_output": 1467481,
-  "total_calls": 4117,
-  "total_cost_usd": 1.794334,
+  "total_input": 8196935,
+  "total_output": 1956386,
+  "total_calls": 5458,
+  "total_cost_usd": 2.403348,
   "daily": {
     "2026-05-06": {
       "input": 2536227,
@@ -21,6 +21,30 @@
       "output": 285795,
       "calls": 784,
       "cost_usd": 0.346355
+    },
+    "2026-05-09": {
+      "input": 27930,
+      "output": 5899,
+      "calls": 20,
+      "cost_usd": 0.007731
+    },
+    "2026-05-10": {
+      "input": 347311,
+      "output": 85873,
+      "calls": 232,
+      "cost_usd": 0.103626
+    },
+    "2026-05-11": {
+      "input": 601557,
+      "output": 136387,
+      "calls": 408,
+      "cost_usd": 0.172063
+    },
+    "2026-05-12": {
+      "input": 1127592,
+      "output": 260746,
+      "calls": 681,
+      "cost_usd": 0.325591
     }
   }
 }

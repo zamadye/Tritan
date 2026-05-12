@@ -1,0 +1,14 @@
+{
+  "balance": 22.37,
+  "portfolio_value": 19.6729,
+  "total_trades": 36,
+  "resolved": 24,
+  "open": 12,
+  "wins": 3,
+  "losses": 21,
+  "total_pnl": -12.18,
+  "unrealized_pnl": 2.02,
+  "deployed": 19.28,
+  "win_rate": 0.125,
+  "timestamp": "2026-05-12T09:28:00.521667+00:00"
+}

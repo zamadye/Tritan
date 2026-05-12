@@ -1,82 +1,113 @@
 'use client'
+import { EmptyState } from '@/components/ui'
 import type { DashboardData } from '@/types'
 
 export function Positions({ data }: { data: DashboardData }) {
   const { open_positions, stats } = data
 
   if (!open_positions?.length) return (
-    <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
-      <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
-      <div style={{ fontSize: 14, fontWeight: 600, color: '#94a3b8' }}>No open positions</div>
-      <div style={{ fontSize: 12, marginTop: 4 }}>Agent is scanning for opportunities</div>
+    <div className="fade-in">
+      <div className="section-card">
+        <div className="section-card-header">
+          <div className="text-[13px] font-semibold" style={{ color: 'var(--muted)' }}>Open Positions</div>
+          <div className="text-[11px]" style={{ color: 'var(--dim)' }}>
+            {data.agent_mode === 'live' ? '💰 Live' : '📝 Demo'} · ${stats.deployed?.toFixed(2) || '0.00'} deployed
+          </div>
+        </div>
+        <div className="section-card-body">
+          <EmptyState icon="📭" title="No open positions" desc="Agent is scanning for opportunities" />
+        </div>
+      </div>
     </div>
   )
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div className="flex flex-col gap-3 fade-in">
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#e2e8f0' }}>Active Trades</div>
-          <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>{open_positions.length} open · ${stats.deployed.toFixed(2)} deployed</div>
+      <div className="section-card">
+        <div className="section-card-header">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-[13px] font-semibold" style={{ color: 'var(--muted)' }}>Open Positions</div>
+              <div className="text-[11px] mt-0.5" style={{ color: 'var(--dim)' }}>
+                {open_positions.length} active · ${stats.deployed?.toFixed(2) || '0.00'} deployed
+              </div>
+            </div>
+            <span className="status-pill" style={{
+              borderColor: data.agent_mode === 'live' ? 'var(--green-border)' : 'var(--accent-border)',
+              color: data.agent_mode === 'live' ? 'var(--green)' : 'var(--accent-light)',
+              background: data.agent_mode === 'live' ? 'var(--green-bg)' : 'var(--accent-bg)',
+              fontSize: 10,
+              padding: '3px 8px',
+            }}>
+              {data.agent_mode === 'live' ? '💰 LIVE' : '📝 DEMO'}
+            </span>
+          </div>
         </div>
       </div>
 
-      {open_positions.map((t: any, i: number) => {
+      {/* Position Cards */}
+      {open_positions.map((t: any) => {
         const isYes = t.side === 'YES'
-        const accentColor = isYes ? '#22c55e' : '#ef4444'
-        const accentBg = isYes ? 'rgba(34,197,94,0.06)' : 'rgba(239,68,68,0.06)'
-        const accentBorder = isYes ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'
+        const accentColor = isYes ? 'var(--green)' : 'var(--red)'
 
         return (
-          <div key={i} style={{
-            background: '#13132a',
-            border: `1px solid #2a2a4a`,
-            borderLeft: `3px solid ${accentColor}`,
-            borderRadius: 16,
-            overflow: 'hidden',
-          }}>
-            {/* Top row */}
-            <div style={{ padding: '14px 16px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', gap: 6, marginBottom: 6, flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: accentBg, color: accentColor, border: `1px solid ${accentBorder}` }}>
-                    {t.side}
-                  </span>
-                  <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 20, background: 'rgba(165,180,252,0.1)', color: '#a5b4fc', border: '1px solid rgba(165,180,252,0.2)' }}>
-                    {t.category || 'other'}
-                  </span>
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0', lineHeight: 1.4 }}>
-                  {t.market_question?.slice(0, 70)}{t.market_question?.length > 70 ? '…' : ''}
-                </div>
+          <div key={t.trade_id || t.market_id || t.market_question} className="section-card" style={{ borderLeft: `3px solid ${accentColor}` }}>
+            <div className="section-card-body">
+              {/* Market Question */}
+              <div className="text-[13px] font-semibold leading-snug mb-2" style={{ color: 'var(--text2)' }}>
+                {t.market_question?.slice(0, 70)}{t.market_question?.length > 70 ? '…' : ''}
               </div>
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                <div style={{ fontSize: 11, color: '#6b7280' }}>Size</div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0' }}>${t.size_usd}</div>
-              </div>
-            </div>
 
-            {/* Stats row */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#1e1e3a' }}>
-              {[
-                { label: 'Entry', value: `${((t.price_at_entry || 0) * 100).toFixed(0)}%` },
-                { label: 'Confidence', value: t.confidence_at_bet ? `${(t.confidence_at_bet * 100).toFixed(0)}%` : '—' },
-                { label: 'Peak P&L', value: t.peak_pnl_pct != null ? `${(t.peak_pnl_pct * 100).toFixed(0)}%` : '—', color: t.peak_pnl_pct > 0 ? '#22c55e' : undefined },
-              ].map((s, j) => (
-                <div key={j} style={{ background: '#13132a', padding: '10px 12px', textAlign: 'center' }}>
-                  <div style={{ fontSize: 10, color: '#6b7280', marginBottom: 3 }}>{s.label}</div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: s.color || '#e2e8f0', fontFamily: 'ui-monospace, monospace' }}>{s.value}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Reasoning */}
-            {t.reasoning_summary && (
-              <div style={{ padding: '10px 16px', fontSize: 11, color: '#6b7280', lineHeight: 1.5, borderTop: '1px solid #1e1e3a' }}>
-                💡 {t.reasoning_summary.slice(0, 120)}…
+              {/* Badges */}
+              <div className="flex gap-1.5 mb-3 flex-wrap">
+                <span className="badge" style={{
+                  background: isYes ? 'var(--green-bg)' : 'var(--red-bg)',
+                  color: accentColor,
+                  borderColor: isYes ? 'var(--green-border)' : 'var(--red-border)',
+                }}>{t.side}</span>
+                <span className="badge" style={{
+                  background: 'var(--accent-bg)', color: 'var(--accent-light)', borderColor: 'var(--accent-border)',
+                }}>{t.category || 'other'}</span>
               </div>
-            )}
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-4 gap-px" style={{ background: 'var(--border2)' }}>
+                {[
+                  { label: 'Size', value: `$${t.size_usd}` },
+                  { label: 'Entry', value: `${((t.price_at_entry || 0) * 100).toFixed(0)}%` },
+                  { label: 'Current', value: t.current_yes_price != null ? `${(t.side === 'YES' ? t.current_yes_price : 1 - t.current_yes_price) * 100 | 0}%` : '—' },
+                  { label: 'Opened', value: (() => { try { const d = new Date(t.timestamp); const h = Math.floor((Date.now()-d.getTime())/3600000); return h < 1 ? `${Math.floor((Date.now()-d.getTime())/60000)}m ago` : h < 24 ? `${h}h ago` : d.toLocaleDateString('en',{month:'short',day:'numeric'}); } catch { return '—'; } })() },
+                ].map((s, j) => (
+                  <div key={j} className="text-center py-2.5 px-3" style={{ background: 'var(--bg2)' }}>
+                    <div className="text-[10px] mb-0.5" style={{ color: 'var(--dim)' }}>{s.label}</div>
+                    <div className="text-sm font-semibold mono" style={{ color: 'var(--text2)' }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Unrealized P&L — like Polymarket UI */}
+              {t.unrealized_pnl != null && (
+                <div className="flex items-center justify-between mt-2.5 px-1">
+                  <span className="text-[11px]" style={{ color: 'var(--dim)' }}>Unrealized P&L</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold mono" style={{ color: t.unrealized_pnl >= 0 ? 'var(--green)' : 'var(--red)' }}>
+                      {t.unrealized_pnl >= 0 ? '+' : ''}${t.unrealized_pnl.toFixed(2)}
+                    </span>
+                    <span className="text-[11px] font-semibold" style={{ color: t.unrealized_pnl >= 0 ? 'var(--green)' : 'var(--red)' }}>
+                      ({t.unrealized_pct >= 0 ? '+' : ''}{t.unrealized_pct?.toFixed(1)}%)
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Reasoning */}
+              {t.reasoning_summary && (
+                <div className="mt-2.5 text-xs leading-relaxed" style={{ color: 'var(--dim)' }}>
+                  💡 {t.reasoning_summary.slice(0, 120)}…
+                </div>
+              )}
+            </div>
           </div>
         )
       })}

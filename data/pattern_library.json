@@ -1,1 +1,58 @@
-{}
+{
+  "by_category": {
+    "other": {
+      "n": 3,
+      "wr": 0.333,
+      "total_pnl": -0.43,
+      "avg_edge": 0.346,
+      "verdict": "WEAK"
+    },
+    "geopolitik": {
+      "n": 4,
+      "wr": 0.75,
+      "total_pnl": 2.44,
+      "avg_edge": 0.269,
+      "verdict": "STRONG"
+    }
+  },
+  "by_entry_price": {
+    "40-50%": {
+      "n": 3,
+      "wr": 0.333,
+      "total_pnl": -0.43
+    }
+  },
+  "information_gap": {
+    "with_gap": {
+      "n": 7,
+      "wr": 0.286
+    },
+    "without_gap": {
+      "n": 4,
+      "wr": 0.5
+    },
+    "gap_adds_value": false
+  },
+  "by_exit_reason": {
+    "STOP_LOSS": {
+      "n": 7,
+      "avg_pnl": -0.337
+    },
+    "TAKE_PROFIT": {
+      "n": 2,
+      "avg_pnl": 0.99
+    },
+    "EVENT_DEADLINE": {
+      "n": 1,
+      "avg_pnl": 0.07
+    },
+    "RESOLVED": {
+      "n": 1,
+      "avg_pnl": 0.69
+    }
+  },
+  "_meta": {
+    "total_resolved": 11,
+    "generated_from": "./data/live_trades.json"
+  }
+}

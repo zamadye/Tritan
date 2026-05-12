@@ -27,15 +27,20 @@ def _get_bankroll(mode: str, clob_client=None) -> float:
         return round(max(base - deployed + pnl, 0), 2)
     else:
         # Live: fetch USDC balance from Polymarket CLOB API
-        try:
-            from py_clob_client.clob_types import BalanceAllowanceParams, AssetType
-            result = clob_client.get_balance_allowance(
-                BalanceAllowanceParams(asset_type=AssetType.COLLATERAL)
-            )
-            bal = float(result.get('balance', 0)) / 1e6  # USDC has 6 decimals
-            return round(bal, 2) if bal > 0 else float(os.getenv("LIVE_BANKROLL", 0.0))
-        except Exception:
-            return float(os.getenv("LIVE_BANKROLL", 0.0))
+        if clob_client:
+            try:
+                from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
+                result = clob_client.get_balance_allowance(
+                    BalanceAllowanceParams(asset_type=AssetType.COLLATERAL)
+                )
+                bal = float(result.get('balance', 0)) / 1e6  # USDC has 6 decimals
+                if bal > 0:
+                    return round(bal, 2)
+            except Exception as e:
+                console.print(f"[yellow]CLOB balance fetch failed: {e}[/yellow]")
+        fallback = float(os.getenv("LIVE_BANKROLL", "7.00"))
+        console.print(f"[yellow]Using fallback bankroll: ${fallback:.2f}[/yellow]")
+        return fallback
 
 
 def _open_market_ids(mode: str) -> set:
@@ -82,7 +87,7 @@ def _enrich_trade(trade: dict, analysis: dict, mode: str, news_context: str = ""
 
 def _build_clob_client():
     try:
-        from py_clob_client.client import ClobClient
+        from py_clob_client_v2.client import ClobClient
         host    = os.getenv("POLYMARKET_CLOB_HOST", "https://clob.polymarket.com")
         key     = os.getenv("POLYGON_PRIVATE_KEY", "")
         funder  = os.getenv("POLYGON_WALLET_ADDRESS", "")
@@ -94,16 +99,16 @@ def _build_clob_client():
             signature_type=sig_type,
             funder=funder if sig_type in (1, 2, 3) else None,
         )
-        client.set_api_creds(client.create_or_derive_api_creds())
+        client.set_api_creds(client.create_or_derive_api_key())
         return client
     except Exception as e:
         console.print(f"[red]CLOB client init failed: {e}[/red]")
         return None
 
 
-def print_banner(mode: str):
+def print_banner(mode: str, clob_client=None):
     stats = get_stats(mode)
-    bankroll = _get_bankroll(mode)
+    bankroll = _get_bankroll(mode, clob_client)
     win_pct = f"{stats['win_rate']*100:.1f}%" if stats["resolved"] else "N/A"
     console.print(Panel(
         f"[bold cyan]🤖 POLY-AGENT v2.0[/bold cyan]\n"
@@ -144,7 +149,7 @@ def run_scan_cycle(mode: str, clob_client=None):
 
     # Step 1b: check exit conditions (TP/SL/time limit)
     from agent.monitor import check_and_exit
-    check_and_exit(mode)
+    check_and_exit(mode, clob_client)
 
     # Step 2: check bankroll + open positions (count only truly open, not blocked)
     bankroll = _get_bankroll(mode, clob_client)
@@ -301,6 +306,25 @@ def run_scan_cycle(mode: str, clob_client=None):
             if not cond2: reasons.append(f"low conf ({confidence:.0%}<{cat_min:.0%})")
             console.print(f"[dim]⛔ Gate fail [{', '.join(reasons)}]: {market['question'][:40]}[/dim]")
             continue
+
+        # ── CATALYST GATE for extreme entries ────────────────────────────
+        # Price movement at extreme prices needs stronger catalyst
+        # because leverage is high — small adverse move = big % loss
+        rec_side_for_price = analysis.get("recommended_side", "SKIP")
+        if rec_side_for_price != "SKIP":
+            entry_side_price = p_market if rec_side_for_price == "BET_YES" else 1 - p_market
+            cat_strength = analysis.get("catalyst_score", 0)
+            cat_type = analysis.get("catalyst_type", "NONE")
+            if entry_side_price < 0.25:
+                # Very high leverage: require breaking news
+                if cat_strength < 0.7 or cat_type not in ("BREAKING_NEWS", "SENTIMENT_SHIFT", "ODDS_MOVEMENT"):
+                    console.print(f"[dim]⛔ Extreme entry ({entry_side_price:.0%}) needs strong catalyst (got {cat_type} {cat_strength:.1f}): {market['question'][:40]}[/dim]")
+                    continue
+            elif entry_side_price < 0.35:
+                # High leverage: require meaningful catalyst
+                if cat_strength < 0.5:
+                    console.print(f"[dim]⛔ High leverage entry ({entry_side_price:.0%}) needs catalyst≥0.5 (got {cat_strength:.1f}): {market['question'][:40]}[/dim]")
+                    continue
         # ─────────────────────────────────────────────────────────────────
 
         # Use momentum direction if available
@@ -313,6 +337,10 @@ def run_scan_cycle(mode: str, clob_client=None):
         size, side, _ = calculate_position(p_true, p_market, bankroll, mode)
 
         if side == "SKIP" or size == 0:
+            continue
+        if bankroll < 1.0 and mode == "live":
+            console.print(f"[yellow]⚠️  Balance ${bankroll:.2f} too low for live trade. Skipping.[/yellow]")
+            break
             continue
 
         console.print(
@@ -338,14 +366,18 @@ def run(mode: str):
     Active hours (14:00-22:00 UTC): scans every SCAN_INTERVAL_ACTIVE_MINUTES.
     Off-peak: scans every SCAN_INTERVAL_MINUTES.
     """
-    print_banner(mode)
-
     clob_client = None
     if mode == "live":
         clob_client = _build_clob_client()
         if not clob_client:
             console.print("[red]Cannot start LIVE mode without CLOB client. Falling back to DEMO.[/red]")
             mode = "demo"
+        else:
+            # Don't sync historical CLOB trades — agent only tracks its own trades via executor
+            # Resolved trades are handled by the resolver + sync_polymarket.py (live_sync.json)
+            pass
+
+    print_banner(mode, clob_client)
 
     base_interval = int(os.getenv("SCAN_INTERVAL_MINUTES", 15)) * 60
     # Jam aktif Polymarket: 14:00-22:00 UTC → scan lebih cepat

@@ -10,6 +10,10 @@ def calculate_position(p_true: float, p_market: float, bankroll: float, mode: st
     edge_threshold = float(os.getenv("EDGE_THRESHOLD", 0.04))
     min_rr         = float(os.getenv("MIN_RR_RATIO", 0.5))
 
+    # Polymarket CLOB minimum order is $1
+    if mode == "live" and min_bet < 1.0:
+        min_bet = 1.0
+
     edge_yes = p_true - p_market
     edge_no  = (1 - p_true) - (1 - p_market)
 
@@ -31,5 +35,9 @@ def calculate_position(p_true: float, p_market: float, bankroll: float, mode: st
 
     mult = get_kelly_multiplier(mode)
     size = bankroll * 0.25 * edge * mult
-    size = min(max(size, min_bet), max_bet, bankroll * 0.05)
+    bankroll_cap = max(bankroll * 0.05, min_bet)  # cap never below minimum
+    size = min(max(size, min_bet), max_bet, bankroll_cap)
+    # Polymarket CLOB hard minimum — never go below $1
+    if mode == "live" and size < 1.0:
+        size = 1.0
     return round(size, 2), side, round(edge, 4)

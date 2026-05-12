@@ -1,24 +1,12 @@
 import { NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
-
-const DATA_DIR = path.join(process.cwd(), '..', 'data')
-const ENV_FILE = path.join(process.cwd(), '..', '.env')
-
-function readJSON(file: string) {
-  try { return JSON.parse(fs.readFileSync(path.join(DATA_DIR, file), 'utf-8')) }
-  catch { return null }
-}
-
-function readEnvValue(key: string): string {
-  try {
-    const m = fs.readFileSync(ENV_FILE, 'utf-8').match(new RegExp(`^${key}=(.+)$`, 'm'))
-    return m?.[1] ?? ''
-  } catch { return '' }
-}
+import { DATA_DIR, ENV_FILE, readJSON, readEnvValue } from '@/lib/paths'
 
 function buildContext(): string {
-  const trades: any[] = readJSON('demo_trades.json') || []
+  const mode = readEnvValue('AGENT_MODE') || 'demo'
+  const tradesFile = mode === 'live' ? 'live_trades.json' : 'demo_trades.json'
+  const trades: any[] = readJSON(tradesFile) || []
   const evolution = readJSON('evolution_lessons.json') || {}
   const lessons = readJSON('assistant_lessons.json') || []
 

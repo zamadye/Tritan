@@ -70,10 +70,10 @@ def _simulate_exit(trade: dict, yes_price: float, reason: str) -> dict:
 def _dynamic_tp(trade: dict) -> float:
     """Dynamic TP ceiling based on edge at entry. Bigger edge = higher TP allowed."""
     edge = abs(trade.get("edge_at_bet") or 0)
-    if edge >= 0.20: return 0.40
-    if edge >= 0.15: return 0.30
-    if edge >= 0.08: return 0.20
-    return 0.15
+    if edge >= 0.20: return 0.50
+    if edge >= 0.15: return 0.35
+    if edge >= 0.08: return 0.25
+    return 0.20
 
 
 def _get_event_deadline(trade: dict) -> float:
@@ -120,7 +120,6 @@ def check_and_exit(mode: str = "demo", clob_client=None) -> int:
     tp_return  = float(os.getenv("EXIT_TAKE_PROFIT", 0.15))   # floor TP (overridden per trade)
     sl_pct     = float(os.getenv("EXIT_STOP_LOSS",   0.12))   # -12% return base
     trail_pct  = float(os.getenv("TRAILING_STOP_PCT", 0.05))  # 5% from peak
-    min_hold_minutes = float(os.getenv("MIN_HOLD_MINUTES", 30))  # don't exit within 30 min
 
     exited = 0
 
@@ -154,14 +153,17 @@ def check_and_exit(mode: str = "demo", clob_client=None) -> int:
             trade["peak_pnl_pct"] = peak_pnl
             trade["peak_price"] = yes_p if side == "YES" else (1 - yes_p)
 
-        # Dynamic SL: NO bets at low YES price have high leverage → need looser SL
+        # Dynamic SL: proportional to leverage (entry price of the side bet)
+        # High leverage (low price) = need much looser SL
         entry_price_for_side = entry if side == "YES" else 1 - entry
-        if entry_price_for_side < 0.25:
-            effective_sl_pct = sl_pct * 3.0   # 36% SL for high-leverage entries
+        if entry_price_for_side < 0.20:
+            effective_sl_pct = sl_pct * 5.0   # 125% SL — almost never trigger, hold for movement
+        elif entry_price_for_side < 0.30:
+            effective_sl_pct = sl_pct * 3.5   # 87.5% SL
         elif entry_price_for_side < 0.40:
-            effective_sl_pct = sl_pct * 2.0   # 24% SL for medium-leverage
+            effective_sl_pct = sl_pct * 2.0   # 50% SL
         else:
-            effective_sl_pct = sl_pct          # 12% SL for normal entries
+            effective_sl_pct = sl_pct          # 25% SL for normal entries
 
         # Trailing SL: exit if pnl drops trail_pct below peak, floor at dynamic SL
         trail_sl     = peak_pnl - trail_pct
@@ -170,54 +172,100 @@ def check_and_exit(mode: str = "demo", clob_client=None) -> int:
         max_hours = _get_event_deadline(trade)
         tp_return = _dynamic_tp(trade)
 
-        # Minimum hold time — don't exit within first N minutes (let price move)
+        # Calculate hours held for EVENT_DEADLINE check
         try:
             ts_str = trade["timestamp"]
             if "Z" in ts_str: ts_str = ts_str.replace("Z", "+00:00")
             elif "+" not in ts_str and "T" in ts_str: ts_str += "+00:00"
-            minutes_held = (now - datetime.fromisoformat(ts_str)).total_seconds() / 60
-            hours_held   = minutes_held / 60
+            hours_held = (now - datetime.fromisoformat(ts_str)).total_seconds() / 3600
         except Exception:
-            minutes_held = 999
-            hours_held   = 0
-
-        if minutes_held < min_hold_minutes:
-            continue  # too early to exit
+            hours_held = 0
 
         exit_reason = None
-        partial     = False
 
-        if pnl_pct >= tp_return:
-            exit_reason = f"TAKE_PROFIT (+{pnl_pct:.0%})"
-        elif pnl_pct >= 0.20 and not trade.get("partial_exited"):
-            exit_reason = f"PARTIAL_EXIT_50% (+{pnl_pct:.0%})"
-            partial = True
-        elif pnl_pct <= effective_sl:
-            if peak_pnl > 0.10:  # trailing stop only after meaningful profit (≥10%)
+        # ── RIDE THE TREND STRATEGY ──────────────────────────────────────
+        # No fixed TP — let price run as long as it keeps moving up
+        # Only exit on:
+        #   1. Trailing stop (reversal detected) — active after meaningful profit
+        #   2. Stop loss (initial protection, very loose)
+        #   3. Time deadline
+
+        if pnl_pct <= effective_sl:
+            if peak_pnl >= 0.15:
+                # Trailing stop: only after 15% peak profit (meaningful move)
                 exit_reason = f"TRAILING_STOP (peak={peak_pnl:+.0%} sl={effective_sl:+.0%} now={pnl_pct:+.0%})"
             else:
+                # Initial SL: price moved against us without ever being profitable
                 exit_reason = f"STOP_LOSS ({pnl_pct:.0%})"
         elif hours_held >= max_hours:
             from agent.learner import _infer_category
             cat = _infer_category(trade)
             exit_reason = f"EVENT_DEADLINE ({cat} {hours_held:.0f}h/{max_hours:.0f}h)"
+        # ─────────────────────────────────────────────────────────────────
 
         if exit_reason:
-            if partial:
-                half_size = size / 2
-                half_shares = shares / 2
-                partial_pnl = round(half_shares * (yes_p if side=="YES" else (1-yes_p)) - half_size, 2)
-                trade["size_usd"]       = round(size / 2, 2)
-                trade["partial_exited"] = True
-                trade["partial_pnl"]    = partial_pnl
-                trade["peak_pnl_pct"]   = peak_pnl
-                icon = "✅"
-                print(f"[EXIT] {icon} {exit_reason} | {side} partial P&L=${partial_pnl:+.2f} | {trade['market_question'][:50]}")
-            else:
-                _simulate_exit(trade, yes_p, exit_reason)
-                icon = "✅" if trade["pnl"] > 0 else "❌"
-                print(f"[EXIT] {icon} {exit_reason} | {side} P&L=${trade['pnl']:+.2f} | {trade['market_question'][:50]}")
-                update_streak(trade["prediction_correct"], mode)
+            _simulate_exit(trade, yes_p, exit_reason)
+            icon = "✅" if trade["pnl"] > 0 else "❌"
+            print(f"[EXIT] {icon} {exit_reason} | {side} P&L=${trade['pnl']:+.2f} | {trade['market_question'][:50]}")
+
+            # Live mode: submit sell order to close position on Polymarket
+            if mode == "live" and clob_client:
+                try:
+                    from py_clob_client_v2.clob_types import OrderArgs, PartialCreateOrderOptions
+                    from py_clob_client_v2.order_builder.constants import SELL
+                    from py_clob_client_v2.clob_types import OrderType
+
+                    token_ids = trade.get("token_id", [])
+                    if isinstance(token_ids, str):
+                        import json as _json
+                        try: token_ids = _json.loads(token_ids)
+                        except: token_ids = []
+
+                    # Sell the token we bought: YES token if BET_YES, NO token if BET_NO
+                    token_id = token_ids[0] if side == "YES" else (token_ids[1] if len(token_ids) > 1 else "")
+
+                    if not token_id or len(str(token_id)) < 10:
+                        # Fallback: get token from CLOB
+                        cid = trade.get("market_id", "")
+                        if cid:
+                            mkt = clob_client.get_market(cid)
+                            tokens = mkt.get("tokens", [])
+                            for t_info in tokens:
+                                outcome = t_info.get("outcome", "").upper()
+                                if (side == "YES" and outcome in ("YES","TRUE")) or \
+                                   (side == "NO" and outcome in ("NO","FALSE")):
+                                    token_id = t_info["token_id"]
+                                    break
+
+                    if token_id:
+                        # Calculate shares to sell
+                        entry_price = entry if side == "YES" else 1 - entry
+                        shares_held = size / entry_price
+                        sell_size = round(shares_held * yes_p if side == "YES" else shares_held * (1 - yes_p), 2)
+                        sell_size = max(sell_size, 1.0)
+
+                        sell_args = OrderArgs(
+                            token_id=str(token_id),
+                            price=round(yes_p if side == "YES" else (1 - yes_p), 2),
+                            size=sell_size,
+                            side=SELL,
+                        )
+                        # Get tick size
+                        tick = "0.01"
+                        try:
+                            mkt_info = clob_client.get_market(trade.get("market_id",""))
+                            tick = str(mkt_info.get("minimum_tick_size", "0.01"))
+                        except: pass
+
+                        opts = PartialCreateOrderOptions(tick_size=tick, neg_risk=False)
+                        resp = clob_client.create_and_post_order(sell_args, opts, OrderType.GTC)
+                        print(f"[EXIT] 💱 Sell order submitted: {resp}")
+                    else:
+                        print(f"[EXIT] ⚠️  No token_id for sell order — position will resolve naturally")
+                except Exception as e:
+                    print(f"[EXIT] ⚠️  Sell order failed: {e} — position will resolve naturally")
+
+            update_streak(trade["prediction_correct"], mode)
             exited += 1
 
     if exited > 0:

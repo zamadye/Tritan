@@ -1,27 +1,83 @@
 {
-  "last_updated": "2026-05-08T10:56:52.087691+00:00",
-  "mode": "demo",
-  "total_resolved": 2,
-  "wins": 1,
-  "losses": 1,
-  "win_rate": 0.5,
-  "total_pnl": 0.17,
-  "avg_brier": 0.0221,
-  "biggest_win": 1.33,
-  "biggest_loss": -1.16,
+  "last_updated": "2026-05-12T08:38:33.058245+00:00",
+  "mode": "live",
+  "total_resolved": 11,
+  "wins": 4,
+  "losses": 7,
+  "win_rate": 0.3636,
+  "total_pnl": 0.38,
+  "avg_brier": 0.4878,
+  "biggest_win": 1.43,
+  "biggest_loss": -0.59,
   "recent": [
     {
-      "question": "Internazionali BNL d'Italia: Liudmila Samsonova vs Ann Li",
-      "side": "YES",
-      "outcome": "YES",
-      "pnl": 1.33,
+      "question": "Bengaluru 2: Omar Jasika vs Hamish Stewart",
+      "side": "NO",
+      "outcome": "NO",
+      "pnl": 0.69,
       "correct": true
     },
     {
-      "question": "Internazionali BNL d'Italia: Nuno Borges vs Rafael Jodar",
+      "question": "Bengaluru 2: Omar Jasika vs Hamish Stewart",
       "side": "NO",
       "outcome": "EXIT",
-      "pnl": -1.16,
+      "pnl": -0.23,
+      "correct": false
+    },
+    {
+      "question": "Will Elon Musk post 120-139 tweets from May 5 to May 12, 202",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": 0.07,
+      "correct": true
+    },
+    {
+      "question": "Iran closes its airspace by May 31?",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": 0.55,
+      "correct": true
+    },
+    {
+      "question": "Confirmed case of Hantavirus in US by May 15?",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": -0.59,
+      "correct": false
+    },
+    {
+      "question": "Internazionali BNL d'Italia: Coco Gauff vs Iva Jovic",
+      "side": "YES",
+      "outcome": "EXIT",
+      "pnl": -0.47,
+      "correct": false
+    },
+    {
+      "question": "Will PSG win the 2025\u201326 Champions League?",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": -0.25,
+      "correct": false
+    },
+    {
+      "question": "US x Iran diplomatic meeting by May 31, 2026?",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": 1.43,
+      "correct": true
+    },
+    {
+      "question": "Will PSG win the 2025\u201326 Champions League?",
+      "side": "NO",
+      "outcome": "EXIT",
+      "pnl": -0.25,
+      "correct": false
+    },
+    {
+      "question": "Internazionali BNL d'Italia: Coco Gauff vs Iva Jovic",
+      "side": "YES",
+      "outcome": "EXIT",
+      "pnl": -0.03,
       "correct": false
     }
   ]

@@ -12,8 +12,8 @@
     "size_usd": 5.0,
     "price_at_entry": 0.6,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": 0.06,
     "p_true_estimated": 0.2462,
     "confidence_at_bet": 0.65,
     "edge_at_bet": -0.3538,
@@ -53,7 +53,12 @@
     ],
     "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $79,724 (-1.5% 24h) \u2192 risk-OFF\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $79,698 (-1.5% 24h) \u2192 risk-OFF\n[NEWS] 6 articles found:\n  [NewsAPI] Ninajirachi Announces \u201cI Love My Computer and It Loves Me\u201d Tour Dates: The breakout electronic music producer will play a run of headlining shows starting in September.\nNi\n  [NewsAPI] Black Weekend in Spain: Multiple Stabbings Kill Two: The concentration of knife attacks in the Barcelona metropolitan area widens the gap between the off\n  [NewsAPI] Olivia Rodrigo\u2019s \u201cThe Unraveled Tour\u201d: How to Get Tickets: Rodrigo will support her third album with a massive world tour. Here's how you can get tickets.\nOliv\n  [NewsAPI] Knicks set NBA records in eliminating Hawks; 76ers take Celtics to Game 7; Kentu: Plus our Ryan Wilson goes all in on why -- despite often being ridiculous -- NFL Draft grades aren't\n  [NewsAPI] Inter vs. Parma, the complete pre-match guide: San Siro is ready to welcome Inter back home. The Nerazzurri take on Parma at the Meazza on Matchday\n  [NewsAPI] Olivia Rodrigo Is Coming to Canada on World Tour: Olivia Rodrigo is releasing her new album you seem pretty sad for a girl so in love on June 12, and \n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Star player injury (day-to-day) \u2192 team win probability falls 10-20%\n  \u2192 Star player returns from injury \u2192 team win probability rises 15-25%\n  \u2192 Home court advantage \u2192 home team wins 60% of playoff games historically\n  \u2192 Team on 3+ game win streak \u2192 momentum factor \u2192 +5% win probability\n- Ninajirachi Announces \u201cI Love My Computer and It Loves Me\u201d Tour Dates: The breakout electronic music producer will play a run of headlining shows starting in September.\nNinajirachi Announces \u201cI Love My Computer and It Loves Me\u201d Tour Dates\nTravis Bland\n- Black Weekend in Spain: Multiple Stabbings Kill T",
     "peak_pnl_pct": 0.0375,
-    "peak_price": 0.41500000000000004
+    "peak_price": 0.41500000000000004,
+    "exit_price": 0.595,
+    "exit_reason": "EVENT_DEADLINE (other 31h/24h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-09T11:31:06.527797+00:00",
+    "brier_score": 0.5682
   },
   {
     "trade_id": "a5d24f39-d6b8-46bd-88af-2037d0b545ec",
@@ -68,8 +73,8 @@
     "size_usd": 5.0,
     "price_at_entry": 0.18,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "YES",
+    "pnl": -5.0,
     "p_true_estimated": 0.01,
     "confidence_at_bet": 0.65,
     "edge_at_bet": -0.17,
@@ -138,7 +143,11 @@
     ],
     "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $79,724 (-1.5% 24h) \u2192 risk-OFF\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $79,686 (-1.5% 24h) \u2192 risk-OFF\n[NEWS] 6 articles found:\n  [NewsAPI] Midnight Mania! UFC Unveils Special New USA Belt For White House Card: Bringing you the weird and wild from the world of MMA each and every weeknight!\n  [NewsAPI] Khamzat Chimaev\u2019s teammate claims Chechen warlord could be in his corner for UFC: Khamzat Chimaev\u2019s teammate claims Chechen warlord could be in his corner for UFC 328Bloody Elbow Fig\n  [NewsAPI] UFC 328\u2019s best betting props, parlays and picks | Khamzat vs. Strickland: Check out our comprehensive UFC 328: Khamzat vs. Strickland betting guide right here.\n  [NewsAPI] UFC 328 Embedded, Episode 3: 'I love my job': On the third episode of UFC 328 Embedded, Tatsuro Taira packs his suitcase and heads to New Jersey; \n  [NewsAPI] Sean Strickland responds to Khamzat Chimaev releasing sparring footage: \u2018The guy: Sean Strickland responds to Khamzat Chimaev releasing sparring footage: \u2018The guy\u2019s just a little f*c\n  [NewsAPI] Pizza-loving Khamzat Chimaev \u2018hopes\u2019 UFC 328 will be his final Middleweight figh: Goodbye, 185? Ultimate Fighting Championship (UFC) Middleweight champion Khamzat Chimaev is just day\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Grappler vs striker \u2192 grappler wins if fight goes to ground\n  \u2192 Significant strike differential \u2192 striker wins 70% if +50 strikes/round\n  \u2192 Late replacement fighter \u2192 -15% win probability due to camp disruption\n  \u2192 Weight cut issues \u2192 performance degradation in later rounds\n- Midnight Mania! UFC Unveils Special New USA Belt For White House Card: Bringing you the weird and wild from the world of MMA each and every weeknight!\n- Khamzat Chimaev\u2019s teammate claims Chechen warlord could be in his corner for UFC 328 - Bloody Elbow: Khamzat Chimaev\u2019s team",
     "peak_pnl_pct": 0.0060975609756095395,
-    "peak_price": 0.825
+    "peak_price": 0.825,
+    "prediction_correct": false,
+    "resolved_at": "2026-05-10T05:08:42.267642+00:00",
+    "brier_score": 0.0324,
+    "calibration_error": 0.99
   },
   {
     "trade_id": "b8ec4d8e-a5f1-4e72-b63f-2e70f3e0e88a",
@@ -153,8 +162,8 @@
     "size_usd": 5.0,
     "price_at_entry": 0.187,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": 0.38,
     "p_true_estimated": 0.01,
     "confidence_at_bet": 0.65,
     "edge_at_bet": -0.177,
@@ -193,8 +202,13 @@
       }
     ],
     "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $79,629 (-1.6% 24h) \u2192 risk-OFF\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $79,563 (-1.6% 24h) \u2192 risk-OFF\n[NEWS] 6 articles found:\n  [NewsAPI] Trump warns Iran of more attacks amid stalled peace talks: Increased military tensions could hinder diplomatic progress, reducing the likelihood of a lasting p\n  [NewsAPI] Trump says Iran will be bombed at a \u2018much higher level\u2019 if it doesn\u2019t agree to p: President Donald Trump on Wednesday said Iran will be bombed \u201cat a much higher level\u201d if it doesn\u2019t \n  [NewsAPI] Can a U.S.-Brokered State Budget Help Unite Libya?: Inside what analysts call a \u201cpinky promise\u201d between Libya\u2019s rival factions.\n  [NewsAPI] US, Iran nearing deal that would see Tehran give away enriched uranium: The United States and Iran are closing in on a one-page memo to end their war, a Pakistani source in\n  [NewsAPI] US and Iran near memorandum to end war, boost nuclear deal hopes: A potential US-Iran memorandum could stabilize regional tensions, enhance diplomatic relations, and \n  [NewsAPI] Iran rejects US threats, leadership stability likely through 2026: Iran's defiance of US threats suggests prolonged regional instability, reducing prospects for peace \n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish\n- Trump warns Iran of more attacks amid stalled peace talks: Increased military tensions could hinder diplomatic progress, reducing the likelihood of a lasting peace deal and escalating regional instability.\nThe post Trump warns Iran of more attacks amid stalled peace talks appeared fir",
-    "peak_pnl_pct": 0.0006150061500616033,
-    "peak_price": 0.8135
+    "peak_pnl_pct": 0.07503075030750317,
+    "peak_price": 0.874,
+    "exit_price": 0.126,
+    "exit_reason": "EVENT_DEADLINE (geopolitik 31h/24h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-09T11:31:07.086619+00:00",
+    "brier_score": 0.9801
   },
   {
     "trade_id": "bb2c78e1-921a-4a86-914e-a6e4795d61d6",
@@ -206,11 +220,11 @@
     "end_date": "2026-05-31T00:00:00Z",
     "category": "geopolitik",
     "side": "NO",
-    "size_usd": 5.0,
+    "size_usd": 2.5,
     "price_at_entry": 0.54,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": 0.19,
     "p_true_estimated": 0.2355,
     "confidence_at_bet": 0.65,
     "edge_at_bet": -0.3045,
@@ -277,8 +291,15 @@
       }
     ],
     "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $79,411 (-2.5% 24h) \u2192 risk-OFF\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $79,411 (-2.5% 24h) \u2192 risk-OFF\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
-    "peak_pnl_pct": 0.032608695652173836,
-    "peak_price": 0.475
+    "peak_pnl_pct": 0.20652173913043476,
+    "peak_price": 0.5549999999999999,
+    "partial_exited": true,
+    "partial_pnl": 0.07,
+    "exit_price": 0.505,
+    "exit_reason": "TRAILING_STOP (peak=+21% sl=+16% now=+8%)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-10T03:26:52.972166+00:00",
+    "brier_score": 0.5845
   },
   {
     "trade_id": "cd486a27-3c38-47a8-ba69-a92039c0775d",
@@ -293,8 +314,8 @@
     "size_usd": 5.0,
     "price_at_entry": 0.58,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": 0.06,
     "p_true_estimated": 0.2319,
     "confidence_at_bet": 0.65,
     "edge_at_bet": -0.3481,
@@ -348,7 +369,12 @@
     ],
     "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $79,341 (-2.6% 24h) \u2192 risk-OFF\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $79,563 (-2.2% 24h) \u2192 risk-OFF",
     "peak_pnl_pct": 0.011904761904761862,
-    "peak_price": 0.42500000000000004
+    "peak_price": 0.42500000000000004,
+    "exit_price": 0.575,
+    "exit_reason": "EVENT_DEADLINE (other 28h/24h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-09T11:31:07.604312+00:00",
+    "brier_score": 0.59
   },
   {
     "trade_id": "b7a650e5-4ff8-4a9c-acc9-505d84e37353",
@@ -363,8 +389,8 @@
     "size_usd": 5.0,
     "price_at_entry": 0.16,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": 0.57,
     "p_true_estimated": 0.01,
     "confidence_at_bet": 0.62,
     "edge_at_bet": -0.15,
@@ -431,8 +457,13 @@
       }
     ],
     "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $79,341 (-2.6% 24h) \u2192 risk-OFF\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $79,366 (-2.7% 24h) \u2192 risk-OFF\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
-    "peak_pnl_pct": 0.011904761904761862,
-    "peak_price": 0.85
+    "peak_pnl_pct": 0.11309523809523814,
+    "peak_price": 0.935,
+    "exit_price": 0.065,
+    "exit_reason": "EVENT_DEADLINE (geopolitik 28h/24h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-09T11:31:07.858327+00:00",
+    "brier_score": 0.9801
   },
   {
     "trade_id": "622bc689-921c-4d59-86bd-4e4b89f7830c",
@@ -447,8 +478,8 @@
     "size_usd": 5.0,
     "price_at_entry": 0.2,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": 0.22,
     "p_true_estimated": 0.01,
     "confidence_at_bet": 0.65,
     "edge_at_bet": -0.19,
@@ -522,8 +553,13 @@
       }
     ],
     "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $79,341 (-2.6% 24h) \u2192 risk-OFF\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $79,353 (-2.7% 24h) \u2192 risk-OFF\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Strait of Hormuz closure \u2192 oil shipping disrupted \u2192 oil price +15-30%\n  \u2192 Oil price spike \u2192 shipping costs rise \u2192 plastic/chemical/fertilizer prices rise\n  \u2192 Oil spike \u2192 inflation pressure \u2192 Fed less likely to cut rates \u2192 BTC falls\n  \u2192 Oil spike \u2192 airline costs rise \u2192 travel stocks fall \u2192 recession risk",
-    "peak_pnl_pct": 0.01875,
-    "peak_price": 0.815
+    "peak_pnl_pct": 0.04375,
+    "peak_price": 0.835,
+    "exit_price": 0.165,
+    "exit_reason": "EVENT_DEADLINE (geopolitik 28h/24h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-09T11:31:08.115609+00:00",
+    "brier_score": 0.9801
   },
   {
     "trade_id": "43e0ed6d-9156-4f4a-9625-7470ff65b584",
@@ -620,8 +656,8 @@
     "size_usd": 5.0,
     "price_at_entry": 0.49,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": -0.44,
     "p_true_estimated": 0.1635,
     "confidence_at_bet": 0.65,
     "edge_at_bet": -0.3265,
@@ -682,7 +718,12 @@
     ],
     "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $79,921 (-1.6% 24h) \u2192 risk-OFF\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $79,922 (-1.6% 24h) \u2192 risk-OFF\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
     "peak_pnl_pct": 0.029411764705882425,
-    "peak_price": 0.525
+    "peak_price": 0.525,
+    "exit_price": 0.535,
+    "exit_reason": "STOP_LOSS (-9%)",
+    "prediction_correct": false,
+    "resolved_at": "2026-05-09T11:31:08.357366+00:00",
+    "brier_score": 0.0267
   },
   {
     "trade_id": "6cd60574-3ebe-4ecc-b212-4a4ff1760668",
@@ -841,8 +882,8 @@
     "size_usd": 5.0,
     "price_at_entry": 0.14,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "EXIT",
+    "pnl": 0.26,
     "p_true_estimated": 0.01,
     "confidence_at_bet": 0.65,
     "edge_at_bet": -0.13,
@@ -902,8 +943,13 @@
       }
     ],
     "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $80,188 (-0.8% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $80,222 (-0.9% 24h) \u2192 neutral\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
-    "peak_pnl_pct": 0.01744186046511622,
-    "peak_price": 0.875
+    "peak_pnl_pct": 0.05232558139534884,
+    "peak_price": 0.905,
+    "exit_price": 0.095,
+    "exit_reason": "EVENT_DEADLINE (geopolitik 24h/24h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-09T11:31:08.650422+00:00",
+    "brier_score": 0.9801
   },
   {
     "trade_id": "4a042d92-6f78-4d8d-a83d-4fa5dfd0637b",
@@ -918,8 +964,8 @@
     "size_usd": 5.0,
     "price_at_entry": 0.8,
     "status": "DEMO_FILLED",
-    "actual_outcome": null,
-    "pnl": null,
+    "actual_outcome": "YES",
+    "pnl": 1.25,
     "p_true_estimated": 0.99,
     "confidence_at_bet": 0.62,
     "edge_at_bet": 0.19,
@@ -985,6 +1031,828 @@
         "result": "No search results available for: Anastasia Potapova WTA ranking 2025"
       }
     ],
-    "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $79,777 (-1.5% 24h) \u2192 risk-OFF\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $79,763 (-1.5% 24h) \u2192 risk-OFF"
+    "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $79,777 (-1.5% 24h) \u2192 risk-OFF\n[FEAR&GREED 7d trend] 38(Fear) \u2192 47(Neut) \u2192 46(Fear) \u2192 50(Neut) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $79,763 (-1.5% 24h) \u2192 risk-OFF",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-09T11:30:59.016454+00:00",
+    "brier_score": 0.04,
+    "calibration_error": 0.01
+  },
+  {
+    "trade_id": "767c9491-10ed-4cce-b3ef-13b769669f6b",
+    "timestamp": "2026-05-09T11:31:53.134033+00:00",
+    "mode": "demo",
+    "market_id": "0x2bef40a1f62d045527228e699990d1bd1f97906b2458a6f3e4a0daf11124060c",
+    "market_numeric_id": "2109449",
+    "market_question": "US x Iran diplomatic meeting by May 31, 2026?",
+    "end_date": "2026-05-15T00:00:00Z",
+    "category": "geopolitik",
+    "side": "NO",
+    "size_usd": 2.5,
+    "price_at_entry": 0.54,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": 1.33,
+    "p_true_estimated": 0.2355,
+    "confidence_at_bet": 0.65,
+    "edge_at_bet": -0.3045,
+    "base_rate": 0.4355,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "The market is overpricing YES based on historical resolution rates (54% price vs 44.7% historical resolution for similar probabilities). The Fear & Greed index is at 38 (Fear) with a deteriorating trend, suggesting negative sentiment that could push expectations of diplomatic progress down. No fresh catalysts were found in web searches to move the price upward in the short term.",
+    "calibration_applied": "p_base=43.55%(n=135,logistic:geopolitik) + catalyst_adj=-20.00% = p_true=23.55%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": false,
+    "information_gap_reason": "No fresh catalyst or news.",
+    "p_base": 0.4355,
+    "p_base_source": "logistic:geopolitik",
+    "p_base_n": 135,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran diplomatic meeting 2026 news"
+        },
+        "result": "No search results available for: US Iran diplomatic meeting 2026 news"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran diplomatic talks negotiations 2025 latest news"
+        },
+        "result": "No search results available for: US Iran diplomatic talks negotiations 2025 latest news"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran relations 2025 news diplomatic"
+        },
+        "result": "No search results available for: US Iran relations 2025 news diplomatic"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $80,329 (+0.1% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 38(Fear) \u2192 38(Fear) \u2192 47(Neut) \u2192 46(Fear) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $80,329 (+0.1% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will there be no change in Fed interest rates after the June \u2192 YES=50%\n  Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
+    "peak_pnl_pct": 0.5326086956521742,
+    "peak_price": 0.7050000000000001,
+    "partial_exited": true,
+    "partial_pnl": 0.07,
+    "exit_price": 0.295,
+    "exit_reason": "TAKE_PROFIT (+53%)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-11T07:17:06.315195+00:00",
+    "brier_score": 0.5845
+  },
+  {
+    "trade_id": "9f7bf755-4165-4c79-bd7d-382ea04c00a1",
+    "timestamp": "2026-05-09T11:32:43.464909+00:00",
+    "mode": "demo",
+    "market_id": "0x6e9f90a6f471b52d03499a81586ca478519474eb152f1327c8c767f020d62529",
+    "market_numeric_id": "566136",
+    "market_question": "Will PSG win the 2025\u201326 Champions League?",
+    "end_date": "2026-05-31T00:00:00Z",
+    "category": "other",
+    "side": "NO",
+    "size_usd": 5.0,
+    "price_at_entry": 0.58,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": 0.06,
+    "p_true_estimated": 0.2319,
+    "confidence_at_bet": 0.62,
+    "edge_at_bet": -0.3481,
+    "base_rate": 0.4319,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "Strong statistical overpricing signal: YES at 58% vs. historical 44.7% resolution rate and 43% base rate. No fresh PSG/Champions League catalyst found to drive YES higher. Fear & Greed deteriorating (38) adds no positive momentum. Information gap is ~13% favoring NO.",
+    "calibration_applied": "p_base=43.19%(n=7829,logistic:other) + catalyst_adj=-20.00% = p_true=23.19%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": true,
+    "information_gap_reason": "Statistical signal shows markets priced at 58% resolve YES only 44.7% of the time (n=13,967) \u2014 market overprices YES by ~13%.",
+    "p_base": 0.4319,
+    "p_base_source": "logistic:other",
+    "p_base_n": 7829,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "PSG Champions League 2025-26 news transfers"
+        },
+        "result": "No search results available for: PSG Champions League 2025-26 news transfers"
+      },
+      {
+        "tool": "get_market_context",
+        "args": {
+          "keyword": "PSG Champions League"
+        },
+        "result": "No related markets found for 'PSG Champions League'"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Paris Saint-Germain latest news today 2025"
+        },
+        "result": "No search results available for: Paris Saint-Germain latest news today 2025"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "PSG football news today June 2025"
+        },
+        "result": "No search results available for: PSG football news today June 2025"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Champions League 2025-26 draw groups"
+        },
+        "result": "No search results available for: Champions League 2025-26 draw groups"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Champions League 2025 final result"
+        },
+        "result": "No search results available for: Champions League 2025 final result"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "PSG transfer market summer 2025"
+        },
+        "result": "No search results available for: PSG transfer market summer 2025"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 38/100 (Fear) | trend: deteriorating\n[MACRO] BTC: $80,329 (+0.1% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 38(Fear) \u2192 38(Fear) \u2192 47(Neut) \u2192 46(Fear) | sentiment worsening\n[MACRO] Fear&Greed: 38/100 (Fear) | 7d trend: deteriorating\n[MACRO] BTC: $0 (+0.0% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will there be no change in Fed interest rates after the June \u2192 YES=50%\n  Will the Fed decrease interest rates by 50+ bps after the Ju \u2192 YES=50%",
+    "peak_pnl_pct": 0.011904761904761862,
+    "peak_price": 0.42500000000000004,
+    "exit_price": 0.575,
+    "exit_reason": "EVENT_DEADLINE (other 44h/24h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-11T07:17:06.568544+00:00",
+    "brier_score": 0.59
+  },
+  {
+    "trade_id": "b67210f8-2426-41d7-9227-8ef68803fd93",
+    "timestamp": "2026-05-10T03:27:39.517504+00:00",
+    "mode": "demo",
+    "market_id": "0x6114a8a3f9ac214f48a7e20d169f1c7a5c84082cb6f7058ed9fe1137b11fd0e7",
+    "market_numeric_id": "1962237",
+    "market_question": "US x Iran permanent peace deal by June 30, 2026?",
+    "end_date": "2026-05-31T00:00:00Z",
+    "category": "geopolitik",
+    "side": "NO",
+    "size_usd": 2.5,
+    "price_at_entry": 0.505,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": 0.61,
+    "p_true_estimated": 0.1846,
+    "confidence_at_bet": 0.65,
+    "edge_at_bet": -0.3204,
+    "base_rate": 0.3846,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "YES is overpriced at 50% vs 38% base rate and 44.7% historical resolution rate. No fresh catalyst to sustain YES price. Deteriorating sentiment trend adds downward pressure. Short-term mean reversion toward ~42-45% YES likely. NO side has momentum.",
+    "calibration_applied": "p_base=38.46%(n=135,logistic:geopolitik) + catalyst_adj=-20.00% = p_true=18.46%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": false,
+    "information_gap_reason": "No fresh catalyst or news found in searches; market appears to be priced on stale optimism rather than new information",
+    "p_base": 0.3846,
+    "p_base_source": "logistic:geopolitik",
+    "p_base_n": 135,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran permanent peace deal negotiations 2025 2026 latest news"
+        },
+        "result": "No search results available for: US Iran permanent peace deal negotiations 2025 2026 latest news"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran peace deal 2025 news"
+        },
+        "result": "No search results available for: US Iran peace deal 2025 news"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran relations 2025 latest developments negotiations"
+        },
+        "result": "No search results available for: US Iran relations 2025 latest developments negotiations"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 47/100 (Neutral) | trend: deteriorating\n[MACRO] BTC: $80,733 (+0.4% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 47(Neut) \u2192 38(Fear) \u2192 38(Fear) \u2192 47(Neut) | sentiment improving\n[MACRO] Fear&Greed: 47/100 (Neutral) | 7d trend: deteriorating\n[MACRO] BTC: $80,733 (+0.4% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%\n  Pittsburgh Pirates vs. San Francisco Giants \u2192 YES=50%\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
+    "peak_pnl_pct": 0.24242424242424238,
+    "peak_price": 0.615,
+    "partial_exited": true,
+    "partial_pnl": 0.54,
+    "exit_price": 0.385,
+    "exit_reason": "EVENT_DEADLINE (geopolitik 43h/24h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-11T22:13:29.670348+00:00",
+    "brier_score": 0.6649
+  },
+  {
+    "trade_id": "2f6611d3-f3e6-47f7-9156-0de67321e936",
+    "timestamp": "2026-05-10T03:29:40.827061+00:00",
+    "mode": "demo",
+    "market_id": "0x1db02ba50e2312a62b4104de691cc7a76065d8d0da40decf93eb1b914a3217b7",
+    "market_numeric_id": "2099029",
+    "market_question": "US x Iran permanent peace deal by May 15, 2026?",
+    "end_date": "2026-05-15T00:00:00Z",
+    "category": "geopolitik",
+    "side": "NO",
+    "size_usd": 5.0,
+    "price_at_entry": 0.146,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": 0.6,
+    "p_true_estimated": 0.01,
+    "confidence_at_bet": 0.65,
+    "edge_at_bet": -0.136,
+    "base_rate": 0.0411,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "Analysis: (1) SIGNIFICANT OVERPRICING: YES at 15% vs 4% base rate = -10% price gap, indicating market inefficiency. (2) NO CATALYSTS: Web searches found no recent news on US-Iran peace negotiations that would drive optimism. (3) PATTERN MATCH: Geopolitik category shows 80% WR; entry in 10-20% range has 100% WR historically. (4) MEAN REVERSION: Without fresh positive news, YES price should drift DOWN toward fair value (~5-6%), meaning NO price rises. (5) MACRO NEUTRAL: Fear & Greed at 47 (neutral) with BTC flat provides no tailwind for risk-on optimism. EXPECTATION: YES price decreases 3-5 points in next 4-24 hours as overpriced contract corrects.",
+    "calibration_applied": "p_base=4.11%(n=135,logistic:geopolitik) + catalyst_adj=-20.00% = p_true=1.00%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": true,
+    "information_gap_reason": "Current YES price (15%) is 3.75x the historical base rate (4%) with no fresh catalysts or news to justify this premium. Market appears overpriced relative to fundamentals.",
+    "p_base": 0.0411,
+    "p_base_source": "logistic:geopolitik",
+    "p_base_n": 135,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran peace deal negotiations May 2026 recent news"
+        },
+        "result": "No search results available for: US Iran peace deal negotiations May 2026 recent news"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran nuclear deal 2025 negotiations latest"
+        },
+        "result": "No search results available for: US Iran nuclear deal 2025 negotiations latest"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran relations 2025 latest news"
+        },
+        "result": "No search results available for: US Iran relations 2025 latest news"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 47/100 (Neutral) | trend: deteriorating\n[MACRO] BTC: $80,733 (+0.4% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 47(Neut) \u2192 38(Fear) \u2192 38(Fear) \u2192 47(Neut) | sentiment improving\n[MACRO] Fear&Greed: 47/100 (Neutral) | 7d trend: deteriorating\n[MACRO] BTC: $80,733 (+0.4% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%\n  Pittsburgh Pirates vs. San Francisco Giants \u2192 YES=50%\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
+    "peak_pnl_pct": 0.12002341920374722,
+    "peak_price": 0.9565,
+    "exit_price": 0.0435,
+    "exit_reason": "EVENT_DEADLINE (geopolitik 28h/24h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-11T07:17:07.098836+00:00",
+    "brier_score": 0.9801
+  },
+  {
+    "trade_id": "d28cdc80-7f5f-4269-ab89-c7d910c87dec",
+    "timestamp": "2026-05-10T03:30:16.164573+00:00",
+    "mode": "demo",
+    "market_id": "0x70d706fe084905dbafb95dfff13b727e4073efc3ef590adc8330562bac5d26de",
+    "market_numeric_id": "2047424",
+    "market_question": "US x Iran diplomatic meeting by May 15, 2026?",
+    "end_date": "2026-05-15T00:00:00Z",
+    "category": "geopolitik",
+    "side": "YES",
+    "size_usd": 5.0,
+    "price_at_entry": 0.17,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": -3.68,
+    "p_true_estimated": 0.2532,
+    "confidence_at_bet": 0.65,
+    "edge_at_bet": 0.0832,
+    "base_rate": 0.0532,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "Strong arbitrage signal: If the permanent peace deal has 50% probability, a diplomatic meeting must be at least that likely (you can't have a deal without meetings). The diplomatic meeting market at 17% is severely underpriced relative to the peace deal market. Short-term price correction expected as traders identify this cross-market discrepancy. Historical patterns support 10-20% entry range (100% WR) and info gap trades (88% WR).",
+    "calibration_applied": "p_base=5.32%(n=135,logistic:geopolitik) + catalyst_adj=+20.00% = p_true=25.32%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": true,
+    "information_gap_reason": "Related market 'US x Iran permanent peace deal' is priced at YES 50%, yet a diplomatic meeting (a prerequisite for any deal) is only at 17%. This logical inconsistency creates a clear mispricing.",
+    "p_base": 0.0532,
+    "p_base_source": "logistic:geopolitik",
+    "p_base_n": 135,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran diplomatic meeting news 2025 2026"
+        },
+        "result": "No search results available for: US Iran diplomatic meeting news 2025 2026"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran diplomatic talks May 2026"
+        },
+        "result": "No search results available for: US Iran diplomatic talks May 2026"
+      },
+      {
+        "tool": "get_market_context",
+        "args": {
+          "keyword": "Iran"
+        },
+        "result": "[YES=50% vol=$1,082,827] US x Iran permanent peace deal by May 15, 2026?"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 47/100 (Neutral) | trend: deteriorating\n[MACRO] BTC: $80,733 (+0.4% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 47(Neut) \u2192 38(Fear) \u2192 38(Fear) \u2192 47(Neut) | sentiment improving\n[MACRO] Fear&Greed: 47/100 (Neutral) | 7d trend: deteriorating\n[MACRO] BTC: $80,730 (+0.4% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%\n  Pittsburgh Pirates vs. San Francisco Giants \u2192 YES=50%\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
+    "exit_price": 0.045,
+    "exit_reason": "STOP_LOSS (-74%)",
+    "prediction_correct": false,
+    "resolved_at": "2026-05-11T07:17:07.361198+00:00",
+    "brier_score": 0.0641
+  },
+  {
+    "trade_id": "08a2db41-2f1b-48a2-b2cb-1c1812c2cd79",
+    "timestamp": "2026-05-10T03:31:49.918312+00:00",
+    "mode": "demo",
+    "market_id": "0x36f665053a7ca5c102f2db15cfc49b1b9f38fa820a5f2bb4bde87bf9fbd9a2ab",
+    "market_numeric_id": "2097821",
+    "market_question": "Will Donald Trump announce that the United States blockade of the Strait of Hormuz has been lifted by May 15, 2026?",
+    "end_date": "2026-05-15T00:00:00Z",
+    "category": "geopolitik",
+    "side": "NO",
+    "size_usd": 5.0,
+    "price_at_entry": 0.15,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": 0.62,
+    "p_true_estimated": 0.01,
+    "confidence_at_bet": 0.65,
+    "edge_at_bet": -0.14,
+    "base_rate": 0.043,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "Current YES price of 15% is substantially above the historical base rate of 4%, suggesting possible overpricing. Without a fresh catalyst or sentiment shift in the short term, the price is more likely to revert toward the base rate. Macro indicators show neutral sentiment with no clear directional momentum for this specific geopolitical event.",
+    "calibration_applied": "p_base=4.30%(n=135,logistic:geopolitik) + catalyst_adj=-20.00% = p_true=1.00%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": false,
+    "information_gap_reason": "No fresh news, catalyst, or market-moving information found regarding a US blockade of the Strait of Hormuz or any related announcement by Trump.",
+    "p_base": 0.043,
+    "p_base_source": "logistic:geopolitik",
+    "p_base_n": 135,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Trump blockade Strait of Hormuz lifted announcement May 2026"
+        },
+        "result": "No search results available for: Trump blockade Strait of Hormuz lifted announcement May 2026"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Strait of Hormuz blockade US 2026"
+        },
+        "result": "No search results available for: Strait of Hormuz blockade US 2026"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Strait of Hormuz blockade 2025"
+        },
+        "result": "No search results available for: Strait of Hormuz blockade 2025"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 47/100 (Neutral) | trend: deteriorating\n[MACRO] BTC: $80,733 (+0.4% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 47(Neut) \u2192 38(Fear) \u2192 38(Fear) \u2192 47(Neut) | sentiment improving\n[MACRO] Fear&Greed: 47/100 (Neutral) | 7d trend: deteriorating\n[MACRO] BTC: $80,730 (+0.4% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%\n  Pittsburgh Pirates vs. San Francisco Giants \u2192 YES=50%\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Strait of Hormuz closure \u2192 oil shipping disrupted \u2192 oil price +15-30%\n  \u2192 Oil price spike \u2192 shipping costs rise \u2192 plastic/chemical/fertilizer prices rise\n  \u2192 Oil spike \u2192 inflation pressure \u2192 Fed less likely to cut rates \u2192 BTC falls\n  \u2192 Oil spike \u2192 airline costs rise \u2192 travel stocks fall \u2192 recession risk",
+    "peak_pnl_pct": 0.12352941176470597,
+    "peak_price": 0.955,
+    "exit_price": 0.045,
+    "exit_reason": "EVENT_DEADLINE (geopolitik 28h/24h)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-11T07:17:07.623301+00:00",
+    "brier_score": 0.9801
+  },
+  {
+    "trade_id": "1253d829-ef50-407e-8528-f9c6023cacf9",
+    "timestamp": "2026-05-10T04:31:56.640632+00:00",
+    "mode": "demo",
+    "market_id": "0xcba24842ceac7a40d2a8b9adde1f4407999b6505193b9fd68156ae76fbffa706",
+    "market_numeric_id": "566187",
+    "market_question": "Will Arsenal win the 2025\u201326 English Premier League?",
+    "end_date": "2026-05-27T00:00:00Z",
+    "category": "other",
+    "side": "NO",
+    "size_usd": 5.0,
+    "price_at_entry": 0.72,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": -2.59,
+    "p_true_estimated": 0.3402,
+    "confidence_at_bet": 0.6,
+    "edge_at_bet": -0.3798,
+    "base_rate": 0.5402,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "The YES price (72%) is significantly overpriced relative to the statistical base rate (54%), creating an 18% gap. Macro sentiment is neutral but deteriorating, and no fresh catalysts or positive news about Arsenal were found to justify the premium. The market is likely overreacting to general optimism, and without new information, the price should correct downward toward the base rate in the short term (4-24 hours). Momentum trading history supports gap trades (88% win rate), favoring a move toward equilibrium.",
+    "calibration_applied": "p_base=54.02%(n=7829,logistic:other) + catalyst_adj=-20.00% = p_true=34.02%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": false,
+    "information_gap_reason": "Base rate (54%) and market price (72%) are both publicly available; the gap reflects market inefficiency, not asymmetric information.",
+    "p_base": 0.5402,
+    "p_base_source": "logistic:other",
+    "p_base_n": 7829,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Arsenal 2025-26 Premier League season news predictions"
+        },
+        "result": "No search results available for: Arsenal 2025-26 Premier League season news predictions"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Arsenal Premier League title odds 2025-26"
+        },
+        "result": "No search results available for: Arsenal Premier League title odds 2025-26"
+      },
+      {
+        "tool": "get_market_context",
+        "args": {
+          "keyword": "Arsenal Premier League"
+        },
+        "result": "No related markets found for 'Arsenal Premier League'"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 47/100 (Neutral) | trend: deteriorating\n[MACRO] BTC: $80,753 (+0.4% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 47(Neut) \u2192 38(Fear) \u2192 38(Fear) \u2192 47(Neut) | sentiment improving\n[MACRO] Fear&Greed: 47/100 (Neutral) | 7d trend: deteriorating\n[MACRO] BTC: $80,779 (+0.4% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%\n  Pittsburgh Pirates vs. San Francisco Giants \u2192 YES=50%",
+    "exit_price": 0.865,
+    "exit_reason": "STOP_LOSS (-52%)",
+    "prediction_correct": false,
+    "resolved_at": "2026-05-11T07:17:07.840319+00:00",
+    "brier_score": 0.1157
+  },
+  {
+    "trade_id": "8481b27a-e80e-4cd1-b75e-29a9be89206d",
+    "timestamp": "2026-05-10T05:10:25.171526+00:00",
+    "mode": "demo",
+    "market_id": "0x50fa6851db507ce72483271f641b5b2b5700ba38e3d61ff6ba025a60c89b07e0",
+    "market_numeric_id": "2136980",
+    "market_question": "Will Elon Musk post 120-139 tweets from May 5 to May 12, 2026?",
+    "end_date": "2026-05-12T16:00:00Z",
+    "category": "other",
+    "side": "NO",
+    "size_usd": 5.0,
+    "price_at_entry": 0.388,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": -2.09,
+    "p_true_estimated": 0.106,
+    "confidence_at_bet": 0.65,
+    "edge_at_bet": -0.282,
+    "base_rate": 0.306,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "Market is pricing YES at 39%, which is 8% above the statistical base rate of 31%. This suggests overpricing of the YES outcome. Without any fresh catalyst, news, or momentum indicators to justify this premium, the most likely short-term price movement is toward the base rate (NO). The deteriorating Fear & Greed sentiment (47\u2192neutral, trend: deteriorating) could push toward more conservative/risk-off positioning, favoring NO bets. Additionally, this is a 'category: other' event with no clear correlation to crypto markets or other sentiment drivers. Price should naturally gravitate toward the historical base rate in the absence of new information.",
+    "calibration_applied": "p_base=30.60%(n=7829,logistic:other) + catalyst_adj=-20.00% = p_true=10.60%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": false,
+    "information_gap_reason": "No fresh catalyst or breaking news about Elon Musk's tweeting behavior; market appears to be trading at a premium to base rate without justification",
+    "p_base": 0.306,
+    "p_base_source": "logistic:other",
+    "p_base_n": 7829,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Elon Musk Twitter X posting frequency 2025 2026"
+        },
+        "result": "No search results available for: Elon Musk Twitter X posting frequency 2025 2026"
+      },
+      {
+        "tool": "get_market_context",
+        "args": {
+          "keyword": "Elon Musk tweets"
+        },
+        "result": "No related markets found for 'Elon Musk tweets'"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 47/100 (Neutral) | trend: deteriorating\n[MACRO] BTC: $80,729 (+0.5% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 47(Neut) \u2192 38(Fear) \u2192 38(Fear) \u2192 47(Neut) | sentiment improving\n[MACRO] Fear&Greed: 47/100 (Neutral) | 7d trend: deteriorating\n[MACRO] BTC: $80,728 (+0.5% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%\n  Pittsburgh Pirates vs. San Francisco Giants \u2192 YES=50%",
+    "exit_price": 0.6435,
+    "exit_reason": "STOP_LOSS (-42%)",
+    "prediction_correct": false,
+    "resolved_at": "2026-05-11T07:17:08.075575+00:00",
+    "brier_score": 0.0112
+  },
+  {
+    "trade_id": "107956bd-c3eb-4919-b523-cb87565481b5",
+    "timestamp": "2026-05-11T07:19:23.879815+00:00",
+    "mode": "demo",
+    "market_id": "0x6e9f90a6f471b52d03499a81586ca478519474eb152f1327c8c767f020d62529",
+    "market_numeric_id": "566136",
+    "market_question": "Will PSG win the 2025\u201326 Champions League?",
+    "end_date": "2026-05-31T00:00:00Z",
+    "category": "other",
+    "side": "NO",
+    "size_usd": 2.0,
+    "price_at_entry": 0.58,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.2319,
+    "confidence_at_bet": 0.65,
+    "edge_at_bet": -0.3481,
+    "base_rate": 0.4319,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "Short-term price movement likely to correct downward due to: 1) Strong statistical overpricing signal (58% vs 44.7% historical YES resolution), 2) No identifiable fresh catalyst/news to support current premium, 3) Market likely to revert toward true probability estimate of ~45%.",
+    "calibration_applied": "p_base=43.19%(n=7829,logistic:other) + catalyst_adj=-20.00% = p_true=23.19%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": true,
+    "information_gap_reason": "Market at 58% significantly overprices YES based on historical base rate (43%) and stat signal (YES only resolves 44.7% at this price). No fresh catalyst found in searches to justify premium. Sentiment is neutral-improving but not specific to PSG.",
+    "p_base": 0.4319,
+    "p_base_source": "logistic:other",
+    "p_base_n": 7829,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "PSG Champions League 2025-26 latest news"
+        },
+        "result": "No search results available for: PSG Champions League 2025-26 latest news"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "PSG Champions League 2026 odds news June 2025"
+        },
+        "result": "No search results available for: PSG Champions League 2026 odds news June 2025"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Paris Saint-Germain Champions League 2025-26 transfer news summer 2025"
+        },
+        "result": "No search results available for: Paris Saint-Germain Champions League 2025-26 transfer news summer 2025"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 48/100 (Neutral) | trend: improving\n[MACRO] BTC: $80,742 (-0.0% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 48(Neut) \u2192 47(Neut) \u2192 38(Fear) \u2192 38(Fear) | sentiment improving\n[MACRO] Fear&Greed: 48/100 (Neutral) | 7d trend: improving\n[MACRO] BTC: $80,731 (-0.0% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Michelle Bowman be confirmed as Fed Chair? \u2192 YES=50%\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+    "peak_pnl_pct": 0.011904761904762085,
+    "peak_price": 0.42500000000000004
+  },
+  {
+    "trade_id": "58955a8b-b657-4cd0-9f00-680dbd77561b",
+    "timestamp": "2026-05-11T22:14:55.671608+00:00",
+    "mode": "demo",
+    "market_id": "0x4495596ef99ce27149438102ea678eaba0c46053ce37abda7140680cc84b13ad",
+    "market_numeric_id": "2154992",
+    "market_question": "Confirmed case of Hantavirus in US by May 15?",
+    "end_date": "2026-05-15T00:00:00Z",
+    "category": "politics",
+    "side": "NO",
+    "size_usd": 2.0,
+    "price_at_entry": 0.75,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "EXIT",
+    "pnl": 0.12,
+    "p_true_estimated": 0.4152,
+    "confidence_at_bet": 0.65,
+    "edge_at_bet": -0.3348,
+    "base_rate": 0.6152,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "Price elevated above base rate without supporting catalyst. No Hantavirus news found in searches. Market likely to mean-revert toward base rate. NO side positioned for short-term price decline in YES.",
+    "calibration_applied": "p_base=61.52%(n=155,logistic:politics) + catalyst_adj=-20.00% = p_true=41.52%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": true,
+    "information_gap_reason": "Current YES price (75%) trades 13% above historical base rate (62%) with no fresh catalyst or confirmed news to justify premium",
+    "p_base": 0.6152,
+    "p_base_source": "logistic:politics",
+    "p_base_n": 155,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Hantavirus United States 2025 case confirmed May"
+        },
+        "result": "No search results available for: Hantavirus United States 2025 case confirmed May"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Hantavirus outbreak news 2025"
+        },
+        "result": "No search results available for: Hantavirus outbreak news 2025"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Hantavirus US cases 2024 2025"
+        },
+        "result": "No search results available for: Hantavirus US cases 2024 2025"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 48/100 (Neutral) | trend: improving\n[MACRO] BTC: $81,807 (+0.6% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 48(Neut) \u2192 47(Neut) \u2192 38(Fear) \u2192 38(Fear) | sentiment improving\n[MACRO] Fear&Greed: 48/100 (Neutral) | 7d trend: improving\n[MACRO] BTC: $81,807 (+0.6% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Michelle Bowman be confirmed as Fed Chair? \u2192 YES=50%\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%",
+    "peak_pnl_pct": 0.14000000000000012,
+    "peak_price": 0.28500000000000003,
+    "exit_price": 0.735,
+    "exit_reason": "TRAILING_STOP (peak=+14% sl=+6% now=+6%)",
+    "prediction_correct": true,
+    "resolved_at": "2026-05-11T23:26:51.097312+00:00",
+    "brier_score": 0.342
+  },
+  {
+    "trade_id": "99d77552-0127-4cfe-a593-66369f65f238",
+    "timestamp": "2026-05-11T23:07:49.523043+00:00",
+    "mode": "demo",
+    "market_id": "0xfa12fc9bf6ea50901d634c62954ced59c3763404e2accc792d6bd3efd6c8304c",
+    "market_numeric_id": "2165510",
+    "market_question": "Los Angeles Angels vs. Cleveland Guardians",
+    "end_date": "2026-05-18T22:10:00Z",
+    "category": "sports",
+    "side": "NO",
+    "size_usd": 2.0,
+    "price_at_entry": 0.16,
+    "status": "DEMO_FILLED",
+    "actual_outcome": "NO",
+    "pnl": 0.38,
+    "p_true_estimated": 0.05,
+    "confidence_at_bet": 0.65,
+    "edge_at_bet": -0.11,
+    "base_rate": 0.0768,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "YES trading at 16% is 2x the historical base rate (8%) with significant Angels pitching/catching injuries. Price gap of -8% indicates YES overvaluation. Sports pattern shows 60% WR from 5 trades (STRONG). No fresh positive catalysts identified for Angels. With Rodriguez (SP) on IL, Angels' win probability likely closer to base rate than current market price suggests.",
+    "calibration_applied": "p_base=7.68%(n=6077,logistic:sports) + catalyst_adj=-20.00% = p_true=5.00%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": true,
+    "information_gap_reason": "Key Angels injuries (Rodriguez SP, Joyce RP, O'Hoppe C) likely not fully priced into 16% YES vs 8% historical base rate - market may be overvaluing Angels chances",
+    "p_base": 0.0768,
+    "p_base_source": "logistic:sports",
+    "p_base_n": 6077,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Los Angeles Angels vs Cleveland Guardians game today 2026 injury report news"
+        },
+        "result": "No search results available for: Los Angeles Angels vs Cleveland Guardians game today 2026 injury report news"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Angels vs Guardians prediction today 2026"
+        },
+        "result": "No search results available for: Angels vs Guardians prediction today 2026"
+      },
+      {
+        "tool": "get_sports_data",
+        "args": {
+          "sport": "mlb",
+          "team": "Angels"
+        },
+        "result": "INJURY [los angeles angels] Grayson Rodriguez (SP): 15-Day-IL\nINJURY [los angeles angels] Ben Joyce (RP): 15-Day-IL\nINJURY [los angeles angels] Logan O'Hoppe (C): 10-Day-IL"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 48/100 (Neutral) | trend: improving\n[MACRO] BTC: $81,738 (-0.6% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 48(Neut) \u2192 47(Neut) \u2192 38(Fear) \u2192 38(Fear) | sentiment improving\n[MACRO] Fear&Greed: 48/100 (Neutral) | 7d trend: improving\n[MACRO] BTC: $81,756 (-0.7% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Michelle Bowman be confirmed as Fed Chair? \u2192 YES=50%\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%\n[SPORTS] Recent games:\n  LAA @ CLE | In Progress | Cleveland Guardians(home) 21-21 score:2 vs Los Angeles Angels(away) 16-25 score:0\n  SF @ LAD | Scheduled | Los Angeles Dodgers(home) 24-16 score:0 vs San Francisco Giants(away) 16-24 score:0\n[SPORTS] Injuries:\n  ?: Carlos Santana \u2014 10-Day-IL (Strain)\n  ?: Jordan Lawlar \u2014 60-Day-IL (Fracture)\n  ?: Justin Martinez \u2014 60-Day-IL (Surgery)\n  ?: Jacob Wilson \u2014 Day-To-Day (Sprain)\n  ?: Denzel Clarke \u2014 10-Day-IL (Bruise)\n  ?: Gunnar Hoglund \u2014 60-Day-IL (Strain)",
+    "peak_pnl_pct": 0.17261904761904767,
+    "peak_price": 0.985,
+    "prediction_correct": true,
+    "resolved_at": "2026-05-11T23:29:51.318768+00:00",
+    "brier_score": 0.7056,
+    "calibration_error": 0.05
+  },
+  {
+    "trade_id": "750101d8-c774-4729-9ddb-8728e90234bd",
+    "timestamp": "2026-05-11T23:34:08.865311+00:00",
+    "mode": "demo",
+    "market_id": "0xb7dd41c16cd5b59e543ffcdab6a0d876f5ccef5329ea42ef1798d80c9a2b8499",
+    "market_numeric_id": "2133405",
+    "market_question": "Iran closes its airspace by May 31?",
+    "end_date": "2026-05-31T00:00:00Z",
+    "category": "geopolitik",
+    "side": "NO",
+    "size_usd": 2.0,
+    "price_at_entry": 0.4,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.0482,
+    "confidence_at_bet": 0.65,
+    "edge_at_bet": -0.3518,
+    "base_rate": 0.2482,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "Current YES price (40%) is significantly above statistical base rate (25%), creating a -15% price gap. No fresh catalysts found to justify premium. Strong GEOPOLITIK pattern (82% WR) and info gap pattern (85% WR) both suggest mean reversion. Macro sentiment improving but not risk-on enough to support geopolitical risk overpricing.",
+    "calibration_applied": "p_base=24.82%(n=135,logistic:geopolitik) + catalyst_adj=-20.00% = p_true=4.82%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": true,
+    "information_gap_reason": "Market is overpricing YES by 15 percentage points relative to historical base rate of 25% without fresh catalysts.",
+    "p_base": 0.2482,
+    "p_base_source": "logistic:geopolitik",
+    "p_base_n": 135,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Iran airspace closure May 2025 news"
+        },
+        "result": "No search results available for: Iran airspace closure May 2025 news"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Iran airspace closure geopolitics 2025"
+        },
+        "result": "No search results available for: Iran airspace closure geopolitics 2025"
+      },
+      {
+        "tool": "get_market_context",
+        "args": {
+          "keyword": "Iran airspace"
+        },
+        "result": "No related markets found for 'Iran airspace'"
+      },
+      {
+        "tool": "get_market_context",
+        "args": {
+          "keyword": "Iran geopolitics"
+        },
+        "result": "No related markets found for 'Iran geopolitics'"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Iran airspace closed 2025"
+        },
+        "result": "No search results available for: Iran airspace closed 2025"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Iran news today May 2025"
+        },
+        "result": "No search results available for: Iran news today May 2025"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 48/100 (Neutral) | trend: improving\n[MACRO] BTC: $81,628 (-0.7% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 48(Neut) \u2192 47(Neut) \u2192 38(Fear) \u2192 38(Fear) | sentiment improving\n[MACRO] Fear&Greed: 48/100 (Neutral) | 7d trend: improving\n[MACRO] BTC: $81,659 (-0.7% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Michelle Bowman be confirmed as Fed Chair? \u2192 YES=50%\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
+    "peak_pnl_pct": 0.008333333333333304,
+    "peak_price": 0.605
+  },
+  {
+    "trade_id": "3a2690a9-dfce-4d34-a411-3ec774f61328",
+    "timestamp": "2026-05-12T00:04:37.686130+00:00",
+    "mode": "demo",
+    "market_id": "0x6114a8a3f9ac214f48a7e20d169f1c7a5c84082cb6f7058ed9fe1137b11fd0e7",
+    "market_numeric_id": "1962237",
+    "market_question": "US x Iran permanent peace deal by June 30, 2026?",
+    "end_date": "2026-05-31T00:00:00Z",
+    "category": "geopolitik",
+    "side": "NO",
+    "size_usd": 2.0,
+    "price_at_entry": 0.39,
+    "status": "DEMO_FILLED",
+    "actual_outcome": null,
+    "pnl": null,
+    "p_true_estimated": 0.0367,
+    "confidence_at_bet": 0.62,
+    "edge_at_bet": -0.3533,
+    "base_rate": 0.2367,
+    "resolution_clarity": "medium",
+    "reasoning_summary": "KEY FACTORS: (1) Price at 39% is 15 points ABOVE the statistical base rate of 24%, suggesting overpricing relative to historical outcomes for similar geopolitical contracts. (2) Zero fresh news/catalysts found - multiple searches returned no results, meaning market is likely to drift or mean-revert without new information. (3) Macro backdrop is neutral (F&G=49) with no risk-on catalysts that would typically support diplomatic breakthrough narratives. (4) Contract requires 'permanent peace deal' - an extremely high bar that current diplomatic reality doesn't support. (5) Without new information, the 15-point premium above base rate is vulnerable to erosion as traders reassess. The YES side appears to be riding on speculation rather than substance.",
+    "calibration_applied": "p_base=23.67%(n=135,logistic:geopolitik) + catalyst_adj=-20.00% = p_true=3.67%",
+    "key_factors_for": [],
+    "key_factors_against": [],
+    "information_gap": false,
+    "information_gap_reason": "No fresh catalyst or news found via search - market appears to have no new information to drive YES movement",
+    "p_base": 0.2367,
+    "p_base_source": "logistic:geopolitik",
+    "p_base_n": 135,
+    "tool_calls_log": [
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "US Iran peace deal negotiations 2025 latest news"
+        },
+        "result": "No search results available for: US Iran peace deal negotiations 2025 latest news"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Iran nuclear deal negotiations 2025 diplomatic talks"
+        },
+        "result": "No search results available for: Iran nuclear deal negotiations 2025 diplomatic talks"
+      },
+      {
+        "tool": "search_web",
+        "args": {
+          "query": "Iran US relations latest news 2025"
+        },
+        "result": "No search results available for: Iran US relations latest news 2025"
+      }
+    ],
+    "news_context": "[MACRO] Fear&Greed: 49/100 (Neutral) | trend: improving\n[MACRO] BTC: $81,726 (-0.5% 24h) \u2192 neutral\n[FEAR&GREED 7d trend] 49(Neut) \u2192 48(Neut) \u2192 47(Neut) \u2192 38(Fear) | sentiment improving\n[MACRO] Fear&Greed: 49/100 (Neutral) | 7d trend: improving\n[MACRO] BTC: $81,734 (-0.5% 24h) \u2192 neutral\n[MACRO] Fed market expectations:\n  Will Michelle Bowman be confirmed as Fed Chair? \u2192 YES=50%\n  Will Judy Shelton be confirmed as Fed Chair? \u2192 YES=50%\n[CAUSAL CHAINS] Relevant cause-effect patterns:\n  \u2192 Iran-US tension escalates \u2192 oil supply risk \u2192 WTI crude +5-15%\n  \u2192 Iran nuclear deal progress \u2192 sanctions ease \u2192 oil supply increases \u2192 oil price falls\n  \u2192 Iran ceasefire \u2192 oil price -5-10% \u2192 risk-ON \u2192 equities/crypto rally\n  \u2192 Iran military strike \u2192 oil spike \u2192 global inflation \u2192 Fed hawkish",
+    "peak_pnl_pct": 0.00819672131147553,
+    "peak_price": 0.615
   }
 ]

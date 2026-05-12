@@ -1,43 +1,107 @@
 {
-  "total_resolved": 3,
-  "overall_win_rate": 0.667,
+  "total_resolved": 23,
+  "overall_win_rate": 0.739,
   "momentum_lessons": [
     {
       "category": "sports",
-      "entry_price": 0.79,
-      "pnl": 1.33,
+      "entry_price": 0.16,
+      "pnl": 0.38,
       "exit_reason": "RESOLVED",
-      "catalyst": "Clear value discrepancy: YES is trading 9 percentage points below the historical win rate for this type of matchup. The "
+      "catalyst": "YES trading at 16% is 2x the historical base rate (8%) with significant Angels pitching/catching injuries. Price gap of "
     },
     {
-      "category": "sports",
-      "entry_price": 0.2,
-      "pnl": 0.29,
-      "exit_reason": "TRAILING_STOP (peak=+22% sl=+17% now=+12%)",
-      "catalyst": "Market is pricing YES at 20% while historical base rate for similar underdog situations is only 11%. This creates a 9% o"
+      "category": "politics",
+      "entry_price": 0.75,
+      "pnl": 0.12,
+      "exit_reason": "TRAILING_STOP (peak=+14% sl=+6% now=+6%)",
+      "catalyst": "Price elevated above base rate without supporting catalyst. No Hantavirus news found in searches. Market likely to mean-"
+    },
+    {
+      "category": "geopolitik",
+      "entry_price": 0.15,
+      "pnl": 0.62,
+      "exit_reason": "EVENT_DEADLINE (geopolitik 28h/24h)",
+      "catalyst": "Current YES price of 15% is substantially above the historical base rate of 4%, suggesting possible overpricing. Without"
+    },
+    {
+      "category": "geopolitik",
+      "entry_price": 0.146,
+      "pnl": 0.6,
+      "exit_reason": "EVENT_DEADLINE (geopolitik 28h/24h)",
+      "catalyst": "Analysis: (1) SIGNIFICANT OVERPRICING: YES at 15% vs 4% base rate = -10% price gap, indicating market inefficiency. (2) "
+    },
+    {
+      "category": "geopolitik",
+      "entry_price": 0.505,
+      "pnl": 0.61,
+      "exit_reason": "EVENT_DEADLINE (geopolitik 43h/24h)",
+      "catalyst": "YES is overpriced at 50% vs 38% base rate and 44.7% historical resolution rate. No fresh catalyst to sustain YES price. "
     }
   ],
   "price_movement_patterns": {
+    "60-70%": {
+      "win_rate": 1.0,
+      "avg_pnl": 0.06,
+      "n": 1
+    },
+    "10-20%": {
+      "win_rate": 0.75,
+      "avg_pnl": -0.73,
+      "n": 8
+    },
+    "50-60%": {
+      "win_rate": 1.0,
+      "avg_pnl": 0.45,
+      "n": 5
+    },
     "20-30%": {
-      "win_rate": 0.5,
-      "avg_pnl": -0.43,
-      "n": 2
+      "win_rate": 0.67,
+      "avg_pnl": -0.22,
+      "n": 3
+    },
+    "40-50%": {
+      "win_rate": 0.0,
+      "avg_pnl": -0.44,
+      "n": 1
     },
     "70-80%": {
+      "win_rate": 0.67,
+      "avg_pnl": -0.38,
+      "n": 3
+    },
+    "80-90%": {
       "win_rate": 1.0,
-      "avg_pnl": 1.33,
+      "avg_pnl": 1.25,
+      "n": 1
+    },
+    "30-40%": {
+      "win_rate": 0.0,
+      "avg_pnl": -2.09,
       "n": 1
     }
   },
   "exit_patterns": {
-    "STOP_LOSS": 1,
-    "TRAILING_STOP": 1,
-    "RESOLVED": 1
+    "RESOLVED": 14,
+    "TRAILING_STOP": 3,
+    "STOP_LOSS": 5,
+    "TAKE_PROFIT": 1
   },
   "edge_reality": {
+    "40%": {
+      "actual_wr": 0.5,
+      "n": 2
+    },
     "20%": {
-      "actual_wr": 0.67,
-      "n": 3
+      "actual_wr": 0.75,
+      "n": 8
+    },
+    "30%": {
+      "actual_wr": 0.75,
+      "n": 8
+    },
+    "10%": {
+      "actual_wr": 0.8,
+      "n": 5
     }
   },
   "category_bias": {},
@@ -45,11 +109,25 @@
   "overconfidence_patterns": [],
   "recent_mistakes": [
     {
-      "question": "Internazionali BNL d'Italia: Nuno Borges vs Rafael Jodar",
-      "category": "sports",
-      "entry_price": 0.2,
-      "reasoning": "Current YES price (20%) is significantly above historical base rate (11%), suggesting overpricing re",
-      "lesson": "Used base rate instead of real catalyst in sports. No momentum signal = no bet."
+      "question": "Will Elon Musk post 120-139 tweets from May 5 to May 12, 2026?",
+      "category": "other",
+      "entry_price": 0.388,
+      "reasoning": "Market is pricing YES at 39%, which is 8% above the statistical base rate of 31%. This suggests over",
+      "lesson": "Used base rate instead of real catalyst in other. No momentum signal = no bet."
+    },
+    {
+      "question": "Will Arsenal win the 2025\u201326 English Premier League?",
+      "category": "other",
+      "entry_price": 0.72,
+      "reasoning": "The YES price (72%) is significantly overpriced relative to the statistical base rate (54%), creatin",
+      "lesson": "Used base rate instead of real catalyst in other. No momentum signal = no bet."
+    },
+    {
+      "question": "US x Iran diplomatic meeting by May 15, 2026?",
+      "category": "geopolitik",
+      "entry_price": 0.17,
+      "reasoning": "Strong arbitrage signal: If the permanent peace deal has 50% probability, a diplomatic meeting must ",
+      "lesson": "Momentum thesis failed in geopolitik at entry 0.17. Review what catalyst was missing."
     }
   ]
 }

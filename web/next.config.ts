@@ -12,6 +12,7 @@ function readEnvToken(): string {
 }
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   env: {
     API_SECRET_TOKEN: readEnvToken(),
   },

@@ -1,17 +1,20 @@
 'use client'
-import { RefreshCw, Play, Square, RotateCcw } from 'lucide-react'
+import { useState } from 'react'
+import Link from 'next/link'
+import { LayoutDashboard, ShieldCheck, Briefcase, FileText, Brain, Settings, RefreshCw, Play, Square, RotateCcw, MoreVertical, User } from 'lucide-react'
 
-type Tab = 'Overview' | 'Proof' | 'Positions' | 'Trades' | 'Learning' | 'Config'
+export type Tab = 'Overview' | 'Proof' | 'Positions' | 'History' | 'Learning' | 'Config'
 
-const BOTTOM_TABS: { id: Tab; label: string; d: string }[] = [
-  { id: 'Overview',  label: 'Overview',  d: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z' },
-  { id: 'Positions', label: 'Positions', d: 'M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' },
-  { id: 'Trades',    label: 'Trades',    d: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8' },
-  { id: 'Learning',  label: 'Learning',  d: 'M22 10v6M2 10l10-5 10 5-10 5zM6 12v5c3 3 9 3 12 0v-5' },
-  { id: 'Config',    label: 'Config',    d: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z' },
+const BOTTOM_TABS: { id: Tab; label: string; Icon: typeof LayoutDashboard }[] = [
+  { id: 'Overview',  label: 'Overview',  Icon: LayoutDashboard },
+  { id: 'Proof',     label: 'Proof',     Icon: ShieldCheck },
+  { id: 'Positions', label: 'Positions', Icon: Briefcase },
+  { id: 'History',   label: 'History',   Icon: FileText },
+  { id: 'Learning',  label: 'AI Learn',  Icon: Brain },
+  { id: 'Config',    label: 'Config',    Icon: Settings },
 ]
 
-const DESKTOP_TABS: Tab[] = ['Overview', 'Proof', 'Positions', 'Trades', 'Learning', 'Config']
+const DESKTOP_TABS: Tab[] = ['Overview', 'Proof', 'Positions', 'History', 'Learning', 'Config']
 
 interface NavbarProps {
   tab: Tab; setTab: (t: Tab) => void
@@ -20,8 +23,20 @@ interface NavbarProps {
 }
 
 export function Navbar({ tab, setTab, agent, loading, onAction, onRefresh }: NavbarProps) {
+  const [mobileMenu, setMobileMenu] = useState(false)
   const isActive = agent.active
   const isLive   = agent.mode === 'live'
+
+  const statusPill = (active: boolean, activeLabel: string, inactiveLabel: string, activeColor: string, inactiveColor: string) => (
+    <span className="status-pill" style={{
+      borderColor: active ? `color-mix(in srgb, ${activeColor} 20%, transparent)` : `color-mix(in srgb, ${inactiveColor} 20%, transparent)`,
+      color: active ? activeColor : inactiveColor,
+      background: active ? `color-mix(in srgb, ${activeColor} 5%, transparent)` : `color-mix(in srgb, ${inactiveColor} 5%, transparent)`,
+    }}>
+      <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor', display: 'inline-block' }} />
+      {active ? activeLabel : inactiveLabel}
+    </span>
+  )
 
   return (
     <>
@@ -29,38 +44,46 @@ export function Navbar({ tab, setTab, agent, loading, onAction, onRefresh }: Nav
       <header className="top-header">
         <span className="top-header-brand">⚡ Tritan</span>
         <div className="top-header-actions">
-          <span className="status-pill" style={{
-            borderColor: isActive ? '#22c55e44' : '#ef444444',
-            color: isActive ? '#22c55e' : '#ef4444',
-            background: isActive ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)',
-          }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor', display: 'inline-block' }} />
-            {isActive ? 'ON' : 'OFF'}
-          </span>
-          <span className="status-pill" style={{
-            borderColor: isLive ? '#f59e0b44' : '#60a5fa44',
-            color: isLive ? '#f59e0b' : '#60a5fa',
-            background: isLive ? 'rgba(245,158,11,0.08)' : 'rgba(96,165,250,0.08)',
-          }}>
-            {isLive ? '💰' : '📝'} {isLive ? 'LIVE' : 'DEMO'}
-          </span>
-          <button onClick={onRefresh} className="icon-btn" style={{ color: '#94a3b8', background: '#1e1e3a' }}>
-            <RefreshCw size={13} />
+          {statusPill(isActive, 'ON', 'OFF', 'var(--green)', 'var(--red)')}
+          {statusPill(isLive, '💰 LIVE', '📝 DEMO', 'var(--yellow)', '#60a5fa')}
+          <Link href="/profile" className="icon-btn" style={{ color: 'var(--muted)', background: 'var(--bg3)' }}>
+            <User size={14} />
+          </Link>
+          <button onClick={onRefresh} className="icon-btn" style={{ color: 'var(--muted)', background: 'var(--bg3)' }}>
+            <RefreshCw size={14} />
+          </button>
+          <button onClick={() => setMobileMenu(m => !m)} className="icon-btn" style={{ color: 'var(--muted)', background: 'var(--bg3)' }}>
+            <MoreVertical size={14} />
           </button>
         </div>
+        {/* Mobile agent controls dropdown */}
+        {mobileMenu && (
+          <div className="absolute top-14 right-3 flex gap-2 p-2 rounded-xl z-50" style={{ background: 'var(--bg2)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }}>
+            <button onClick={() => { onAction('start'); setMobileMenu(false) }} disabled={loading || isActive}
+              className="icon-btn" style={{ color: 'var(--green)', background: 'var(--green-bg)', opacity: (loading || isActive) ? 0.4 : 1 }}>
+              <Play size={14} />
+            </button>
+            <button onClick={() => { onAction('stop'); setMobileMenu(false) }} disabled={loading || !isActive}
+              className="icon-btn" style={{ color: 'var(--red)', background: 'var(--red-bg)', opacity: (loading || !isActive) ? 0.4 : 1 }}>
+              <Square size={14} />
+            </button>
+            <button onClick={() => { onAction('restart'); setMobileMenu(false) }} disabled={loading}
+              className="icon-btn" style={{ color: '#60a5fa', background: 'rgba(96,165,250,0.1)', opacity: loading ? 0.4 : 1 }}>
+              <RotateCcw size={14} />
+            </button>
+          </div>
+        )}
       </header>
 
       {/* ── Mobile bottom nav ── */}
       <nav className="bottom-nav">
-        {BOTTOM_TABS.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)}
-            className={`bottom-nav-item ${tab === t.id ? 'active' : ''}`}>
+        {BOTTOM_TABS.map(({ id, label, Icon }) => (
+          <button key={id} onClick={() => setTab(id)}
+            className={`bottom-nav-item ${tab === id ? 'active' : ''}`}>
             <span className="nav-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d={t.d} />
-              </svg>
+              <Icon size={18} strokeWidth={1.8} />
             </span>
-            <span>{t.label}</span>
+            <span>{label}</span>
           </button>
         ))}
       </nav>
@@ -75,31 +98,21 @@ export function Navbar({ tab, setTab, agent, loading, onAction, onRefresh }: Nav
           ))}
         </div>
         <div className="desktop-nav-actions">
-          <span className="status-pill" style={{
-            borderColor: isActive ? '#22c55e44' : '#ef444444',
-            color: isActive ? '#22c55e' : '#ef4444',
-            background: isActive ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)',
-          }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor', display: 'inline-block' }} />
-            {isActive ? 'ACTIVE' : 'STOPPED'}
-          </span>
-          <span className="status-pill" style={{
-            borderColor: isLive ? '#f59e0b44' : '#60a5fa44',
-            color: isLive ? '#f59e0b' : '#60a5fa',
-            background: isLive ? 'rgba(245,158,11,0.08)' : 'rgba(96,165,250,0.08)',
-          }}>
-            {isLive ? '💰 LIVE' : '📝 DEMO'}
-          </span>
+          {statusPill(isActive, 'ACTIVE', 'STOPPED', 'var(--green)', 'var(--red)')}
+          {statusPill(isLive, '💰 LIVE', '📝 DEMO', 'var(--yellow)', '#60a5fa')}
+          <Link href="/profile" className="icon-btn" style={{ color: 'var(--muted)', background: 'var(--bg3)' }}>
+            <User size={14} />
+          </Link>
           {[
-            { icon: <Play size={13} />, action: 'start',   color: '#22c55e', bg: 'rgba(34,197,94,0.1)'   },
-            { icon: <Square size={13} />, action: 'stop',  color: '#ef4444', bg: 'rgba(239,68,68,0.1)'   },
-            { icon: <RotateCcw size={13} />, action: 'restart', color: '#60a5fa', bg: 'rgba(96,165,250,0.1)' },
-            { icon: <RefreshCw size={13} />, action: 'refresh', color: '#94a3b8', bg: '#1e1e3a'           },
-          ].map(({ icon, action, color, bg }) => (
+            { Icon: Play,       action: 'start',   color: 'var(--green)', bg: 'var(--green-bg)' },
+            { Icon: Square,     action: 'stop',    color: 'var(--red)',   bg: 'var(--red-bg)' },
+            { Icon: RotateCcw,  action: 'restart', color: '#60a5fa',     bg: 'rgba(96,165,250,0.1)' },
+            { Icon: RefreshCw,  action: 'refresh', color: 'var(--muted)', bg: 'var(--bg3)' },
+          ].map(({ Icon, action, color, bg }) => (
             <button key={action}
               onClick={() => action === 'refresh' ? onRefresh() : onAction(action)}
               disabled={loading} className="icon-btn" style={{ color, background: bg }}>
-              {icon}
+              <Icon size={14} />
             </button>
           ))}
         </div>

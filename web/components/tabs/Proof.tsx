@@ -1,16 +1,53 @@
 'use client'
+import { SectionCard, ModeBadge } from '@/components/ui'
 import type { DashboardData } from '@/types'
 
-function SCard({ title, sub, children }: { title?: string; sub?: string; children: React.ReactNode }) {
+function CalibrationPlot({ trades }: { trades: any[] }) {
+  // Group trades into probability buckets and compute actual win rates
+  const buckets: Record<string, { total: number; wins: number }> = {}
+  for (const t of trades) {
+    if (!t.p_true || t.outcome === 'EXIT') continue
+    const bucket = Math.round(t.p_true * 10) * 10 // 0, 10, 20, ... 100
+    const key = `${bucket}`
+    if (!buckets[key]) buckets[key] = { total: 0, wins: 0 }
+    buckets[key].total++
+    if (t.correct) buckets[key].wins++
+  }
+
+  const points = Object.entries(buckets)
+    .filter(([, d]) => d.total >= 2)
+    .map(([bucket, d]) => ({
+      predicted: Number(bucket) / 100,
+      actual: d.wins / d.total,
+      n: d.total,
+    }))
+    .sort((a, b) => a.predicted - b.predicted)
+
+  if (points.length < 2) return null
+
   return (
-    <div style={{ background: '#13132a', border: '1px solid #2a2a4a', borderRadius: 16, overflow: 'hidden' }}>
-      {(title || sub) && (
-        <div style={{ padding: '14px 16px 0' }}>
-          {title && <div style={{ fontSize: 13, fontWeight: 600, color: '#94a3b8' }}>{title}</div>}
-          {sub && <div style={{ fontSize: 11, color: '#6b7280', marginTop: 3 }}>{sub}</div>}
+    <div className="relative" style={{ height: 180 }}>
+      {/* Perfect calibration line */}
+      <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0 }}>
+        <line x1="0" y1="100" x2="100" y2="0" stroke="var(--border2)" strokeWidth="1" strokeDasharray="4 2" />
+      </svg>
+      {/* Actual calibration points */}
+      {points.map((p, i) => (
+        <div key={i} className="absolute flex flex-col items-center" style={{
+          left: `${p.predicted * 100}%`,
+          bottom: `${p.actual * 100}%`,
+          transform: 'translate(-50%, 50%)',
+        }}>
+          <div className="w-3 h-3 rounded-full" style={{
+            background: Math.abs(p.actual - p.predicted) < 0.1 ? 'var(--green)' : 'var(--yellow)',
+            border: '2px solid var(--bg2)',
+          }} />
+          <div className="text-[8px] mono mt-0.5" style={{ color: 'var(--dim)' }}>{p.n}</div>
         </div>
-      )}
-      <div style={{ padding: title || sub ? '12px 16px 16px' : '16px' }}>{children}</div>
+      ))}
+      {/* Axis labels */}
+      <div className="absolute bottom-0 left-0 right-0 text-[9px] text-center" style={{ color: 'var(--dim)' }}>Predicted Probability</div>
+      <div className="absolute left-0 top-0 bottom-0 text-[9px] flex items-center" style={{ color: 'var(--dim)', writingMode: 'vertical-lr', transform: 'rotate(180deg)' }}>Actual Win Rate</div>
     </div>
   )
 }
@@ -30,94 +67,132 @@ export function Proof({ data }: { data: DashboardData }) {
   const auditTrades = (recent_full || []).filter(t => t.calibration?.includes('logistic')).slice(0, 8)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <div>
-        <div style={{ fontSize: 15, fontWeight: 700, color: '#e2e8f0' }}>🛡 Proof of Edge</div>
-        <div style={{ fontSize: 12, color: '#6b7280', marginTop: 3 }}>Verifiable statistical edge over market baseline</div>
+    <div className="flex flex-col gap-4 fade-in">
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="text-base font-bold" style={{ color: 'var(--text)' }}>🛡 Proof of Edge</div>
+          <div className="text-xs mt-0.5" style={{ color: 'var(--dim)' }}>Verifiable statistical edge — all data on-chain & auditable</div>
+        </div>
+        <ModeBadge mode={data.agent_mode || 'demo'} />
       </div>
+
+      {/* Live Performance Summary — for investors */}
+      <SectionCard title="Live Trading Performance">
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          {[
+            { label: 'Total Trades', value: String(stats.total || 0), sub: `${stats.resolved || 0} resolved` },
+            { label: 'Win Rate', value: `${((stats.wr || 0) * 100).toFixed(1)}%`, sub: `${stats.wins}W / ${stats.losses}L`, color: (stats.wr || 0) >= 0.55 ? 'var(--green)' : (stats.wr || 0) >= 0.45 ? 'var(--yellow)' : 'var(--red)' },
+            { label: 'Total P&L', value: `${(stats.pnl || 0) >= 0 ? '+' : ''}$${(stats.pnl || 0).toFixed(2)}`, color: (stats.pnl || 0) >= 0 ? 'var(--green)' : 'var(--red)' },
+            { label: 'Avg Win/Trade', value: `$${(stats.avg_win || 0).toFixed(3)}`, sub: `vs $${(stats.avg_loss || 0).toFixed(3)} avg loss` },
+          ].map((k, i) => (
+            <div key={i} className="p-3 rounded-xl" style={{ background: 'var(--bg)', border: '1px solid var(--border)' }}>
+              <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--dim)' }}>{k.label}</div>
+              <div className="text-xl font-bold mono" style={{ color: k.color || 'var(--text)' }}>{k.value}</div>
+              {k.sub && <div className="text-[10px] mt-0.5" style={{ color: 'var(--dim)' }}>{k.sub}</div>}
+            </div>
+          ))}
+        </div>
+        <div className="text-[10px] p-2 rounded-lg text-center" style={{ background: 'var(--border2)', color: 'var(--dim)' }}>
+          All trades executed on Polymarket · Verifiable on Polygon blockchain · {data.agent_mode === 'live' ? '💰 Live money' : '📝 Demo mode'}
+        </div>
+      </SectionCard>
 
       {/* Model vs Market */}
-      <div style={{ display: 'flex', gap: 10 }}>
-        <div style={{ flex: 1, background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 14, padding: '14px', textAlign: 'center' }}>
-          <div style={{ fontSize: 10, color: '#6b7280', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.6px' }}>Our Model</div>
-          <div style={{ fontSize: 26, fontWeight: 700, color: '#22c55e' }}>{brier.model}</div>
-          <div style={{ fontSize: 10, color: '#22c55e', marginTop: 4 }}>Brier Score ↓ better</div>
+      <div className="flex gap-3">
+        <div className="flex-1 text-center p-4 rounded-xl" style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)' }}>
+          <div className="text-[10px] font-semibold mb-1.5 uppercase tracking-wider" style={{ color: 'var(--dim)' }}>Our Model</div>
+          <div className="text-2xl font-bold" style={{ color: 'var(--green)' }}>{brier.model}</div>
+          <div className="text-[10px] mt-1" style={{ color: 'var(--green)' }}>Brier Score ↓ better</div>
         </div>
-        <div style={{ flex: 1, background: 'rgba(107,114,128,0.06)', border: '1px solid rgba(107,114,128,0.2)', borderRadius: 14, padding: '14px', textAlign: 'center' }}>
-          <div style={{ fontSize: 10, color: '#6b7280', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.6px' }}>Market</div>
-          <div style={{ fontSize: 26, fontWeight: 700, color: '#6b7280' }}>{brier.naive}</div>
-          <div style={{ fontSize: 10, color: '#6b7280', marginTop: 4 }}>Baseline</div>
+        <div className="flex-1 text-center p-4 rounded-xl" style={{ background: 'rgba(107,114,128,0.06)', border: '1px solid rgba(107,114,128,0.15)' }}>
+          <div className="text-[10px] font-semibold mb-1.5 uppercase tracking-wider" style={{ color: 'var(--dim)' }}>Market</div>
+          <div className="text-2xl font-bold" style={{ color: 'var(--dim)' }}>{brier.naive}</div>
+          <div className="text-[10px] mt-1" style={{ color: 'var(--dim)' }}>Baseline</div>
         </div>
-      </div>
-      <div style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 12, padding: '12px 16px', textAlign: 'center' }}>
-        <span style={{ fontSize: 14, fontWeight: 700, color: '#22c55e' }}>+{brier.improvement}% more accurate than market</span>
-        <div style={{ fontSize: 11, color: '#6b7280', marginTop: 3 }}>Trained on {(data_sources?.markets_analyzed || 0).toLocaleString()} resolved markets</div>
       </div>
 
-      {/* Calibration model */}
-      <SCard title="Model by Category" sub="Lower Brier = more accurate predictions">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div className="text-center p-3 rounded-xl" style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)' }}>
+        <span className="text-sm font-bold" style={{ color: 'var(--green)' }}>+{brier.improvement}% more accurate than market</span>
+        <div className="text-xs mt-0.5" style={{ color: 'var(--dim)' }}>Trained on {(data_sources?.markets_analyzed || 0).toLocaleString()} resolved markets</div>
+      </div>
+
+      {/* Calibration Plot */}
+      {recent_full && recent_full.length >= 5 && (
+        <SectionCard title="Calibration Plot" sub="Predicted probability vs actual outcome (perfect = diagonal line)">
+          <CalibrationPlot trades={recent_full} />
+        </SectionCard>
+      )}
+
+      {/* Calibration */}
+      <SectionCard title="Model by Category" sub="Lower Brier = more accurate predictions">
+        <div className="flex flex-col gap-0">
           {(calibration_model || []).map(c => (
-            <div key={c.cat} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '1px solid #1e1e3a' }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#e2e8f0', marginBottom: 2 }}>{c.cat}</div>
-                <div style={{ fontSize: 10, color: '#6b7280' }}>n={c.n.toLocaleString()}</div>
+            <div key={c.cat} className="flex items-center gap-3 py-2" style={{ borderBottom: '1px solid var(--border2)' }}>
+              <div className="flex-1">
+                <div className="text-xs font-semibold" style={{ color: 'var(--text2)' }}>{c.cat}</div>
+                <div className="text-[10px]" style={{ color: 'var(--dim)' }}>n={c.n.toLocaleString()}</div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: 12, fontFamily: 'ui-monospace,monospace', color: '#22c55e' }}>{c.brier?.toFixed(4)}</div>
-                <div style={{ fontSize: 10, color: c.improvement > 0 ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
+              <div className="text-right">
+                <div className="text-xs mono" style={{ color: 'var(--green)' }}>{c.brier?.toFixed(4)}</div>
+                <div className="text-[10px] font-semibold" style={{ color: c.improvement > 0 ? 'var(--green)' : 'var(--red)' }}>
                   {c.improvement > 0 ? '+' : ''}{c.improvement?.toFixed(1)}%
                 </div>
               </div>
             </div>
           ))}
         </div>
-      </SCard>
+      </SectionCard>
 
       {/* Data sources */}
-      <SCard title="Live Data Sources">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+      <SectionCard title="Live Data Sources">
+        <div className="grid grid-cols-3 gap-2">
           {sources.map(s => (
-            <div key={s.name} style={{
-              padding: '10px 8px', borderRadius: 12, textAlign: 'center',
-              background: s.ok ? 'rgba(34,197,94,0.06)' : 'rgba(107,114,128,0.06)',
-              border: `1px solid ${s.ok ? 'rgba(34,197,94,0.2)' : 'rgba(107,114,128,0.15)'}`,
+            <div key={s.name} className="p-2.5 rounded-xl text-center" style={{
+              background: s.ok ? 'var(--green-bg)' : 'rgba(107,114,128,0.06)',
+              border: `1px solid ${s.ok ? 'var(--green-border)' : 'rgba(107,114,128,0.12)'}`,
             }}>
-              <div style={{ fontSize: 18, marginBottom: 4 }}>{s.icon}</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: s.ok ? '#e2e8f0' : '#6b7280' }}>{s.name}</div>
-              <div style={{ fontSize: 10, color: s.ok ? '#22c55e' : '#6b7280', marginTop: 2 }}>{s.ok ? '● Active' : '○ Off'}</div>
+              <div className="text-lg mb-1">{s.icon}</div>
+              <div className="text-[10px] font-semibold" style={{ color: s.ok ? 'var(--text2)' : 'var(--dim)' }}>{s.name}</div>
+              <div className="text-[10px] mt-0.5" style={{ color: s.ok ? 'var(--green)' : 'var(--dim)' }}>{s.ok ? '● Active' : '○ Off'}</div>
             </div>
           ))}
         </div>
-      </SCard>
+      </SectionCard>
 
       {/* Audit trail */}
-      <SCard title="Trade Audit Trail" sub="Model-driven decisions — independently verifiable">
+      <SectionCard title="Trade Audit Trail" sub="Model-driven decisions — independently verifiable">
         {auditTrades.length === 0 ? (
-          <div style={{ fontSize: 12, color: '#6b7280', textAlign: 'center', padding: '16px 0' }}>Collecting data...</div>
+          <div className="text-xs text-center py-4" style={{ color: 'var(--dim)' }}>Collecting data...</div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {auditTrades.map((t, i) => (
-              <div key={i} style={{
-                padding: '10px 12px', borderRadius: 12,
-                background: '#0d0d1a',
-                border: `1px solid ${t.correct ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}`,
+          <div className="flex flex-col gap-2">
+            {auditTrades.map((t) => (
+              <div key={t.market + t.date + t.side} className="p-3 rounded-xl" style={{
+                background: 'var(--bg)',
+                border: `1px solid ${t.correct ? 'var(--green-border)' : 'var(--red-border)'}`,
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, gap: 8 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#e2e8f0', flex: 1, lineHeight: 1.4 }}>
+                <div className="flex justify-between mb-1.5 gap-2">
+                  <div className="text-xs font-semibold flex-1 leading-snug" style={{ color: 'var(--text2)' }}>
                     {t.market?.slice(0, 55)}{(t.market?.length || 0) > 55 ? '…' : ''}
                   </div>
-                  <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 20, background: t.side === 'YES' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)', color: t.side === 'YES' ? '#22c55e' : '#ef4444', border: `1px solid ${t.side === 'YES' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}` }}>{t.side}</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 20, background: t.correct ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)', color: t.correct ? '#22c55e' : '#ef4444', border: `1px solid ${t.correct ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}` }}>{t.correct ? 'WIN' : 'LOSS'}</span>
+                  <div className="flex gap-1 flex-shrink-0">
+                    <span className="badge" style={{
+                      background: t.side === 'YES' ? 'var(--green-bg)' : 'var(--red-bg)',
+                      color: t.side === 'YES' ? 'var(--green)' : 'var(--red)',
+                      borderColor: t.side === 'YES' ? 'var(--green-border)' : 'var(--red-border)',
+                    }}>{t.side}</span>
+                    <span className="badge" style={{
+                      background: t.correct ? 'var(--green-bg)' : 'var(--red-bg)',
+                      color: t.correct ? 'var(--green)' : 'var(--red)',
+                      borderColor: t.correct ? 'var(--green-border)' : 'var(--red-border)',
+                    }}>{t.correct ? 'WIN' : 'LOSS'}</span>
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: 12, fontSize: 10, color: '#6b7280', flexWrap: 'wrap' }}>
-                  <span>Entry <span style={{ color: '#94a3b8', fontFamily: 'ui-monospace,monospace' }}>{((t.entry || 0) * 100).toFixed(0)}%</span></span>
-                  <span>Model <span style={{ color: '#a5b4fc', fontFamily: 'ui-monospace,monospace' }}>{t.p_base || '—'}</span></span>
-                  <span>Edge <span style={{ color: '#94a3b8', fontFamily: 'ui-monospace,monospace' }}>{t.edge ? `${(t.edge * 100).toFixed(1)}%` : '—'}</span></span>
-                  <span>Brier <span style={{ color: '#94a3b8', fontFamily: 'ui-monospace,monospace' }}>{t.brier?.toFixed(3) || '—'}</span></span>
-                  <span style={{ color: (t.pnl || 0) >= 0 ? '#22c55e' : '#ef4444', fontFamily: 'ui-monospace,monospace', fontWeight: 600 }}>
+                <div className="flex gap-3 text-[10px] flex-wrap" style={{ color: 'var(--dim)' }}>
+                  <span>Entry <span className="mono" style={{ color: 'var(--muted)' }}>{((t.entry || 0) * 100).toFixed(0)}%</span></span>
+                  <span>Model <span className="mono" style={{ color: 'var(--accent-light)' }}>{t.p_base || '—'}</span></span>
+                  <span>Edge <span className="mono" style={{ color: 'var(--muted)' }}>{t.edge ? `${(t.edge * 100).toFixed(1)}%` : '—'}</span></span>
+                  <span>Brier <span className="mono" style={{ color: 'var(--muted)' }}>{t.brier?.toFixed(3) || '—'}</span></span>
+                  <span className="mono font-semibold" style={{ color: (t.pnl || 0) >= 0 ? 'var(--green)' : 'var(--red)' }}>
                     {(t.pnl || 0) >= 0 ? '+' : ''}${(t.pnl || 0).toFixed(2)}
                   </span>
                 </div>
@@ -125,7 +200,7 @@ export function Proof({ data }: { data: DashboardData }) {
             ))}
           </div>
         )}
-      </SCard>
+      </SectionCard>
     </div>
   )
 }

@@ -123,6 +123,26 @@ def get_sports_signals(question: str) -> dict:
                             price = float(o.get("price", 2.0))
                             impl_prob = 1 / price
                             signals[f"implied_prob_{o['name'].lower().replace(' ','')}"] = round(impl_prob, 3)
+
+                        # Line movement: compare multiple bookmakers for consensus
+                        # If all books agree → strong signal; if split → uncertainty
+                        if len(bookmakers) >= 3:
+                            all_probs = {}
+                            for bm in bookmakers[:5]:
+                                for mkt in bm.get("markets", []):
+                                    for o in mkt.get("outcomes", []):
+                                        name = o["name"]
+                                        p = 1 / float(o.get("price", 2.0))
+                                        all_probs.setdefault(name, []).append(p)
+                            consensus = {}
+                            for name, probs in all_probs.items():
+                                avg = sum(probs) / len(probs)
+                                spread = max(probs) - min(probs)
+                                consensus[name] = {"avg": round(avg, 3), "spread": round(spread, 3)}
+                            # Low spread = books agree = stronger signal
+                            signals["line_consensus"] = str(consensus)
+                            min_spread = min(v["spread"] for v in consensus.values()) if consensus else 1
+                            signals["smart_money_signal"] = "STRONG" if min_spread < 0.03 else "MODERATE" if min_spread < 0.07 else "WEAK"
                     break
         except Exception:
             pass
@@ -304,6 +324,11 @@ def get_osint_signals(question: str) -> str:
     if fg and category in ("crypto","geopolitik","economics"):
         lines.append(fg)
 
+    # Twitter early signals for crypto and geo (pay-per-use)
+    if category in ("crypto", "geopolitik", "politics"):
+        twitter = get_twitter_signals(question)
+        if twitter: lines.append(twitter)
+
     return "\n".join(lines)
 
 
@@ -360,32 +385,85 @@ def _get_geo_crypto_correlation() -> dict:
 # ─── ENHANCED DATA SOURCES ────────────────────────────────────────────────────
 
 def get_twitter_signals(question: str) -> str:
-    """Fetch Twitter sentiment for a market question."""
+    """Fetch Twitter early signals — entity-focused, high-engagement only."""
     bearer = os.getenv("TWITTER_BEARER_TOKEN", "")
     if not bearer:
         return ""
-    # Build focused query from question keywords
-    words = [w.strip("?.,!()") for w in question.split() if len(w) > 4 and w[0].isupper()]
-    query = " OR ".join(words[:3]) + " lang:en -is:retweet" if words else ""
-    if not query:
+
+    # Entity extraction: named entities (capitalized multi-word), crypto tickers, country names
+    import re as _re
+    stopwords = {"will","the","and","for","are","was","has","have","been","that",
+                 "this","with","from","does","would","could","should","what","when",
+                 "where","which","who","how","may","can","by","to","in","on","at",
+                 "a","an","be","is","it","its","not","but","or","if","as","do"}
+
+    # Extract proper nouns (capitalized words not at sentence start)
+    tokens = question.replace("?","").replace(",","").split()
+    entities = []
+    for i, w in enumerate(tokens):
+        clean = w.strip(".,!()$%")
+        if len(clean) > 2 and clean[0].isupper() and clean.lower() not in stopwords:
+            entities.append(clean)
+
+    # Crypto tickers
+    crypto_map = {"bitcoin":"BTC","ethereum":"ETH","btc":"BTC","eth":"ETH",
+                  "solana":"SOL","matic":"MATIC"}
+    q_lower = question.lower()
+    for word, ticker in crypto_map.items():
+        if word in q_lower and f"${ticker}" not in entities:
+            entities.append(f"${ticker}")
+
+    if not entities:
         return ""
+
+    # Build query: top 2 entities with OR for broader coverage
+    primary = entities[:2]
+    query = " ".join(primary) + " lang:en -is:retweet min_faves:5"
+
     try:
         r = requests.get(
             "https://api.twitter.com/2/tweets/search/recent",
             params={"query": query, "max_results": 10,
-                    "tweet.fields": "public_metrics,created_at"},
+                    "tweet.fields": "public_metrics,created_at,author_id"},
             headers={"Authorization": f"Bearer {bearer}"},
             timeout=6,
         )
         if r.status_code != 200:
-            return ""
+            # Fallback without min_faves if no results
+            query_fallback = " ".join(primary) + " lang:en -is:retweet"
+            r = requests.get(
+                "https://api.twitter.com/2/tweets/search/recent",
+                params={"query": query_fallback, "max_results": 10,
+                        "tweet.fields": "public_metrics,created_at"},
+                headers={"Authorization": f"Bearer {bearer}"},
+                timeout=6,
+            )
+            if r.status_code != 200:
+                return ""
+
         tweets = r.json().get("data", [])
         if not tweets:
             return ""
-        lines = [f"[TWITTER] {len(tweets)} recent tweets about: {', '.join(words[:3])}"]
-        for t in tweets[:5]:
+
+        # Sort by engagement score (likes×2 + retweets×3 — retweets weight more)
+        def engagement(t):
             m = t.get("public_metrics", {})
-            lines.append(f"  likes={m.get('like_count',0)} rt={m.get('retweet_count',0)}: {t['text'][:100]}")
+            return m.get("like_count", 0) * 2 + m.get("retweet_count", 0) * 3
+
+        tweets.sort(key=engagement, reverse=True)
+
+        # Only include tweets with meaningful engagement
+        high_eng = [t for t in tweets if engagement(t) >= 5]
+        display = high_eng[:3] if high_eng else tweets[:3]
+
+        total_eng = sum(engagement(t) for t in tweets)
+        sentiment_signal = "🔥 HIGH" if total_eng > 100 else "📊 MODERATE" if total_eng > 20 else "💤 LOW"
+
+        lines = [f"[TWITTER] {len(tweets)} tweets | entities: {', '.join(primary)} | sentiment: {sentiment_signal}"]
+        for t in display:
+            m = t.get("public_metrics", {})
+            eng = engagement(t)
+            lines.append(f"  [{eng}eng] {t['text'][:120]}")
         return "\n".join(lines)
     except Exception:
         return ""

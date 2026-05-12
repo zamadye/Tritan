@@ -1,34 +1,26 @@
 {
-  "Pistons vs. Cavaliers": {
+  "Will WTI Crude Oil (WTI) hit (HIGH) $110 in May?": {
     "has_edge": false,
     "signal": "none",
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1778247494.9139047
+    "ts": 1778580715.949571
   },
-  "US x Iran permanent peace deal by May 11, 2026?": {
+  "US x Iran diplomatic meeting by June 30, 2026?": {
     "has_edge": false,
     "signal": "none",
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1778247533.047233
+    "ts": 1778580772.081081
   },
-  "US x Iran diplomatic meeting by May 15, 2026?": {
+  "Will Greece win Eurovision 2026?": {
     "has_edge": false,
     "signal": "none",
     "minutes_since_info": 999,
     "source": "none",
     "detail": "",
-    "ts": 1778247602.2347047
-  },
-  "Internazionali BNL d'Italia: Dino Prizmic vs Novak Djokovic": {
-    "has_edge": false,
-    "signal": "none",
-    "minutes_since_info": 999,
-    "source": "none",
-    "detail": "",
-    "ts": 1778247635.07236
+    "ts": 1778580815.0040758
   }
 }

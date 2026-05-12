@@ -102,12 +102,12 @@ def execute_trade(market: dict, side: str, size: float, mode: str, clob_client=N
             print(f"[DRY_RUN] Would execute {side} ${size:.2f} on '{market['question'][:60]}'")
         else:
             try:
-                from py_clob_client.clob_types import MarketOrderArgs, OrderType
-                from py_clob_client.order_builder.constants import BUY
+                from py_clob_client_v2.clob_types import MarketOrderArgs, OrderType
+                from py_clob_client_v2.order_builder.constants import BUY
 
                 token_id = _get_token_id(market, side, clob_client)
-                if not token_id:
-                    raise ValueError(f"No token_id for {side} side")
+                if not token_id or len(str(token_id)) < 10:
+                    raise ValueError(f"Invalid token_id for {side} side: '{token_id}'")
 
                 order_args = MarketOrderArgs(
                     token_id=token_id,
@@ -116,9 +116,25 @@ def execute_trade(market: dict, side: str, size: float, mode: str, clob_client=N
                 )
                 signed_order = clob_client.create_market_order(order_args)
                 resp = clob_client.post_order(signed_order, OrderType.FOK)
-                trade["status"] = "LIVE_FILLED"
-                trade["tx_hash"] = resp.get("transactionHash", "")
-                print(f"[LIVE] 💰 Executed {side} ${size:.2f} | TX: {trade['tx_hash'][:20]}...")
+
+                if resp.get("success"):
+                    trade["status"] = "LIVE_FILLED"
+                    trade["order_id"] = resp.get("orderID", "")
+                    trade["tx_hash"] = (resp.get("transactionsHashes") or [""])[0]
+                    # Parse actual fill: amounts may be in different units
+                    making = float(resp.get("makingAmount", 0))  # USDC spent
+                    taking = float(resp.get("takingAmount", 0))  # tokens received
+                    if making > 0 and taking > 0:
+                        trade["price_at_entry"] = round(making / taking, 4)
+                        trade["size_usd"] = round(making, 2)
+                    else:
+                        # Fallback: keep original size if API doesn't return amounts
+                        trade["size_usd"] = size
+                    trade["fill_status"] = resp.get("status", "")
+                    print(f"[LIVE] 💰 Filled {side} ${trade['size_usd']:.2f} @ {trade['price_at_entry']:.4f} | TX: {trade['tx_hash'][:20]}...")
+                else:
+                    trade["status"] = f"REJECTED: {resp.get('errorMsg', 'unknown')}"
+                    print(f"[LIVE] ❌ Order rejected: {resp.get('errorMsg', resp)}")
             except Exception as e:
                 trade["status"] = f"ERROR: {e}"
                 print(f"[LIVE] ❌ Execution failed: {e}")

@@ -169,11 +169,18 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         f"{pattern_ctx + chr(10) if pattern_ctx else ''}"
         f"Goal: predict SHORT-TERM PRICE MOVEMENT of YES/NO in next 4-24 hours. "
         f"NOT predicting final outcome — predicting which direction price will move. "
-        f"Focus on: (1) is there fresh catalyst/news that market hasn't priced in yet? "
-        f"(2) is sentiment shifting YES or NO right now? "
-        f"(3) which side (YES or NO) has momentum — will its price rise? "
-        f"confidence = how certain price will move in your predicted direction (0-1). "
-        f"Reply JSON: {{action: BET_YES/BET_NO/SKIP, confidence: 0-1, p_true: 0-1, "
+        f"\nCATALYST SCORING (be specific):\n"
+        f"  catalyst_type: BREAKING_NEWS / SENTIMENT_SHIFT / ODDS_MOVEMENT / STAT_EDGE / NONE\n"
+        f"  catalyst_strength: 0.0-1.0 (0=no catalyst, 1=major breaking news)\n"
+        f"  time_sensitivity: IMMEDIATE(0-2h) / SHORT(2-8h) / MEDIUM(8-24h)\n"
+        f"\nCONFIDENCE RULES (be honest, not all 0.6-0.7):\n"
+        f"  0.85-1.0 = breaking news directly relevant, clear price movement expected\n"
+        f"  0.70-0.85 = strong catalyst, high probability of movement\n"
+        f"  0.60-0.70 = moderate signal, some uncertainty\n"
+        f"  0.50-0.60 = weak signal, mostly statistical\n"
+        f"  <0.50 = SKIP — not enough evidence\n"
+        f"\nReply JSON: {{action: BET_YES/BET_NO/SKIP, confidence: 0-1, p_true: 0-1, "
+        f"catalyst_type: str, catalyst_strength: 0-1, time_sensitivity: str, "
         f"information_gap: true/false, gap_reason: str, reason: str}}"
     )
 
@@ -236,6 +243,12 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         catalyst_str   = str(_find(result, "cat","catalyst","trigger","event", default="none") or "none")
         direction      = str(_find(result, "dir","direction","crowd_error_direction", default="none") or "none").lower()
         info_edge      = bool(_find(result, "edge","information_edge","info_edge","information_gap", default=False))
+        # New structured fields
+        catalyst_type  = str(_find(result, "catalyst_type", default="NONE") or "NONE").upper()
+        time_sens      = str(_find(result, "time_sensitivity", default="MEDIUM") or "MEDIUM").upper()
+        # Override catalyst_score with catalyst_strength if provided
+        cat_strength   = _to_float(_find(result, "catalyst_strength", default=0))
+        if cat_strength > 0: catalyst_score = cat_strength
         gap_reason     = str(_find(result, "gap_reason","gap_text","info_text","information_text", default="") or "")
         reason         = str(_find(result, "why","reason","reasoning","rationale","analysis","summary", default="") or "")
 
@@ -305,8 +318,23 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         if dq == "none" and not has_stat_edge:
             confidence = 0.0
         elif dq == "none" and has_stat_edge:
-            # Statistical edge is valid even without news data
             confidence = 0.60
+
+        # Category-based p_true cap — sports/entertainment have high upset rates
+        from agent.learner import _infer_category
+        cat = _infer_category({"category": market.get("category",""), "market_question": market.get("question","")})
+        if cat == "sports":
+            p_true = max(0.05, min(0.92, p_true))  # cap 92% for sports
+            if confidence > 0.75: confidence = 0.75
+        elif cat == "entertainment":
+            p_true = max(0.05, min(0.90, p_true))  # cap 90% for entertainment
+            if confidence > 0.70: confidence = 0.70
+        elif cat == "crypto":
+            p_true = max(0.05, min(0.95, p_true))  # cap 95% for crypto
+            if confidence > 0.80: confidence = 0.80
+
+        # Recalculate edge after p_true cap
+        edge = round(p_true - p_market, 4)
 
         return {
             "p_true":             round(p_true, 4),
@@ -321,7 +349,8 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
             "recommended_side":   side,
             "catalyst_score":     catalyst_score,
             "catalyst":           catalyst_str,
-            "catalyst_type":      result.get("type", result.get("catalyst_type","none")),
+            "catalyst_type":      catalyst_type,
+            "time_sensitivity":   time_sens,
             "crowd_error_detected": crowd_error,
             "information_edge":   info_edge,
             "information_gap_reason": gap_reason or reason,

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && cp -r .next/static .next/standalone/.next/static && ln -sf /root/Tritan/.env .next/standalone/.env && ln -sf /root/Tritan/data .next/standalone/data",
     "start": "next start",
     "lint": "eslint"
   },
