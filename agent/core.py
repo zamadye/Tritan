@@ -317,13 +317,13 @@ def run_scan_cycle(mode: str, clob_client=None):
             cat_type = analysis.get("catalyst_type", "NONE")
             if entry_side_price < 0.25:
                 # Very high leverage: require breaking news
-                if cat_strength < 0.7 or cat_type not in ("BREAKING_NEWS", "SENTIMENT_SHIFT", "ODDS_MOVEMENT"):
+                if cat_strength < 0.6 or cat_type not in ("BREAKING_NEWS", "SENTIMENT_SHIFT", "ODDS_MOVEMENT"):
                     console.print(f"[dim]⛔ Extreme entry ({entry_side_price:.0%}) needs strong catalyst (got {cat_type} {cat_strength:.1f}): {market['question'][:40]}[/dim]")
                     continue
             elif entry_side_price < 0.35:
                 # High leverage: require meaningful catalyst
-                if cat_strength < 0.5:
-                    console.print(f"[dim]⛔ High leverage entry ({entry_side_price:.0%}) needs catalyst≥0.5 (got {cat_strength:.1f}): {market['question'][:40]}[/dim]")
+                if cat_strength < 0.35:
+                    console.print(f"[dim]⛔ High leverage entry ({entry_side_price:.0%}) needs catalyst≥0.35 (got {cat_strength:.1f}): {market['question'][:40]}[/dim]")
                     continue
         # ─────────────────────────────────────────────────────────────────
 

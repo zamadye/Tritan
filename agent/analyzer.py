@@ -190,7 +190,23 @@ def estimate_probability(market: dict, news_context: str = "", evolution_context
         stat_gap = abs(p_base - p_market)
         # Use agentic loop for ALL markets that pass gate — tools give real price movement context
         # Plain chat only as last resort fallback
-        raw, tool_log = chat_with_tools(prompt, TOOL_DEFINITIONS, max_iterations=3)
+        # Try with tools first, retry on timeout with plain chat
+        raw, tool_log = None, []
+        for _attempt in range(2):
+            try:
+                raw, tool_log = chat_with_tools(prompt, TOOL_DEFINITIONS, max_iterations=3)
+                if raw and raw.strip():
+                    break
+            except Exception as _e:
+                if "timeout" in str(_e).lower() or "timed out" in str(_e).lower():
+                    print(f"[ANALYZER] ⏱ LLM timeout attempt {_attempt+1}, retrying with plain chat...")
+                    raw = chat(f"Market: {market['question'][:60]}. YES={p_market:.0%} base={p_base:.0%}. "
+                               f"Will YES price go UP or DOWN? Reply JSON: {{action,confidence,p_true,reason}}")
+                    if raw and raw.strip():
+                        break
+                else:
+                    raise
+
         if not raw or not raw.strip():
             raw = chat(f"Market: {market['question'][:60]}. YES={p_market:.0%} base={p_base:.0%}. "
                        f"Will YES price go UP or DOWN? Reply JSON: {{action,confidence,p_true,reason}}")
