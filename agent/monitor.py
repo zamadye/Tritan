@@ -100,6 +100,72 @@ def _get_event_deadline(trade: dict) -> float:
     return float(os.getenv("EXIT_MAX_HOURS", 24))
 
 
+def _execute_sell_order(trade: dict, yes_p: float, clob_client, retries: int = 3) -> bool:
+    """Submit sell order with retry. Sets pending_sell=True on failure for next cycle retry."""
+    try:
+        from py_clob_client_v2.clob_types import OrderArgs, PartialCreateOrderOptions, OrderType
+        from py_clob_client_v2.order_builder.constants import SELL
+        import time as _time
+
+        side = trade["side"]
+        entry = trade["price_at_entry"]
+        size = trade["size_usd"]
+
+        # Get token_id
+        token_ids = trade.get("token_id", [])
+        if isinstance(token_ids, str):
+            import json as _j
+            try: token_ids = _j.loads(token_ids)
+            except: token_ids = []
+        token_id = token_ids[0] if side == "YES" else (token_ids[1] if len(token_ids) > 1 else "")
+
+        # Fallback: fetch from CLOB
+        if not token_id or len(str(token_id)) < 10:
+            cid = trade.get("market_id", "")
+            if cid:
+                for t_info in clob_client.get_market(cid).get("tokens", []):
+                    outcome = t_info.get("outcome", "").upper()
+                    if (side == "YES" and outcome in ("YES","TRUE")) or \
+                       (side == "NO" and outcome in ("NO","FALSE")):
+                        token_id = t_info["token_id"]; break
+
+        if not token_id:
+            print(f"[SELL] ⚠️  No token_id — pending_sell set for retry")
+            trade["pending_sell"] = True
+            return False
+
+        entry_price = entry if side == "YES" else 1 - entry
+        current_price = yes_p if side == "YES" else (1 - yes_p)
+        sell_size = max(round((size / entry_price) * current_price, 2), 1.0)
+
+        tick = "0.01"
+        try: tick = str(clob_client.get_market(trade.get("market_id","")).get("minimum_tick_size","0.01"))
+        except: pass
+
+        for attempt in range(retries):
+            try:
+                resp = clob_client.create_and_post_order(
+                    OrderArgs(token_id=str(token_id), price=round(current_price, 2), size=sell_size, side=SELL),
+                    PartialCreateOrderOptions(tick_size=tick, neg_risk=False),
+                    OrderType.GTC
+                )
+                print(f"[SELL] ✅ Sold (attempt {attempt+1}): {resp}")
+                trade["pending_sell"] = False
+                trade["sell_order_id"] = resp.get("orderID","") if isinstance(resp, dict) else str(resp)
+                return True
+            except Exception as e:
+                print(f"[SELL] ❌ Attempt {attempt+1}/{retries}: {e}")
+                if attempt < retries - 1: _time.sleep(2)
+
+        trade["pending_sell"] = True
+        print(f"[SELL] ⚠️  All attempts failed — will retry next cycle")
+        return False
+    except Exception as e:
+        trade["pending_sell"] = True
+        print(f"[SELL] ❌ {e}")
+        return False
+
+
 def check_and_exit(mode: str = "demo", clob_client=None) -> int:
     """Check all open positions and exit those that hit TP/SL/trailing/deadline.
 
@@ -116,6 +182,17 @@ def check_and_exit(mode: str = "demo", clob_client=None) -> int:
     trades = _load_trades(mode)
     open_t = [t for t in trades if not t.get("actual_outcome")]
     now    = datetime.now(timezone.utc)
+
+    # Retry pending sell orders from previous cycles
+    if mode == "live" and clob_client:
+        pending = [t for t in trades if t.get("pending_sell") and t.get("actual_outcome") == "EXIT"]
+        for t in pending:
+            nid = t.get("market_numeric_id", "")
+            yes_p, _ = _get_current_price(nid)
+            if yes_p:
+                print(f"[SELL] 🔄 Retrying pending sell: {t['market_question'][:50]}")
+                if _execute_sell_order(t, yes_p, clob_client, retries=2):
+                    _save_trades(trades, mode)
 
     tp_return  = float(os.getenv("EXIT_TAKE_PROFIT", 0.15))   # floor TP (overridden per trade)
     sl_pct     = float(os.getenv("EXIT_STOP_LOSS",   0.12))   # -12% return base
@@ -210,60 +287,7 @@ def check_and_exit(mode: str = "demo", clob_client=None) -> int:
 
             # Live mode: submit sell order to close position on Polymarket
             if mode == "live" and clob_client:
-                try:
-                    from py_clob_client_v2.clob_types import OrderArgs, PartialCreateOrderOptions
-                    from py_clob_client_v2.order_builder.constants import SELL
-                    from py_clob_client_v2.clob_types import OrderType
-
-                    token_ids = trade.get("token_id", [])
-                    if isinstance(token_ids, str):
-                        import json as _json
-                        try: token_ids = _json.loads(token_ids)
-                        except: token_ids = []
-
-                    # Sell the token we bought: YES token if BET_YES, NO token if BET_NO
-                    token_id = token_ids[0] if side == "YES" else (token_ids[1] if len(token_ids) > 1 else "")
-
-                    if not token_id or len(str(token_id)) < 10:
-                        # Fallback: get token from CLOB
-                        cid = trade.get("market_id", "")
-                        if cid:
-                            mkt = clob_client.get_market(cid)
-                            tokens = mkt.get("tokens", [])
-                            for t_info in tokens:
-                                outcome = t_info.get("outcome", "").upper()
-                                if (side == "YES" and outcome in ("YES","TRUE")) or \
-                                   (side == "NO" and outcome in ("NO","FALSE")):
-                                    token_id = t_info["token_id"]
-                                    break
-
-                    if token_id:
-                        # Calculate shares to sell
-                        entry_price = entry if side == "YES" else 1 - entry
-                        shares_held = size / entry_price
-                        sell_size = round(shares_held * yes_p if side == "YES" else shares_held * (1 - yes_p), 2)
-                        sell_size = max(sell_size, 1.0)
-
-                        sell_args = OrderArgs(
-                            token_id=str(token_id),
-                            price=round(yes_p if side == "YES" else (1 - yes_p), 2),
-                            size=sell_size,
-                            side=SELL,
-                        )
-                        # Get tick size
-                        tick = "0.01"
-                        try:
-                            mkt_info = clob_client.get_market(trade.get("market_id",""))
-                            tick = str(mkt_info.get("minimum_tick_size", "0.01"))
-                        except: pass
-
-                        opts = PartialCreateOrderOptions(tick_size=tick, neg_risk=False)
-                        resp = clob_client.create_and_post_order(sell_args, opts, OrderType.GTC)
-                        print(f"[EXIT] 💱 Sell order submitted: {resp}")
-                    else:
-                        print(f"[EXIT] ⚠️  No token_id for sell order — position will resolve naturally")
-                except Exception as e:
-                    print(f"[EXIT] ⚠️  Sell order failed: {e} — position will resolve naturally")
+                _execute_sell_order(trade, yes_p, clob_client)
 
             update_streak(trade["prediction_correct"], mode)
             exited += 1
