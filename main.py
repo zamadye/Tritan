@@ -5,8 +5,21 @@ import os
 import sys
 import warnings
 warnings.filterwarnings("ignore", message="Unverified HTTPS request")
-from dotenv import load_dotenv
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# Patch requests to bypass SSL for Polymarket (certificate expired on their end)
+import requests as _req
+_orig_get, _orig_post = _req.get, _req.post
+def _get(url, **kw): 
+    if 'polymarket.com' in str(url): kw.setdefault('verify', False)
+    return _orig_get(url, **kw)
+def _post(url, **kw):
+    if 'polymarket.com' in str(url): kw.setdefault('verify', False)
+    return _orig_post(url, **kw)
+_req.get, _req.post = _get, _post
+
+from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"), override=True)
 
 

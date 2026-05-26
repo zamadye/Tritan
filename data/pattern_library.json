@@ -1,58 +1,84 @@
 {
   "by_category": {
     "other": {
-      "n": 3,
-      "wr": 0.333,
-      "total_pnl": -0.43,
-      "avg_edge": 0.346,
-      "verdict": "WEAK"
+      "n": 5,
+      "wr": 0.6,
+      "total_pnl": -4.5,
+      "avg_edge": 0.342,
+      "verdict": "STRONG"
+    },
+    "sports": {
+      "n": 6,
+      "wr": 0.667,
+      "total_pnl": -2.91,
+      "avg_edge": 0.175,
+      "verdict": "STRONG"
     },
     "geopolitik": {
-      "n": 4,
-      "wr": 0.75,
-      "total_pnl": 2.44,
-      "avg_edge": 0.269,
+      "n": 11,
+      "wr": 0.818,
+      "total_pnl": 0.66,
+      "avg_edge": 0.206,
       "verdict": "STRONG"
     }
   },
   "by_entry_price": {
-    "40-50%": {
+    "10-20%": {
+      "n": 8,
+      "wr": 0.75,
+      "total_pnl": -5.87
+    },
+    "50-60%": {
+      "n": 5,
+      "wr": 1.0,
+      "total_pnl": 2.25
+    },
+    "20-30%": {
       "n": 3,
-      "wr": 0.333,
-      "total_pnl": -0.43
+      "wr": 0.667,
+      "total_pnl": -0.65
+    },
+    "70-80%": {
+      "n": 3,
+      "wr": 0.667,
+      "total_pnl": -1.14
     }
   },
   "information_gap": {
     "with_gap": {
-      "n": 7,
-      "wr": 0.286
+      "n": 13,
+      "wr": 0.846
     },
     "without_gap": {
-      "n": 4,
-      "wr": 0.5
+      "n": 10,
+      "wr": 0.6
     },
-    "gap_adds_value": false
+    "gap_adds_value": true
   },
   "by_exit_reason": {
-    "STOP_LOSS": {
-      "n": 7,
-      "avg_pnl": -0.337
-    },
-    "TAKE_PROFIT": {
-      "n": 2,
-      "avg_pnl": 0.99
-    },
     "EVENT_DEADLINE": {
-      "n": 1,
-      "avg_pnl": 0.07
+      "n": 10,
+      "avg_pnl": 0.344
     },
     "RESOLVED": {
+      "n": 4,
+      "avg_pnl": -0.51
+    },
+    "TRAILING_STOP": {
+      "n": 3,
+      "avg_pnl": 0.2
+    },
+    "STOP_LOSS": {
+      "n": 5,
+      "avg_pnl": -1.992
+    },
+    "TAKE_PROFIT": {
       "n": 1,
-      "avg_pnl": 0.69
+      "avg_pnl": 1.33
     }
   },
   "_meta": {
-    "total_resolved": 11,
-    "generated_from": "./data/live_trades.json"
+    "total_resolved": 23,
+    "generated_from": "./data/demo_trades.json"
   }
 }

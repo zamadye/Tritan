@@ -32,7 +32,7 @@ def get_candidate_markets():
     }
 
     try:
-        resp = requests.get(url, params=params, timeout=10)
+        resp = requests.get(url, params=params, timeout=20, verify=False)
         resp.raise_for_status()
         markets = resp.json()
     except Exception as e:

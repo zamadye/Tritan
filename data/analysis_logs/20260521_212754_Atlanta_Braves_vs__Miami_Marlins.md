@@ -1,0 +1,79 @@
+# Market Analysis — 2026-05-21 21:27 UTC
+
+## Market
+- **Question:** Atlanta Braves vs. Miami Marlins
+- **Category:** sports
+- **YES Price:** 57.0%
+- **Days Left:** 7
+- **Volume 24h:** $223,115
+- **Liquidity:** $227,130
+
+## Statistical Prior
+- **p_base:** 60.4%
+- **Source:** logistic:sports
+- **N (historical):** 6077
+- **Raw gap:** 3.4%
+
+## News Sources Fetched
+### Macro Context
+- Fear&Greed: 29/100 (Fear) | trend: improving
+- BTC: $77,697 (+0.2% 24h) → neutral
+- Fear&Greed: 29/100 (Fear) | 7d trend: improving
+- BTC: $77,650 (+0.0% 24h) → neutral
+- Fed market expectations:
+
+### General
+- [FEAR&GREED 7d trend] 29(Fear) → 27(Fear) → 25(Extr) → 28(Fear) | sentiment improving
+- Pittsburgh Pirates vs. St. Louis Cardinals → YES=50%
+- Will the Fed increase interest rates by 50+ bps after the Ju → YES=50%
+- [SPORTS] Recent games:
+- ATL @ MIA | Scheduled | Miami Marlins(home) 22-28 score:0 vs Atlanta Braves(away) 34-16 score:0
+- [SPORTS] Injuries:
+- ?: Derek Law — Day-To-Day (Surgery)
+- ?: Spencer Giesting — Day-To-Day (Not Specified)
+
+### Multi-Source
+- [MULTI-SOURCE NEWS] 2 sources for: atlanta braves miami marlins
+- [Bing News]
+- [Thu, 21 May 2026] atlanta braves miami marlins
+- → The Braves are the best team in baseball and there is no denying that. On Wednesday, they just did something for the first time in over two decades.
+- [Thu, 21 May 2026] Atlanta Braves just did something the organization hasn't done since 2003 with win over Marlins
+- → MIAMI (AP) — Austin Riley and Dominic Smith hit three-run home runs, Chris Sale allowed just one run and struck out eight over seven innings, and th
+- [Thu, 21 May 2026] Braves beat Marlins 9-1 behind Chris Sale and 3-run homers from Austin Riley, Dominic Smith
+- → Here's how to watch Thursday's Miami Marlins vs Atlanta Braves game, including start times, TV channels, scores and how to stream.
+
+## LLM Decision
+- **Action:** NO
+- **Confidence:** 65%
+- **p_true:** 48.4%
+- **Information Gap:** True
+- **Crowd Bias:** False
+- **Catalyst Type:** STATISTICAL_PATTERN
+- **Catalyst Strength:** 0.80
+
+### Reasoning
+Strong historical evidence shows markets priced at 57% resolve YES only 44.7% of the time (n=13,967), indicating significant overpricing. The 12.3 percentage point gap between market price and historical resolution provides a clear edge for a NO bet. Both teams have comparable injuries, so no team-specific catalyst to override the statistical pattern.
+
+## Gate Result
+- **Passed:** ❌ NO
+- **Reason:** no stat edge gap=3%<5%
+
+## Tool Calls
+- `get_sports_data({'sport': 'mlb', 'team': 'Braves'})` → INJURY [atlanta braves] Hurston Waldrep (SP): 60-Day-IL
+INJURY [atlanta braves] Drake Baldwin (C): 1
+- `get_sports_data({'sport': 'mlb', 'team': 'Marlins'})` → INJURY [miami marlins] Robby Snelling (SP): 60-Day-IL
+INJURY [miami marlins] Leo Jimenez (3B): 7-day
+- `search_web({'query': 'Atlanta Braves vs Miami Marlins 2025 season results'})` → [Fri, 08 Aug 2025] Google News
+[Mon, 11 Aug 2025] Miami Marlins at Atlanta Braves Game Story, Scores
+- `search_web({'query': 'Atlanta Braves recent performance August 2025'})` → [Fri, 15 Aug 2025] Google News
+[Tue, 03 Mar 2026] Atlanta Braves Homestand Highlights Monday, August
+- `get_market_context({'keyword': 'Atlanta Braves'})` → No related markets found for 'Atlanta Braves'
+- `get_odds({'sport': 'baseball_mlb', 'team': 'Braves'})` → Odds API error: 401 {"message":"Usage quota has been reached. See usage plans at https://the-odds-ap
+- `search_web({'query': 'Braves vs Marlins odds August 2025 moneyline'})` → [Thu, 21 May 2026] Google News
+[Wed, 20 May 2026] Braves vs Marlins Prediction, Odds, Moneyline, Spr
+
+## Outcome
+_Pending — will be updated when market resolves_
+
+---
+*Mode: LIVE | DRY_RUN: true*
