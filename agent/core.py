@@ -29,11 +29,17 @@ def _get_bankroll(mode: str, clob_client=None) -> float:
         # Live: fetch USDC balance from Polymarket CLOB API
         if clob_client:
             try:
-                from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
-                result = clob_client.get_balance_allowance(
-                    BalanceAllowanceParams(asset_type=AssetType.COLLATERAL)
-                )
-                bal = float(result.get('balance', 0)) / 1e6  # USDC has 6 decimals
+                if hasattr(clob_client, "place_market_order"):
+                    # New polymarket-client SDK
+                    ba = clob_client.get_balance_allowance(asset_type="COLLATERAL")
+                    bal = float(ba.balance) / 1e6
+                else:
+                    # Legacy py-clob-client SDK
+                    from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
+                    result = clob_client.get_balance_allowance(
+                        BalanceAllowanceParams(asset_type=AssetType.COLLATERAL)
+                    )
+                    bal = float(result.get('balance', 0)) / 1e6
                 if bal > 0:
                     return round(bal, 2)
             except Exception as e:
@@ -86,12 +92,27 @@ def _enrich_trade(trade: dict, analysis: dict, mode: str, news_context: str = ""
 
 
 def _build_clob_client():
+    key     = os.getenv("POLYGON_PRIVATE_KEY", "")
+    funder  = os.getenv("POLYGON_WALLET_ADDRESS", "")
+    sig_type = int(os.getenv("SIGNATURE_TYPE", 0))
+
+    # Try new polymarket-client SDK first
+    try:
+        from polymarket import SecureClient, PRODUCTION
+        client = SecureClient.create(
+            private_key=key,
+            wallet=funder if sig_type in (1, 2, 3) else None,
+            environment=PRODUCTION,
+        )
+        console.print("[green]Using polymarket-client SDK (new)[/green]")
+        return client
+    except Exception:
+        pass
+
+    # Fallback to legacy py-clob-client SDK
     try:
         from py_clob_client_v2.client import ClobClient
-        host    = os.getenv("POLYMARKET_CLOB_HOST", "https://clob.polymarket.com")
-        key     = os.getenv("POLYGON_PRIVATE_KEY", "")
-        funder  = os.getenv("POLYGON_WALLET_ADDRESS", "")
-        sig_type = int(os.getenv("SIGNATURE_TYPE", 0))
+        host = os.getenv("POLYMARKET_CLOB_HOST", "https://clob.polymarket.com")
         client = ClobClient(
             host,
             key=key,
@@ -100,6 +121,7 @@ def _build_clob_client():
             funder=funder if sig_type in (1, 2, 3) else None,
         )
         client.set_api_creds(client.create_or_derive_api_key())
+        console.print("[yellow]Using py-clob-client SDK (legacy)[/yellow]")
         return client
     except Exception as e:
         console.print(f"[red]CLOB client init failed: {e}[/red]")

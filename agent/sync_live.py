@@ -5,21 +5,31 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 
+def _is_new_client(client):
+    return hasattr(client, "list_account_trades")
+
+
+def _get_field(obj, field, default=None):
+    if isinstance(obj, dict):
+        return obj.get(field, default)
+    return getattr(obj, field, default)
+
+
 def _check_resolution(market_info):
     """Check if market is resolved. Returns (is_resolved, winning_outcome, winning_price)."""
     if not market_info:
         return False, None, None
-    tokens = market_info.get("tokens", [])
-    closed = market_info.get("closed", False)
+    tokens = _get_field(market_info, "tokens", [])
+    closed = _get_field(market_info, "closed", False)
     if not closed or not tokens:
         return False, None, None
     for token in tokens:
-        if token.get("winner", False):
-            return True, token.get("outcome", ""), float(token.get("price", 0))
+        if _get_field(token, "winner", False):
+            return True, _get_field(token, "outcome", ""), float(_get_field(token, "price", 0))
     for token in tokens:
-        price = float(token.get("price", 0))
+        price = float(_get_field(token, "price", 0))
         if price >= 0.95:
-            return True, token.get("outcome", ""), price
+            return True, _get_field(token, "outcome", ""), price
     return False, None, None
 
 
@@ -50,34 +60,40 @@ def sync_live_trades(clob_client=None):
         if oid:
             existing_by_oid[oid] = t
 
-    # Fetch from CLOB API
+    # Fetch from CLOB API (supports both old and new SDK)
     try:
-        resp = clob_client.get_trades()
-        clob_trades = resp.get("data", []) if isinstance(resp, dict) else resp
+        if _is_new_client(clob_client):
+            clob_trades = list(clob_client.list_account_trades())
+        else:
+            resp = clob_client.get_trades()
+            clob_trades = resp.get("data", []) if isinstance(resp, dict) else resp
     except Exception as e:
         print(f"[SYNC] Failed to fetch trades: {e}")
         return 0
 
     # Fetch market info for condition_ids
     market_cache = {}
-    condition_ids = set(t.get("market", "") for t in clob_trades if t.get("market"))
+    condition_ids = set(_get_field(t, "market", "") for t in clob_trades if _get_field(t, "market", ""))
     for cid in condition_ids:
         if cid and cid not in market_cache:
             try:
-                m = clob_client.get_market(cid)
+                if _is_new_client(clob_client):
+                    m = clob_client.get_market(id=cid)
+                else:
+                    m = clob_client.get_market(cid)
                 market_cache[cid] = m
             except Exception:
                 market_cache[cid] = {"question": cid[:20] + "..."}
 
     synced = 0
     for ct in clob_trades:
-        oid = ct.get("id", "")
+        oid = _get_field(ct, "id", "")
         if oid in existing_by_oid:
             continue  # already synced
 
-        cid = ct.get("market", "")
+        cid = _get_field(ct, "market", "")
         market_info = market_cache.get(cid, {})
-        question = market_info.get("question", cid[:20] + "...")
+        question = _get_field(market_info, "question", "") or (cid[:20] + "...")
 
         # Check if market is resolved — skip resolved trades (handled by sync_polymarket.py)
         is_resolved, winning_outcome, _ = _check_resolution(market_info)
@@ -85,21 +101,21 @@ def sync_live_trades(clob_client=None):
             continue
 
         # Determine side and outcome from tokens
-        side = ct.get("side", "BUY")
-        outcome = ct.get("outcome", "")
+        side = _get_field(ct, "side", "BUY")
+        outcome = _get_field(ct, "outcome", "")
 
         trade = {
             "trade_id": oid,
-            "timestamp": ct.get("timestamp", datetime.now(timezone.utc).isoformat()),
+            "timestamp": _get_field(ct, "timestamp", datetime.now(timezone.utc).isoformat()),
             "mode": "live",
             "market_id": cid,
             "market_question": question,
             "side": "YES" if side == "BUY" else "NO",
-            "size_usd": float(ct.get("size", 0)) * float(ct.get("price", 0)),
-            "price_at_entry": float(ct.get("price", 0)),
+            "size_usd": float(_get_field(ct, "size", 0)) * float(_get_field(ct, "price", 0)),
+            "price_at_entry": float(_get_field(ct, "price", 0)),
             "status": "LIVE_FILLED",
             "order_id": oid,
-            "fill_status": ct.get("status", ""),
+            "fill_status": _get_field(ct, "status", ""),
             "actual_outcome": None,
             "pnl": None,
             "category": _guess_category(question),

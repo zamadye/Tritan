@@ -5,6 +5,18 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
+# Detect new polymarket-client SDK
+_NEW_SDK = False
+try:
+    from polymarket.client import SecureClient  # noqa: F401
+    _NEW_SDK = True
+except ImportError:
+    pass
+
+
+def _is_new_sdk(clob_client) -> bool:
+    return hasattr(clob_client, "place_market_order")
+
 
 def _load_trades(filepath: str) -> list:
     p = Path(filepath)
@@ -41,18 +53,21 @@ def _get_token_id(market: dict, side: str, clob_client=None) -> str:
             condition_id = market.get("id", "")
             if condition_id:
                 clob_market = clob_client.get_market(condition_id)
-                tokens = clob_market.get("tokens", [])
+                # Handle both dict (old SDK) and object (new SDK) formats
+                tokens = getattr(clob_market, "tokens", None) or clob_market.get("tokens", [])
                 for t in tokens:
-                    outcome = t.get("outcome", "").upper()
+                    outcome = (getattr(t, "outcome", None) or t.get("outcome", "")).upper()
                     if side == "YES" and outcome in ("YES", "TRUE", "1"):
-                        return t["token_id"]
+                        return getattr(t, "token_id", None) or t.get("token_id", "")
                     if side == "NO" and outcome in ("NO", "FALSE", "0"):
-                        return t["token_id"]
+                        return getattr(t, "token_id", None) or t.get("token_id", "")
                 # fallback: index-based
                 if side == "YES" and tokens:
-                    return tokens[0]["token_id"]
+                    t = tokens[0]
+                    return getattr(t, "token_id", None) or t.get("token_id", "")
                 if side == "NO" and len(tokens) > 1:
-                    return tokens[1]["token_id"]
+                    t = tokens[1]
+                    return getattr(t, "token_id", None) or t.get("token_id", "")
         except Exception:
             pass
 
@@ -102,42 +117,61 @@ def execute_trade(market: dict, side: str, size: float, mode: str, clob_client=N
             print(f"[DRY_RUN] Would execute {side} ${size:.2f} on '{market['question'][:60]}'")
         else:
             try:
-                from py_clob_client_v2.clob_types import MarketOrderArgs, OrderType
-                from py_clob_client_v2.order_builder.constants import BUY
-
                 token_id = _get_token_id(market, side, clob_client)
                 if not token_id or len(str(token_id)) < 10:
                     raise ValueError(f"Invalid token_id for {side} side: '{token_id}'")
 
-                order_args = MarketOrderArgs(
-                    token_id=token_id,
-                    amount=size,
-                    side=BUY,
-                )
-                signed_order = clob_client.create_market_order(order_args)
-                resp = clob_client.post_order(signed_order, OrderType.FOK)
-
-                if resp.get("success"):
-                    trade["status"] = "LIVE_FILLED"
-                    trade["order_id"] = resp.get("orderID", "")
-                    trade["tx_hash"] = (resp.get("transactionsHashes") or [""])[0]
-                    # Parse actual fill: amounts may be in different units
-                    making = float(resp.get("makingAmount", 0))  # USDC spent
-                    taking = float(resp.get("takingAmount", 0))  # tokens received
-                    if making > 0 and taking > 0:
-                        trade["price_at_entry"] = round(making / taking, 4)
-                        trade["size_usd"] = round(making, 2)
+                if _is_new_sdk(clob_client):
+                    # New polymarket-client SDK
+                    resp = clob_client.place_market_order(
+                        token_id=token_id, side="BUY", amount=size, order_type="FOK"
+                    )
+                    if hasattr(resp, "order_id") and getattr(resp, "status", "") not in ("REJECTED", "FAILED"):
+                        trade["status"] = "LIVE_FILLED"
+                        trade["order_id"] = getattr(resp, "order_id", "")
+                        making = float(getattr(resp, "making_amount", 0) or 0)
+                        taking = float(getattr(resp, "taking_amount", 0) or 0)
+                        tx_hashes = getattr(resp, "transactions_hashes", ()) or ()
+                        trade["tx_hash"] = str(tx_hashes[0]) if tx_hashes else ""
+                        if making > 0 and taking > 0:
+                            trade["price_at_entry"] = round(making / taking, 4)
+                            trade["size_usd"] = round(making, 2)
+                        else:
+                            trade["size_usd"] = size
+                        trade["fill_status"] = getattr(resp, "status", "")
+                        print(f"[LIVE] Filled {side} ${trade['size_usd']:.2f} @ {trade['price_at_entry']:.4f} | TX: {trade['tx_hash'][:20]}...")
                     else:
-                        # Fallback: keep original size if API doesn't return amounts
-                        trade["size_usd"] = size
-                    trade["fill_status"] = resp.get("status", "")
-                    print(f"[LIVE] 💰 Filled {side} ${trade['size_usd']:.2f} @ {trade['price_at_entry']:.4f} | TX: {trade['tx_hash'][:20]}...")
+                        msg = getattr(resp, "message", "") or str(resp)
+                        trade["status"] = f"REJECTED: {msg}"
+                        print(f"[LIVE] Order rejected: {msg}")
                 else:
-                    trade["status"] = f"REJECTED: {resp.get('errorMsg', 'unknown')}"
-                    print(f"[LIVE] ❌ Order rejected: {resp.get('errorMsg', resp)}")
+                    # Legacy py-clob-client SDK
+                    from py_clob_client_v2.clob_types import MarketOrderArgs, OrderType
+                    from py_clob_client_v2.order_builder.constants import BUY
+
+                    order_args = MarketOrderArgs(token_id=token_id, amount=size, side=BUY)
+                    signed_order = clob_client.create_market_order(order_args)
+                    resp = clob_client.post_order(signed_order, OrderType.FOK)
+
+                    if resp.get("success"):
+                        trade["status"] = "LIVE_FILLED"
+                        trade["order_id"] = resp.get("orderID", "")
+                        trade["tx_hash"] = (resp.get("transactionsHashes") or [""])[0]
+                        making = float(resp.get("makingAmount", 0))
+                        taking = float(resp.get("takingAmount", 0))
+                        if making > 0 and taking > 0:
+                            trade["price_at_entry"] = round(making / taking, 4)
+                            trade["size_usd"] = round(making, 2)
+                        else:
+                            trade["size_usd"] = size
+                        trade["fill_status"] = resp.get("status", "")
+                        print(f"[LIVE] Filled {side} ${trade['size_usd']:.2f} @ {trade['price_at_entry']:.4f} | TX: {trade['tx_hash'][:20]}...")
+                    else:
+                        trade["status"] = f"REJECTED: {resp.get('errorMsg', 'unknown')}"
+                        print(f"[LIVE] Order rejected: {resp.get('errorMsg', resp)}")
             except Exception as e:
                 trade["status"] = f"ERROR: {e}"
-                print(f"[LIVE] ❌ Execution failed: {e}")
+                print(f"[LIVE] Execution failed: {e}")
 
     log_file = os.getenv(
         "DEMO_TRADES_FILE" if mode == "demo" else "LIVE_TRADES_FILE",
