@@ -69,16 +69,28 @@ Yang harus terlihat:
 - Docs: README, ARCHITECTURE, CONFIGURATION
 - Fine-tune evaluator setiap 30 trades
 - Category expansion: sports, crypto, geo, politics, ai, social
+- **Phase 0.2: SDK Migration** — py-clob-client → polymarket-client (backward compatible)
+  - core.py: `_build_clob_client()` tries SecureClient first, falls back to ClobClient
+  - executor.py: `execute_trade()` branches on SDK type for market orders
+  - monitor.py: `_execute_sell_order()` branches on SDK type for limit orders
+  - sync_live.py: `sync_live_trades()` handles both Paginator and dict responses
+  - PYSDK_MIGRATION.md: full mapping doc old → new API
+- Technical upgrade roadmap (Phase 0-5) based on GitHub research
 
 ### 🔄 Dalam Progress
 - Terminal log: structured per-cycle output (cycle #, timestamp, step-by-step)
 - Dashboard sync: positions dari Polymarket real account
-- SSL/network issue (Gamma API blocked by ISP — butuh VPN/proxy di server)
+- **Network issue** — Telkomsel block Gamma API (butuh VPN/proxy/VPS luar)
 
 ### 📋 Belum Dimulai
 - Video recording setup (split screen terminal + dashboard)
 - Live mode validation (setelah network issue resolved)
 - Performance report PDF untuk klien
+- Phase 1: Wang Transform pricing engine (oracle3)
+- Phase 2: Multi-model ensemble (4 LLMs)
+- Phase 3: Arbitrage strategies + hedge discovery
+- Phase 4: On-chain whale signal + resolution sniper
+- Phase 5: WebSocket + chat interface
 
 ---
 
