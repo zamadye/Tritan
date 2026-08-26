@@ -33,6 +33,74 @@ not onboard a project nobody has screened.
 
 ## Sequence design
 
+A real campaign is **dozens of actions across many dApps**, not a handful.
+Monad alone was ~15 separate sites. So model the dependencies instead of hoping
+the order works out:
+
+```bash
+haa campaign add-action <slug> "add_rpc@once"      --tier connect --network monad-testnet
+haa campaign add-action <slug> "claim_faucet@once" --tier testnet --depends-on add_rpc
+haa campaign add-action <slug> "apriori_stake@once" --tier testnet --group apriori \
+    --depends-on claim_faucet
+```
+
+- `--depends-on` — the planner refuses to run an action whose prerequisites are
+  not done. Without it the agent swaps before the faucet ran and reports a
+  failure that looks like a broken dApp.
+- `--group` — one per dApp. Runs checkpoint per group, so a 40-step campaign
+  **resumes** instead of restarting.
+- `--tier` / `--network` — feed the tiered approval decision (see below).
+
+Ask what is runnable right now rather than guessing:
+
+```bash
+haa plan
+```
+
+### Prerequisites that live outside the campaign
+
+Some gates are not steps at all — the Monad faucets needed 0.03 ETH plus three
+mainnet transactions, or $1 of volume on another site, or tokens on Polygon.
+If no faucet can be claimed, **nothing downstream is possible**. Stop and say
+so. Grinding through 40 failing actions is worse than reporting the blocker.
+
+## Approval tiers
+
+Approval is tiered by what is at risk, not by whether a signature happens:
+
+| Tier | Examples | Who acts |
+|---|---|---|
+| `read` | navigate, snapshot, screenshot | autonomous |
+| `connect` | connect wallet, add network | autonomous |
+| `testnet` | testnet swap, stake, mint, deploy | autonomous |
+| `mainnet` | real value, within `HAA_MAX_SPEND_USD` | autonomous + report |
+| `critical` | unlimited `approve`, `setApprovalForAll`, over the limit | **human, always** |
+
+The last row stays manual **even on testnet**. Blind-approving is a habit, and
+the habit is what causes mainnet losses later.
+
+## Things that need a human, once
+
+**Browser extensions cannot be installed over CDP.** Projects like Primus and
+Miden ask you to install their extension. There is no workaround — model these
+as `--kind manual_setup`, stop, and tell the operator what to install.
+
+## Long-horizon commitments
+
+Some rewards need state that outlives a single run: an LP position left open
+for 30 days, a 30-day daily streak, a badge that expires.
+
+```bash
+haa positions add <slug> --id lp-main --kind lp --protocol Aerodrome --until 2026-09-25
+haa positions streak <slug> discover     # mark today's streak day done
+haa positions list <slug>                # what is open, expiring, or at risk
+```
+
+Check `haa positions list` at the start of a run. A streak that already missed
+today is worth interrupting someone for; discovering it in three weeks is not.
+
+## Pacing
+
 A good sequence is **3–5 persistent actions repeated over weeks**, not 200
 micro-operations in an afternoon. Projects look at consistency and at on-chain
 history, not at a single burst of activity.

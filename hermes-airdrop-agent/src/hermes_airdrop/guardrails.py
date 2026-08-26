@@ -408,3 +408,166 @@ def scan_text_for_keys(text: str | None) -> Halt | None:
         "Remove it. This system stores wallet addresses only — keys belong in "
         "a hardware wallet or an OS keychain you control.",
     )
+
+
+# ---------------------------------------------------------------------------
+# Tiered approval
+# ---------------------------------------------------------------------------
+#
+# "The operator signs everything" does not survive contact with a real
+# campaign. Monad alone is 30-50 actions across ~15 dApps, most of them
+# testnet interactions with tokens that have no value. Asking a human to sign
+# each one is 30-50 interruptions for nothing.
+#
+# So approval is tiered by what is actually at risk, not by whether a
+# signature happens:
+#
+#   read      navigate, snapshot, screenshot, read a page      -> autonomous
+#   connect   connect a wallet without signing anything        -> autonomous
+#   testnet   on-chain, but the tokens have no value           -> autonomous
+#   mainnet   real value, within the per-action limit          -> autonomous + report
+#   critical  unbounded grant, or over the limit               -> ALWAYS human
+#
+# The last row is the one that must never be relaxed. An unlimited ERC-20
+# approval or setApprovalForAll is how wallets get drained, and it is not
+# bounded by any spend limit because the exposure is the whole balance.
+
+class Tier(str, Enum):
+    READ = "read"
+    CONNECT = "connect"
+    TESTNET = "testnet"
+    MAINNET = "mainnet"
+    CRITICAL = "critical"
+
+
+#: Actions whose exposure is unbounded. Never autonomous, on any network,
+#: at any amount — a spend limit cannot cap "everything you own".
+UNBOUNDED_ACTIONS: frozenset[str] = frozenset(
+    {
+        "setapprovalforall",
+        "approve_unlimited",
+        "unlimited_approval",
+        "permit2",
+        "increase_allowance",
+        "set_approval_for_all",
+    }
+)
+
+#: Read-only interactions. No signature, no spend, no state change.
+READ_ACTIONS: frozenset[str] = frozenset(
+    {
+        "navigate",
+        "snapshot",
+        "screenshot",
+        "read",
+        "check_in_readonly",
+        "view",
+        "scroll",
+        "search",
+    }
+)
+
+#: Wallet connection that does not sign. Linking an address is not a grant.
+CONNECT_ACTIONS: frozenset[str] = frozenset(
+    {"connect_wallet", "connect", "link_wallet", "add_network", "switch_network"}
+)
+
+
+@dataclass(frozen=True)
+class ApprovalDecision:
+    """Who has to act, and why."""
+
+    tier: Tier
+    autonomous: bool
+    must_report: bool
+    reason: str
+
+    def __str__(self) -> str:
+        who = "AUTONOMOUS" if self.autonomous else "HUMAN REQUIRED"
+        rep = " (+report)" if self.must_report else ""
+        return f"[{self.tier.value}] {who}{rep} — {self.reason}"
+
+
+def classify_tier(
+    action: str,
+    *,
+    network: str = "",
+    is_unbounded: bool | None = None,
+) -> Tier:
+    """Work out which tier an action falls into.
+
+    ``network`` should be a chain name or ``"testnet"``/``"mainnet"``. An
+    unknown network is treated as **mainnet** — failing open here would mean
+    an unrecognised chain gets to spend real money unattended.
+    """
+    a = action.strip().lower().replace("-", "_").replace(" ", "_")
+
+    if is_unbounded or a in UNBOUNDED_ACTIONS:
+        return Tier.CRITICAL
+    if a in READ_ACTIONS:
+        return Tier.READ
+    if a in CONNECT_ACTIONS:
+        return Tier.CONNECT
+
+    n = network.strip().lower()
+    if n.endswith("testnet") or n.startswith("testnet") or n in ("test", "devnet"):
+        return Tier.TESTNET
+    # Anything we cannot classify is assumed to hold real value.
+    return Tier.MAINNET
+
+
+def decide(
+    action: str,
+    *,
+    network: str = "",
+    amount_usd: float = 0.0,
+    spend_limit_usd: float = 0.0,
+    is_unbounded: bool | None = None,
+) -> ApprovalDecision:
+    """Decide whether an action may run unattended.
+
+    Ordering matters. The unbounded check runs first so that an unlimited
+    approval on a testnet is still flagged as something a human should see —
+    the habit of blind-approving is what causes mainnet losses later.
+    """
+    tier = classify_tier(action, network=network, is_unbounded=is_unbounded)
+
+    if tier is Tier.CRITICAL:
+        why = (
+            "unbounded grant — exposure is the whole balance, so no spend "
+            "limit can cap it"
+            if (is_unbounded or action.strip().lower().replace("-", "_") in UNBOUNDED_ACTIONS)
+            else f"cost ${amount_usd:.2f} exceeds the ${spend_limit_usd:.2f} per-action limit"
+        )
+        return ApprovalDecision(Tier.CRITICAL, False, True, why)
+
+    if tier is Tier.READ:
+        return ApprovalDecision(Tier.READ, True, False, "read-only, nothing signed or spent")
+
+    if tier is Tier.CONNECT:
+        return ApprovalDecision(
+            Tier.CONNECT, True, False, "links an address; no signature, no grant"
+        )
+
+    if tier is Tier.TESTNET:
+        return ApprovalDecision(
+            Tier.TESTNET,
+            True,
+            False,
+            f"on-chain on {network or 'a testnet'}, but the tokens have no value",
+        )
+
+    # MAINNET
+    if spend_limit_usd > 0 and amount_usd > spend_limit_usd:
+        return ApprovalDecision(
+            Tier.CRITICAL,
+            False,
+            True,
+            f"cost ${amount_usd:.2f} exceeds the ${spend_limit_usd:.2f} per-action limit",
+        )
+    return ApprovalDecision(
+        Tier.MAINNET,
+        True,
+        True,
+        f"mainnet spend of ${amount_usd:.2f} within the ${spend_limit_usd:.2f} limit",
+    )

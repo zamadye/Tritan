@@ -9,7 +9,7 @@ model:
   context_length: ${HAA_CONTEXT_LENGTH}
 
 agent:
-  max_turns: 40
+  max_turns: 80
   reasoning_effort: medium
   stall_guards: true
 

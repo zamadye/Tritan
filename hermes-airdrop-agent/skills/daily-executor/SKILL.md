@@ -32,6 +32,17 @@ click fails.
 Read the plan's warnings too. `needs_approval` means wait for the operator;
 `blocked` means do not attempt it at all.
 
+Also check long-horizon state before you start — a streak that already missed
+today, or a position about to expire, matters more than any single check-in:
+
+```bash
+haa positions list <slug>
+```
+
+Work only on what is actually runnable. An action whose prerequisites are not
+met is not "failing" — it is correctly waiting, and forcing it produces a
+failure that looks like a broken dApp.
+
 ## Autonomy contract — read this before anything else
 
 **Nobody tells you which button to click. You decide.**

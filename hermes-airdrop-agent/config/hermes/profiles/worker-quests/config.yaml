@@ -9,7 +9,7 @@ model:
   context_length: ${HAA_CONTEXT_LENGTH}
 
 agent:
-  max_turns: 120                   # onboarding flows are long
+  max_turns: 400                   # onboarding flows are long
   reasoning_effort: high
   stall_guards: true
   verify_guidance: true

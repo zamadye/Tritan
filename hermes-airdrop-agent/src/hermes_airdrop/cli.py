@@ -344,22 +344,117 @@ def cmd_campaign_add_action(args: argparse.Namespace) -> int:
     store = _store(args)
     camp = store.load(args.slug)
     name, _, sched = args.spec.partition("@")
+    name = name.strip()
     sched = sched.strip() or "0 9 * * *"
-    try:
-        from .scheduler import describe, parse
+    if sched != "once":
+        try:
+            from .scheduler import describe, parse
 
-        parse(sched)
-    except Exception as exc:
-        return _fail(f"bad schedule {sched!r}: {exc}")
-    if any(a.name == name.strip() for a in camp.actions):
-        return _fail(f"action '{name.strip()}' already exists on {args.slug}")
+            parse(sched)
+        except Exception as exc:
+            return _fail(f"bad schedule {sched!r}: {exc}")
+    else:
+        from .scheduler import describe  # noqa: F401  (kept for a uniform message)
+    if any(a.name == name for a in camp.actions):
+        return _fail(f"action '{name}' already exists on {args.slug}")
+
+    deps = [d.strip() for d in (args.depends_on or "").split(",") if d.strip()]
+    known = {a.name for a in camp.actions} | {name}
+    unknown = [d for d in deps if d not in known]
+    if unknown:
+        return _fail(
+            f"depends on undefined action(s): {', '.join(unknown)}. "
+            "Add them first — an unsatisfiable dependency fails the whole plan."
+        )
+
     camp.actions.append(
-        ActionSpec(name=name.strip(), schedule=sched, kind=args.kind, notes=args.notes or "")
+        ActionSpec(
+            name=name,
+            schedule=sched,
+            kind=args.kind,
+            group=args.group or "",
+            depends_on=deps,
+            tier=args.tier,
+            network=args.network or "",
+            url=args.url or "",
+            notes=args.notes or "",
+        )
     )
-    store.save(camp)
-    from .scheduler import describe
+    # Fail now, not at 09:00: a cycle makes the plan unbuildable.
+    try:
+        from .campaign import resolve_order
 
-    print(f"✓ {args.slug}: +{name.strip()} ({describe(sched)})")
+        resolve_order(camp.actions)
+    except Exception as exc:
+        return _fail(f"adding this action would break the plan: {exc}")
+
+    store.save(camp)
+    suffix = f" after {', '.join(deps)}" if deps else ""
+    label = sched if sched == "once" else __import__("hermes_airdrop.scheduler", fromlist=["describe"]).describe(sched)
+    print(f"✓ {args.slug}: +{name} ({label}){suffix} [tier={args.tier}, group={args.group or '-'}]")
+    return 0
+
+
+def _pstore(args: argparse.Namespace):
+    from .positions import PositionStore
+
+    return PositionStore(_data_root(args) / "campaigns")
+
+
+def cmd_positions_add(args: argparse.Namespace) -> int:
+    from .positions import Position, PositionError
+
+    try:
+        pos = Position(
+            id=args.id, campaign=args.slug, kind=args.kind, protocol=args.protocol or "",
+            opened_at=args.opened_at or "", until=args.until or "",
+            amount=args.amount or "", notes=args.notes or "",
+        )
+        _pstore(args).open_position(args.slug, pos)
+    except PositionError as exc:
+        return _fail(str(exc))
+    tail = f" until {pos.until}" if pos.until else ""
+    print(f"✓ {args.slug}: opened {pos.kind} '{pos.id}' on {pos.protocol or '-'}{tail}")
+    return 0
+
+
+def cmd_positions_close(args: argparse.Namespace) -> int:
+    from .positions import PositionError
+
+    try:
+        p = _pstore(args).close_position(args.slug, args.id, expired=args.expired)
+    except PositionError as exc:
+        return _fail(str(exc))
+    print(f"✓ {args.slug}: '{p.id}' -> {p.status}")
+    return 0
+
+
+def cmd_positions_streak(args: argparse.Namespace) -> int:
+    st = _pstore(args).record_streak_day(args.slug, args.name)
+    print(f"✓ {args.slug}: streak '{st.name}' = {st.current} day(s) (longest {st.longest})")
+    if st.target_days and st.current >= st.target_days:
+        print(f"  target of {st.target_days} reached")
+    return 0
+
+
+def cmd_positions_list(args: argparse.Namespace) -> int:
+    store = _pstore(args)
+    summ = store.summary(args.slug)
+    if getattr(args, "json", False):
+        print(json.dumps(summ, indent=2, sort_keys=True))
+        return 0
+    print(f"Long-horizon state — {args.slug}")
+    print(f"  open positions : {summ['open_positions']}")
+    if summ["past_due"]:
+        print(f"  ✗ PAST DUE      : {', '.join(summ['past_due'])}")
+    if summ["expiring_3d"]:
+        print(f"  ! expiring ≤3d  : {', '.join(summ['expiring_3d'])}")
+    for name, s in summ["streaks"].items():
+        flag = " ⚠ AT RISK" if s["at_risk"] else (" ✓ complete" if s["complete"] else "")
+        tgt = f"/{s['target']}" if s["target"] else ""
+        print(f"  streak {name:18} {s['current']}{tgt}{flag}")
+    if not summ["streaks"] and not summ["open_positions"]:
+        print("  (nothing open)")
     return 0
 
 
@@ -614,8 +709,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     cact = camp.add_parser("add-action")
     cact.add_argument("slug")
-    cact.add_argument("spec", metavar="NAME@CRON")
-    cact.add_argument("--kind", default="browser", choices=["browser", "manual", "wallet"])
+    cact.add_argument("spec", metavar="NAME@CRON", help="e.g. 'apriori_stake@once' or 'faucet@0 9 * * *'")
+    cact.add_argument("--kind", default="browser",
+                      choices=["browser", "manual", "wallet", "manual_setup"])
+    cact.add_argument("--depends-on", default="", metavar="A,B",
+                      help="actions that must complete first")
+    cact.add_argument("--group", default="", help="dApp name, for per-dApp checkpoints")
+    cact.add_argument("--tier", default="read",
+                      choices=["read", "connect", "testnet", "mainnet", "critical"])
+    cact.add_argument("--network", default="", help="chain, e.g. monad-testnet or base")
+    cact.add_argument("--url", default="")
     cact.add_argument("--notes", default="")
     cact.set_defaults(func=cmd_campaign_add_action)
 
@@ -665,6 +768,33 @@ def build_parser() -> argparse.ArgumentParser:
     wal.set_defaults(func=cmd_wallets_list)
     wau = wa.add_parser("audit")
     wau.set_defaults(func=cmd_wallets_audit)
+
+    pos = sub.add_parser("positions", help="long-horizon state: LP, stakes, streaks").add_subparsers(
+        dest="sub2", required=True)
+    pa = pos.add_parser("add")
+    pa.add_argument("slug")
+    pa.add_argument("--id", required=True)
+    pa.add_argument("--kind", default="other",
+                    choices=["lp", "stake", "lock", "badge", "vesting", "other"])
+    pa.add_argument("--protocol", default="")
+    pa.add_argument("--opened-at", default="", help="ISO date, default today")
+    pa.add_argument("--until", default="", help="ISO date it must stay open until")
+    pa.add_argument("--amount", default="")
+    pa.add_argument("--notes", default="")
+    pa.set_defaults(func=cmd_positions_add)
+    pc = pos.add_parser("close")
+    pc.add_argument("slug")
+    pc.add_argument("id")
+    pc.add_argument("--expired", action="store_true")
+    pc.set_defaults(func=cmd_positions_close)
+    ps = pos.add_parser("streak", help="mark a streak day done")
+    ps.add_argument("slug")
+    ps.add_argument("name")
+    ps.set_defaults(func=cmd_positions_streak)
+    pl2 = pos.add_parser("list")
+    pl2.add_argument("slug")
+    pl2.add_argument("--json", action="store_true")
+    pl2.set_defaults(func=cmd_positions_list)
 
     ev = sub.add_parser("evidence", help="audit trail").add_subparsers(dest="sub2", required=True)
     evt = ev.add_parser("tail")

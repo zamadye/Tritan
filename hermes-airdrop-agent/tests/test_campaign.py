@@ -8,6 +8,7 @@ import pytest
 
 from hermes_airdrop.analyzer import Evidence, score
 from hermes_airdrop.campaign import (
+    DependencyError,
     STATUS_ACTIVE,
     STATUS_PAUSED,
     ActionSpec,
@@ -15,6 +16,9 @@ from hermes_airdrop.campaign import (
     CampaignError,
     Progress,
     Store,
+    blocked_by_dependencies,
+    resolve_order,
+    runnable_now,
     slugify,
 )
 
@@ -274,3 +278,89 @@ class TestStreak:
         store.save_progress(p)
         from datetime import date
         assert store.streak("demo", today=date(2026, 8, 25)) == 1
+
+class TestDependencies:
+    """A real campaign is dozens of ordered actions: the faucet must work
+    before you can swap, the wallet must be connected before either."""
+
+    def actions(self):
+        return [
+            ActionSpec(name="swap", depends_on=["faucet"]),
+            ActionSpec(name="faucet", depends_on=["add_rpc"]),
+            ActionSpec(name="add_rpc"),
+            ActionSpec(name="stake", depends_on=["faucet"]),
+        ]
+
+    def test_topological_order(self):
+        names = [a.name for a in resolve_order(self.actions())]
+        assert names.index("add_rpc") < names.index("faucet") < names.index("swap")
+        assert names.index("faucet") < names.index("stake")
+
+    def test_missing_dependency_fails_loudly(self):
+        """A silently ignored dependency means the agent swaps before the
+        faucet ran, and the failure looks like a broken dApp."""
+        with pytest.raises(DependencyError) as ei:
+            resolve_order([ActionSpec(name="swap", depends_on=["nope"])])
+        assert "not defined" in str(ei.value)
+
+    def test_cycle_detected(self):
+        with pytest.raises(DependencyError) as ei:
+            resolve_order([
+                ActionSpec(name="a", depends_on=["b"]),
+                ActionSpec(name="b", depends_on=["a"]),
+            ])
+        assert "circular" in str(ei.value)
+
+    def test_self_cycle_detected(self):
+        with pytest.raises(DependencyError):
+            resolve_order([ActionSpec(name="a", depends_on=["a"])])
+
+    def test_blocked_by_dependencies(self):
+        blocked = blocked_by_dependencies(self.actions(), completed={"add_rpc"})
+        assert blocked == {"swap": ["faucet"], "stake": ["faucet"]}
+
+    def test_runnable_now_respects_order_and_completion(self):
+        acts = self.actions()
+        assert [a.name for a in runnable_now(acts, set())] == ["add_rpc"]
+        assert [a.name for a in runnable_now(acts, {"add_rpc"})] == ["faucet"]
+        assert sorted(a.name for a in runnable_now(acts, {"add_rpc", "faucet"})) == ["stake", "swap"]
+        assert runnable_now(acts, {"add_rpc", "faucet", "swap", "stake"}) == []
+
+    def test_actionspec_round_trip_keeps_dependencies(self):
+        a = ActionSpec(name="stake", depends_on=["faucet"], group="apriori",
+                       tier="testnet", network="monad-testnet", url="https://stake.apr.io")
+        assert ActionSpec.from_dict(a.to_dict()).to_dict() == a.to_dict()
+
+    def test_from_dict_tolerates_null_depends_on(self):
+        """JSON null must not become a crash on load."""
+        a = ActionSpec.from_dict({"name": "x", "depends_on": None})
+        assert a.depends_on == []
+
+
+class TestResumeFromLedger:
+    """A run that dies at step 14 of 40 must resume at 14, not restart."""
+
+    def test_completed_derives_from_verified_log_only(self, store):
+        store.save(camp(actions=[ActionSpec(name="a"), ActionSpec(name="b"), ActionSpec(name="c")]))
+        store.log_action("demo", "a", "ok")
+        store.log_action("demo", "b", "failed", "503")
+        assert store.completed_actions("demo") == {"a"}
+
+    def test_next_runnable_skips_completed(self, store):
+        store.save(camp(actions=[
+            ActionSpec(name="add_rpc"),
+            ActionSpec(name="faucet", depends_on=["add_rpc"]),
+            ActionSpec(name="swap", depends_on=["faucet"]),
+        ]))
+        assert [a.name for a in store.next_runnable("demo")] == ["add_rpc"]
+        store.log_action("demo", "add_rpc", "ok")
+        assert [a.name for a in store.next_runnable("demo")] == ["faucet"]
+        store.log_action("demo", "faucet", "ok")
+        assert [a.name for a in store.next_runnable("demo")] == ["swap"]
+
+    def test_blocked_reports_what_is_missing(self, store):
+        store.save(camp(actions=[
+            ActionSpec(name="faucet"),
+            ActionSpec(name="swap", depends_on=["faucet"]),
+        ]))
+        assert store.blocked("demo") == {"swap": ["faucet"]}

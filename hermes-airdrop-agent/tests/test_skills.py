@@ -282,10 +282,19 @@ class TestNoBrittleInstructions:
         assert "Never record this" in t
         assert "CSS id" in t
 
-    def test_actionspec_has_no_click_level_field(self):
-        """The data model itself must not be able to express a click sequence."""
+    def test_actionspec_cannot_express_a_click_sequence(self):
+        """The data model itself must not be able to express a click sequence.
+
+        Structural fields (dependencies, grouping, tier, network) are fine and
+        necessary -- a real campaign is dozens of ordered actions. What is
+        banned is anything that names a *mechanism* rather than an outcome.
+        """
         from hermes_airdrop.campaign import ActionSpec
         fields = set(ActionSpec.__dataclass_fields__)
-        assert fields == {"name", "schedule", "kind", "needs_approval", "notes"}
-        for banned in ("selector", "xpath", "steps", "clicks", "url_path"):
-            assert banned not in fields
+        assert fields == {
+            "name", "schedule", "kind", "needs_approval", "notes",
+            "group", "depends_on", "tier", "network", "url",
+        }
+        for banned in ("selector", "xpath", "css", "steps", "clicks",
+                       "coordinates", "ref_id", "dom", "script"):
+            assert banned not in fields, f"ActionSpec grew a mechanism field: {banned}"

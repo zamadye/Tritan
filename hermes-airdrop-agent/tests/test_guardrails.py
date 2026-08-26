@@ -4,6 +4,10 @@ from __future__ import annotations
 import pytest
 
 from hermes_airdrop.guardrails import (
+    UNBOUNDED_ACTIONS,
+    Tier,
+    classify_tier,
+    decide,
     Halt,
     HaltReason,
     SPEND_ACTIONS,
@@ -150,3 +154,78 @@ class TestSpendLimit:
         h = check_spend_limit(5.01, 5.0)
         assert h and h.reason is HaltReason.SPEND_LIMIT
         assert "$5.01" in h.detail
+
+class TestTieredApproval:
+    """Approval is tiered by what is actually at risk, not by whether a
+    signature happens. Monad alone is 30-50 actions, most of them testnet
+    interactions with worthless tokens -- "the human signs everything" would
+    mean 30-50 interruptions for nothing."""
+
+    def test_read_is_autonomous(self):
+        d = decide("navigate", network="monad-testnet")
+        assert d.autonomous and d.tier is Tier.READ and not d.must_report
+
+    def test_connect_is_autonomous(self):
+        d = decide("connect_wallet", network="monad-testnet")
+        assert d.autonomous and d.tier is Tier.CONNECT
+
+    def test_add_network_is_connect_not_spend(self):
+        assert decide("add_network", network="monad-testnet").tier is Tier.CONNECT
+
+    def test_testnet_spend_is_autonomous(self):
+        d = decide("swap", network="monad-testnet")
+        assert d.autonomous and d.tier is Tier.TESTNET
+
+    def test_mainnet_within_limit_is_autonomous_but_reported(self):
+        d = decide("swap", network="base", amount_usd=2.0, spend_limit_usd=5.0)
+        assert d.autonomous and d.tier is Tier.MAINNET and d.must_report
+
+    def test_mainnet_over_limit_needs_a_human(self):
+        d = decide("swap", network="base", amount_usd=50.0, spend_limit_usd=5.0)
+        assert not d.autonomous and d.tier is Tier.CRITICAL
+
+    @pytest.mark.parametrize("action", sorted(UNBOUNDED_ACTIONS))
+    def test_unbounded_grant_always_needs_a_human(self, action):
+        """An unlimited approval is not bounded by any spend limit, because the
+        exposure is the whole balance."""
+        d = decide(action, network="base", amount_usd=0.0, spend_limit_usd=5.0)
+        assert not d.autonomous and d.tier is Tier.CRITICAL
+
+    def test_unbounded_grant_needs_a_human_even_on_testnet(self):
+        """Deliberate: blind-approving is a habit, and the habit is what causes
+        mainnet losses later."""
+        d = decide("approve_unlimited", network="monad-testnet")
+        assert not d.autonomous and d.tier is Tier.CRITICAL
+
+    def test_unbounded_flag_overrides_the_action_name(self):
+        d = decide("approve", network="base", amount_usd=1.0,
+                   spend_limit_usd=5.0, is_unbounded=True)
+        assert not d.autonomous and d.tier is Tier.CRITICAL
+
+    def test_unknown_network_is_treated_as_mainnet(self):
+        """Failing open here would let an unrecognised chain spend real money
+        unattended."""
+        d = decide("swap", network="", amount_usd=1.0, spend_limit_usd=5.0)
+        assert d.tier is Tier.MAINNET
+
+    def test_devnet_counts_as_testnet(self):
+        assert decide("swap", network="devnet").tier is Tier.TESTNET
+
+    def test_case_and_separator_insensitive(self):
+        assert decide("setApprovalForAll", network="base").tier is Tier.CRITICAL
+        assert decide("connect-wallet", network="x").tier is Tier.CONNECT
+
+    def test_zero_limit_means_no_autonomous_mainnet_spend(self):
+        d = decide("swap", network="base", amount_usd=0.01, spend_limit_usd=0.0)
+        assert d.autonomous  # no limit configured -> within it
+        assert d.tier is Tier.MAINNET
+
+    def test_decision_str_states_who_acts(self):
+        assert "HUMAN REQUIRED" in str(decide("setApprovalForAll", network="base"))
+        assert "AUTONOMOUS" in str(decide("navigate", network="monad-testnet"))
+
+    def test_classify_tier_directly(self):
+        assert classify_tier("screenshot") is Tier.READ
+        assert classify_tier("stake", network="monad-testnet") is Tier.TESTNET
+        assert classify_tier("stake", network="base") is Tier.MAINNET
+        assert classify_tier("permit2", network="monad-testnet") is Tier.CRITICAL

@@ -63,13 +63,39 @@ def _utcnow() -> datetime:
 
 @dataclass
 class ActionSpec:
-    """One repeatable thing the campaign asks for."""
+    """One repeatable thing the campaign asks for.
+
+    This describes an OUTCOME ("stake MON on aPriori"), never a mechanism.
+    There is deliberately no selector, XPath, coordinate or click-sequence
+    field: airdrop UIs change weekly and differ between projects, so anything
+    prescriptive here would be stale within days. See
+    tests/test_skills.py::TestNoBrittleInstructions.
+
+    A real campaign is dozens of these across many dApps, with ordering
+    constraints between them (the faucet must work before you can swap; the
+    wallet must be connected before either). ``depends_on`` and ``group``
+    express that; ``tier``/``network`` feed the tiered-approval decision in
+    guardrails.decide().
+    """
 
     name: str
-    schedule: str = "0 9 * * *"  # cron expression
-    kind: str = "browser"  # browser | manual | wallet
+    schedule: str = "0 9 * * *"  # cron expression, or "once"
+    kind: str = "browser"  # browser | manual | wallet | manual_setup
     needs_approval: bool = False
     notes: str = ""
+    #: dApp / platform this belongs to ("apriori", "layer3", "magic-eden").
+    #: Runs are checkpointed per group so a 40-step campaign can be resumed
+    #: instead of restarted.
+    group: str = ""
+    #: Names of actions that must have completed first.
+    depends_on: list[str] = field(default_factory=list)
+    #: read | connect | testnet | mainnet | critical — see guardrails.Tier.
+    tier: str = "read"
+    #: Chain the action touches. Empty means unknown, which guardrails treats
+    #: as mainnet so an unrecognised chain never spends unattended.
+    network: str = ""
+    #: Where it happens. A page, not a selector.
+    url: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -77,7 +103,74 @@ class ActionSpec:
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> "ActionSpec":
         known = cls.__dataclass_fields__  # type: ignore[attr-defined]
-        return cls(**{k: v for k, v in d.items() if k in known})
+        data = {k: v for k, v in d.items() if k in known}
+        data["depends_on"] = list(data.get("depends_on") or [])
+        return cls(**data)
+
+
+class DependencyError(CampaignError):
+    """Raised when a dependency graph cannot be satisfied."""
+
+
+def resolve_order(actions: list[ActionSpec]) -> list[ActionSpec]:
+    """Topologically sort actions so prerequisites come first.
+
+    Raises :class:`DependencyError` on a cycle or on a dependency that does not
+    exist. Failing loudly here is the point: a silently ignored dependency
+    means the agent tries to swap before the faucet ran, and reports a failure
+    that looks like a broken dApp rather than a broken plan.
+    """
+    by_name = {a.name: a for a in actions}
+    for a in actions:
+        for dep in a.depends_on:
+            if dep not in by_name:
+                raise DependencyError(
+                    f"action '{a.name}' depends on '{dep}', which is not defined"
+                )
+
+    order: list[ActionSpec] = []
+    placed: set[str] = set()
+    visiting: set[str] = set()
+
+    def visit(a: ActionSpec, path: list[str]) -> None:
+        if a.name in placed:
+            return
+        if a.name in visiting:
+            cycle = " -> ".join(path[path.index(a.name):] + [a.name])
+            raise DependencyError(f"circular dependency: {cycle}")
+        visiting.add(a.name)
+        for dep in a.depends_on:
+            visit(by_name[dep], path + [a.name])
+        visiting.discard(a.name)
+        placed.add(a.name)
+        order.append(a)
+
+    for a in actions:
+        visit(a, [])
+    return order
+
+
+def blocked_by_dependencies(
+    actions: list[ActionSpec], completed: set[str]
+) -> dict[str, list[str]]:
+    """Map each unsatisfied action to the prerequisites it is still waiting on."""
+    out: dict[str, list[str]] = {}
+    for a in actions:
+        missing = [d for d in a.depends_on if d not in completed]
+        if missing:
+            out[a.name] = missing
+    return out
+
+
+def runnable_now(
+    actions: list[ActionSpec], completed: set[str]
+) -> list[ActionSpec]:
+    """Actions whose prerequisites are all satisfied and that are not done."""
+    return [
+        a
+        for a in resolve_order(actions)
+        if a.name not in completed and all(d in completed for d in a.depends_on)
+    ]
 
 
 @dataclass
@@ -340,6 +433,24 @@ class Store:
             if fire <= day_end:
                 due.append(spec)
         return due
+
+    def completed_actions(self, slug: str) -> set[str]:
+        """Names of actions that have a verified `ok` in the ledger.
+
+        This is the checkpoint. Deriving it from the ledger rather than storing
+        a separate "progress pointer" means it cannot drift out of sync with
+        what actually happened — and a run that died at step 14 of 40 resumes
+        at step 14 instead of restarting.
+        """
+        return {e.action for e in self.load_progress(slug).log if e.status == "ok"}
+
+    def next_runnable(self, slug: str) -> list[ActionSpec]:
+        """Actions whose prerequisites are satisfied and are not yet done."""
+        return runnable_now(self.load(slug).actions, self.completed_actions(slug))
+
+    def blocked(self, slug: str) -> dict[str, list[str]]:
+        """Actions still waiting on a prerequisite, and which one."""
+        return blocked_by_dependencies(self.load(slug).actions, self.completed_actions(slug))
 
     def streak(self, slug: str, *, today: date | None = None) -> int:
         """Consecutive days with at least one successful action, ending today.

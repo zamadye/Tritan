@@ -19,7 +19,7 @@ model:
   context_length: ${HAA_CONTEXT_LENGTH}
 
 agent:
-  max_turns: 80
+  max_turns: 200
   reasoning_effort: high
   stall_guards: true
   verify_guidance: true

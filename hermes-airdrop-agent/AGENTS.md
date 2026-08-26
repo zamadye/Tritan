@@ -113,7 +113,7 @@ google-chrome --remote-debugging-port=9222 \
   evidence, notify, cli
 - 6 skill di `skills/` dengan frontmatter Hermes yang benar
 - 5 worker profile + SOUL.md di `config/hermes/profiles/`
-- `tests/` — **704 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
+- `tests/` — **768 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
 - `docs/research/` — hermes-schema.md, browser.md, sources.md
 - Skema config Hermes sudah diekstrak dari `DEFAULT_CONFIG` (89 top-level key)
 
@@ -179,6 +179,33 @@ Yang diperbaiki (dua gap nyata):
   button" (outcome-based, memang diizinkan).
 - config.yaml mendokumentasikan trade-off `backend: off` vs `browser-use`
   beserta cara switch kalau ada proyek yang butuh.
+
+### Selesai 2026-08-27 — task kompleks (puluhan langkah)
+
+Riset guide nyata (Monad ~30-50 aksi di ~15 dApp, Abstract Chain streak 30 hari,
+Base LP 30 hari) menunjukkan arsitektur sebelumnya TIDAK cukup. User memilih:
+approval berjenjang, scope penuh, Monad sebagai acuan.
+
+- **`guardrails.decide()` + `Tier`** — read/connect/testnet = otonom; mainnet
+  dalam batas = otonom + lapor; unbounded grant (`setApprovalForAll`,
+  `approve_unlimited`, `permit2`) = **manusia selalu, bahkan di testnet**
+  (blind-approve itu kebiasaan, dan kebiasaan itu yang bikin rugi di mainnet).
+  Network tak dikenal diperlakukan sebagai mainnet (fail-safe).
+- **`ActionSpec` + `depends_on` / `group` / `tier` / `network`** — planner
+  menolak aksi yang prasyaratnya belum selesai. Cycle & dependency tak dikenal
+  gagal keras, bukan diam-diam.
+- **Resume dari ledger** — `Store.completed_actions()` / `next_runnable()` /
+  `blocked()`. Run mati di langkah 14/40 lanjut dari 14, tidak mengulang.
+  Diturunkan dari ledger, bukan file pointer terpisah yang bisa drift.
+- **`positions.py`** — state jangka panjang: LP/stake/badge dengan `until`,
+  streak consecutive-day (gap me-reset, hari sama idempoten), `expiring_soon`,
+  `at_risk_streaks`. CLI: `haa positions add|close|streak|list`.
+- **`max_turns` dinaikkan** — lead 200, quests 400, daily 120 (1 dApp ≈ 8-15
+  turn; 15 dApp = 120-225 turn, sebelumnya mentok di 120).
+- **`knowledge/worked-example-monad.md`** — dekomposisi 4 layer (prerequisite
+  gate / onboarding / long tail per dApp / recurring) + trap nyata.
+- **Ekstensi browser = `kind: manual_setup`.** CDP tidak bisa install ekstensi
+  Chrome (Primus, Miden). Blocker keras, butuh manusia sekali.
 
 ### Masih terbuka
 
@@ -270,6 +297,7 @@ for f in install.sh scripts/*.sh; do bash -n "$f"; done
 |---|---|
 | 2026-08-25 | Riset sumber; backend Python 11 modul; 6 skill; 5 profile; 599 test; commit `fd01dc1` |
 | 2026-08-25 | Koreksi: semua worker dapat browser; GUI default di compose |
+| 2026-08-27 | **Task kompleks**: tiered approval, depends_on + planner, resume dari ledger, positions.py (LP/streak/expiry), max_turns dinaikkan, knowledge Monad. **768 test.** |
 | 2026-08-26 | **Kontrak otonomi**: Autonomy contract di skill, alat persepsi diwajibkan, lead dilarang catat selector, `TestNoBrittleInstructions`. **704 test.** |
 | 2026-08-26 | **Bug gitignore `skills/` ditemukan & diperbaiki** (6 SKILL.md tidak pernah ter-commit); model env-driven; install.sh symlink .env ke HERMES_HOME + profile; doctor deteksi `${VAR}`; `test_packaging.py`. **681 test.** |
 | 2026-08-26 | `cron-jobs.sh` 5 job 3-layer + preflight CDP; README ditulis ulang; `browser.md` ditandai superseded. **620 test lulus.** |

@@ -9,7 +9,7 @@ model:
   context_length: ${HAA_CONTEXT_LENGTH}
 
 agent:
-  max_turns: 30                    # a check-in is short; a long run means lost
+  max_turns: 120                    # a check-in is short; a long run means lost
   reasoning_effort: medium
   stall_guards: true
   verify_guidance: true
