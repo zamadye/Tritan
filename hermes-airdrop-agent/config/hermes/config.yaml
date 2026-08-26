@@ -1,0 +1,147 @@
+# ===========================================================================
+# Hermes Agent — main config for the Airdrop Agent
+# ===========================================================================
+# Installs to:  ~/.hermes/config.yaml
+#
+# Every key here was checked against Hermes' own authoritative default config
+# (hermes_cli/config_defaults.py::DEFAULT_CONFIG) and cli-config.yaml.example.
+# Run `haa config check` after editing — Hermes silently ignores unknown keys,
+# so a typo here fails quietly.
+#
+# Secrets do NOT go here; they go in .env. Reference them as ${VAR_NAME}; an
+# unset variable is left verbatim and warned about, not silently blanked.
+# ===========================================================================
+
+model:
+  # "auto" detects the provider from whichever *_API_KEY is present in .env.
+  provider: auto
+  # Hermes addresses models as "<provider>/<model>". A bare name will not resolve.
+  default: anthropic/claude-sonnet-4.5
+  # Only for a custom / OpenAI-compatible endpoint (vLLM, Ollama, LM Studio).
+  # base_url: ${CUSTOM_BASE_URL}
+  # Leave context_length unset — Hermes auto-detects it from the provider.
+
+agent:
+  max_turns: 90
+  reasoning_effort: high   # none|minimal|low|medium|high|xhigh|max|ultra
+  stall_guards: true
+  verify_guidance: true
+
+toolsets:
+  # Registered names only — `file`, not `file_ops`. An unregistered name is
+  # dropped without an error; `haa config check` catches it.
+  - hermes-cli
+  - browser
+  - terminal
+  - file
+  - skills
+
+terminal:
+  backend: local
+  cwd: ${HAA_PROJECT_DIR}
+  timeout: 180
+
+browser:
+  # Camofox is the browser for every worker. Selected here; its URL comes from
+  # CAMOFOX_URL in .env (there is no config.yaml key for it).
+  cloud_provider: camofox
+  # Camofox exposes no CDP endpoint, so the Browser Use harness cannot attach.
+  # "off" keeps the built-in browser tools, which is what Camofox needs.
+  backend: "off"
+  camofox:
+    # Persistent Firefox profile keyed by user_id below. Logins survive
+    # restarts -- this is what makes the session "berkelanjutan".
+    managed_persistence: true
+    # Stable per-worker identity. One per ROLE (not per wallet), so the daily
+    # worker's logins do not collide with the quest worker's.
+    user_id: haa-worker-main
+    # Reuse an already-open tab after a gateway restart instead of orphaning it.
+    adopt_existing_tab: true
+  # NOTE: this controls Hermes' *local Chromium* fallback only. It does not
+  # make Camofox visible -- ENABLE_VNC=1 in the Camofox container does that.
+  # Kept on so the fallback path is also visible rather than silent.
+  headed: true
+  # dApp pages are slow. 15 min before an idle session is closed, and 90s per
+  # command, so a heavy claim page is not cut off mid-flow.
+  inactivity_timeout: 900
+  command_timeout: 90
+  # Session recordings become part of the evidence trail.
+  record_sessions: true
+
+compression:
+  enabled: true
+  threshold: 0.50
+  target_ratio: 0.20
+  protect_last_n: 20
+  progress_notices: true
+
+approvals:
+  mode: smart
+  timeout: 300
+  # Unattended runs must NOT be able to run a dangerous command with nobody
+  # watching. deny, not approve.
+  cron_mode: deny
+  single_query_mode: deny
+  # Hard blocklist — refused even under mode: off / --yolo.
+  deny:
+    - "*cast send*"
+    - "*cast wallet*"
+    - "*cast keystore*"
+    - "*solana transfer*"
+    - "*solana keygen*"
+    - "*cleos*transfer*"
+    - "*--private-key*"
+    - "*--private_key*"
+    - "*PRIVATE_KEY*"
+    - "*mnemonic*"
+    - "*seed phrase*"
+
+security:
+  redact_secrets: true
+  allow_private_urls: false
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  memory_char_limit: 2200
+  user_char_limit: 1375
+  nudge_interval: 10
+
+skills:
+  creation_nudge_interval: 15
+
+cron:
+  # Pin the cron fleet's model so switching your chat model cannot silently
+  # reroute unattended spend.
+  model: ${HAA_CRON_MODEL}
+  model_drift_guard: true
+  preflight: true
+  max_parallel_jobs: 1   # one GUI browser; parallel workers would fight over it
+
+session_reset:
+  mode: daily
+  at_hour: 4
+
+display:
+  skin: default
+  tool_progress: all
+  show_reasoning: false
+  timestamps: true
+
+runtime:
+  nofile_soft_limit: 4096
+
+database:
+  journal_mode: wal
+
+tool_loop_guardrails:
+  warnings_enabled: true
+  hard_stop_enabled: true
+  warn_after:
+    exact_failure: 2
+    same_tool_failure: 3
+    idempotent_no_progress: 2
+  hard_stop_after:
+    exact_failure: 4
+    same_tool_failure: 6
+    idempotent_no_progress: 4

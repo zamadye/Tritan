@@ -1,0 +1,65 @@
+# ---------------------------------------------------------------------------
+# worker-discord — reads community channels, drafts (never auto-sends).
+# Installs to ~/.hermes/profiles/worker-discord/config.yaml
+# ---------------------------------------------------------------------------
+model:
+  provider: auto
+  default: ${HAA_DISCORD_MODEL}
+
+agent:
+  max_turns: 40
+  reasoning_effort: medium
+  stall_guards: true
+
+toolsets:
+  - hermes-cli
+  - browser          # Discord web client; announcement channels are GUI-only
+  - file
+  - skills
+
+terminal:
+  backend: local
+  cwd: ${HAA_PROJECT_DIR}
+  timeout: 120
+
+browser:
+  cloud_provider: camofox
+  backend: "off"            # Camofox has no CDP endpoint; keep built-in tools
+  camofox:
+    managed_persistence: true          # persistent Firefox profile per user_id
+    user_id: haa-worker-discord             # stable per ROLE, so logins persist
+    adopt_existing_tab: true           # reuse an open tab after a restart
+  headed: true              # affects Hermes' local Chromium fallback only;
+                            # ENABLE_VNC=1 in the container is what shows Camofox
+  inactivity_timeout: 900   # 15 min — a claim flow must not be cut off
+  command_timeout: 90
+  record_sessions: true     # recordings are evidence
+
+approvals:
+  mode: smart
+  cron_mode: deny
+  single_query_mode: deny
+  deny:
+    - "*cast send*"
+    - "*--private-key*"
+    - "*PRIVATE_KEY*"
+
+security:
+  redact_secrets: true
+  allow_private_urls: false
+
+compression:
+  enabled: true
+  threshold: 0.50
+  protect_last_n: 15
+
+session_reset:
+  mode: daily
+  at_hour: 4
+
+tool_loop_guardrails:
+  hard_stop_enabled: true
+  warn_after:
+    same_tool_failure: 3
+  hard_stop_after:
+    same_tool_failure: 5

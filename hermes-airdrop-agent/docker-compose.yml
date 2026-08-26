@@ -1,0 +1,101 @@
+# ===========================================================================
+# Camofox — GUI browser server for Hermes airdrop agents
+# ===========================================================================
+#   docker compose up -d
+#   docker compose logs -f
+#
+#   agent control :  http://localhost:9377
+#   GUI (noVNC)   :  http://localhost:6080/vnc.html   <-- watch and take over
+#   GUI (native)  :  localhost:5901  (VNC client)
+#
+# WHY GUI IS THE DEFAULT HERE
+# ---------------------------
+# Camofox always runs on an Xvfb virtual display, but at **1x1 resolution**
+# unless the VNC plugin is on. Without it the browser is not merely headless —
+# it is unwatchable and un-take-over-able. Since airdrop work is almost
+# entirely GUI (connect wallet, click claim, approve, sign), and since the
+# operator must be able to solve a CAPTCHA or an MFA prompt the agent has
+# halted on, the visible display is on by default.
+#
+# Hermes reaches the server through CAMOFOX_URL in .env. There is no
+# config.yaml key for the URL — setting one there silently does nothing.
+# Note: Hermes' `browser.headed` only affects its *local Chromium* fallback;
+# it does not make Camofox visible. ENABLE_VNC is what does.
+#
+# PERSISTENCE ("berkelanjutan")
+# -----------------------------
+# Camofox persists each userId's cookies and localStorage under
+# /root/.camofox/profiles/<hashed-userId>/, so a login survives restarts.
+# Each worker profile pins its own `browser.camofox.user_id`
+# (haa-worker-daily, haa-worker-quests, ...) so their sessions don't collide.
+# The session timeouts below are raised well above the defaults (30 min
+# session / 5 min browser idle) so a long campaign run does not lose its login
+# halfway through.
+#
+# To run without the GUI (not recommended for this workload):
+#   docker compose --profile headless up -d
+# ===========================================================================
+
+x-camofox-common: &camofox-common
+  image: jo-inc/camofox-browser:latest
+  restart: unless-stopped
+  shm_size: "1gb"
+  security_opt:
+    - no-new-privileges:true
+  environment: &camofox-env
+    CAMOFOX_PORT: "9377"
+    # dApp front-ends are heavy; the 128MB default Node heap OOMs mid-session,
+    # which presents as an inexplicable browser failure.
+    MAX_OLD_SPACE_SIZE: "2048"
+    # --- sustained sessions -------------------------------------------
+    # Defaults are 30 min / 5 min / 5 min — far too short for a campaign run.
+    SESSION_TIMEOUT_MS: "21600000"        # 6h session inactivity
+    BROWSER_IDLE_TIMEOUT_MS: "3600000"    # 1h before the browser is reaped
+    TAB_INACTIVITY_MS: "3600000"          # 1h before a tab is closed
+    MAX_SESSIONS: "20"
+    # Persisted cookie/localStorage store (mounted below).
+    CAMOFOX_PROFILE_DIR: "/root/.camofox/profiles"
+  volumes:
+    - camofox-data:/root/.camofox
+  healthcheck:
+    test: ["CMD-SHELL", "curl -fsS http://localhost:9377 >/dev/null || exit 1"]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+    # First boot downloads the Camoufox engine (~300MB).
+    start_period: 240s
+
+services:
+  # -------------------------------------------------------------------------
+  # Default: GUI-enabled. This is the one `docker compose up -d` starts.
+  # -------------------------------------------------------------------------
+  camofox:
+    <<: *camofox-common
+    container_name: camofox-browser
+    environment:
+      <<: *camofox-env
+      ENABLE_VNC: "1"                 # real 1920x1080 display + noVNC + x11vnc
+      VNC_RESOLUTION: "1920x1080"
+      VNC_BIND: "0.0.0.0"
+      NOVNC_PORT: "6080"
+      # Set VNC_PASSWORD in .env. An open VNC port on a reachable host lets
+      # anyone drive a browser that is logged into your accounts.
+      VNC_PASSWORD: "${VNC_PASSWORD:-}"
+    ports:
+      - "${CAMOFOX_PORT:-9377}:9377"   # agent control API
+      - "${NOVNC_PORT:-6080}:6080"     # noVNC web GUI
+      - "${VNC_PORT:-5901}:5900"       # native VNC client
+
+  # -------------------------------------------------------------------------
+  # Opt-out: no GUI. Use only for pure scraping where you will never need to
+  # solve a challenge by hand.
+  # -------------------------------------------------------------------------
+  camofox-headless:
+    <<: *camofox-common
+    container_name: camofox-browser-headless
+    profiles: ["headless"]
+    ports:
+      - "${CAMOFOX_PORT:-9377}:9377"
+
+volumes:
+  camofox-data:

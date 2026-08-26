@@ -1,0 +1,78 @@
+# ---------------------------------------------------------------------------
+# worker-daily — the 09:00 check-in run. Cheap model, tight budget.
+# Installs to ~/.hermes/profiles/worker-daily/config.yaml
+# ---------------------------------------------------------------------------
+model:
+  provider: auto
+  default: ${HAA_DAILY_MODEL}      # cheap model — runs every single day
+
+agent:
+  max_turns: 30                    # a check-in is short; a long run means lost
+  reasoning_effort: medium
+  stall_guards: true
+  verify_guidance: true
+
+toolsets:
+  - hermes-cli
+  - browser          # 100% of the work is clicking a dApp front-end
+  - file
+  - skills
+
+terminal:
+  backend: local
+  cwd: ${HAA_PROJECT_DIR}
+  timeout: 120
+
+browser:
+  cloud_provider: camofox
+  backend: "off"            # Camofox has no CDP endpoint; keep built-in tools
+  camofox:
+    managed_persistence: true          # persistent Firefox profile per user_id
+    user_id: haa-worker-daily             # stable per ROLE, so logins persist
+    adopt_existing_tab: true           # reuse an open tab after a restart
+  headed: true              # affects Hermes' local Chromium fallback only;
+                            # ENABLE_VNC=1 in the container is what shows Camofox
+  inactivity_timeout: 900   # 15 min — a claim flow must not be cut off
+  command_timeout: 90
+  record_sessions: true     # recordings are evidence
+
+approvals:
+  mode: smart
+  # Unattended. Anything risky is refused rather than escalated to nobody.
+  cron_mode: deny
+  single_query_mode: deny
+  deny:
+    - "*cast send*"
+    - "*cast wallet*"
+    - "*solana transfer*"
+    - "*--private-key*"
+    - "*--private_key*"
+    - "*PRIVATE_KEY*"
+    - "*mnemonic*"
+
+security:
+  redact_secrets: true
+  allow_private_urls: false
+
+compression:
+  enabled: true
+  threshold: 0.50
+  protect_last_n: 10
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: false      # a check-in needs no opinion of you
+  nudge_interval: 0
+
+session_reset:
+  mode: daily
+  at_hour: 4
+
+tool_loop_guardrails:
+  hard_stop_enabled: true
+  warn_after:
+    exact_failure: 2
+    same_tool_failure: 2
+  hard_stop_after:
+    exact_failure: 3
+    same_tool_failure: 4

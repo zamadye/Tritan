@@ -1,0 +1,76 @@
+# ---------------------------------------------------------------------------
+# worker-quests — multi-step campaign onboarding and quest completion.
+# Installs to ~/.hermes/profiles/worker-quests/config.yaml
+# ---------------------------------------------------------------------------
+model:
+  provider: auto
+  default: ${HAA_QUESTS_MODEL}
+
+agent:
+  max_turns: 120                   # onboarding flows are long
+  reasoning_effort: high
+  stall_guards: true
+  verify_guidance: true
+  task_completion_guidance: true
+
+toolsets:
+  - hermes-cli
+  - browser          # quest boards, connect-wallet modals, claim dialogs
+  - terminal
+  - file
+  - skills
+
+terminal:
+  backend: local
+  cwd: ${HAA_PROJECT_DIR}
+  timeout: 180
+
+browser:
+  cloud_provider: camofox
+  backend: "off"            # Camofox has no CDP endpoint; keep built-in tools
+  camofox:
+    managed_persistence: true          # persistent Firefox profile per user_id
+    user_id: haa-worker-quests             # stable per ROLE, so logins persist
+    adopt_existing_tab: true           # reuse an open tab after a restart
+  headed: true              # affects Hermes' local Chromium fallback only;
+                            # ENABLE_VNC=1 in the container is what shows Camofox
+  inactivity_timeout: 900   # 15 min — a claim flow must not be cut off
+  command_timeout: 90
+  record_sessions: true     # recordings are evidence
+
+approvals:
+  mode: smart
+  cron_mode: deny
+  single_query_mode: deny
+  deny:
+    - "*cast send*"
+    - "*cast wallet*"
+    - "*cast keystore*"
+    - "*solana transfer*"
+    - "*solana keygen*"
+    - "*--private-key*"
+    - "*--private_key*"
+    - "*PRIVATE_KEY*"
+    - "*mnemonic*"
+    - "*seed phrase*"
+
+security:
+  redact_secrets: true
+  allow_private_urls: false
+
+compression:
+  enabled: true
+  threshold: 0.50
+  target_ratio: 0.20
+  protect_last_n: 25
+
+session_reset:
+  mode: idle
+  idle_minutes: 120
+
+tool_loop_guardrails:
+  hard_stop_enabled: true
+  warn_after:
+    same_tool_failure: 3
+  hard_stop_after:
+    same_tool_failure: 6
