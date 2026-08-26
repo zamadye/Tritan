@@ -21,6 +21,7 @@ toolsets:
   - web
   - file
   - skills
+  - kanban             # it is spawned by the dispatcher, so it needs show/complete
 
 terminal:
   backend: local

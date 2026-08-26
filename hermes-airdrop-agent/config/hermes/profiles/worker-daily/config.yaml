@@ -19,6 +19,7 @@ toolsets:
   - browser          # 100% of the work is clicking a dApp front-end
   - file
   - skills
+  - kanban             # create / claim / complete / block tasks
 
 terminal:
   backend: local

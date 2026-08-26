@@ -21,6 +21,7 @@ toolsets:
   - terminal
   - file
   - skills
+  - kanban             # create / claim / complete / block tasks
 
 terminal:
   backend: local

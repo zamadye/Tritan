@@ -87,6 +87,20 @@ browser:
   command_timeout: 90
   # Session recordings become part of the evidence trail.
   record_sessions: true
+# Multi-agent coordination. The dispatcher runs INSIDE the gateway process
+# (kanban.dispatch_in_gateway, the Hermes default) and ticks every 60s,
+# spawning whichever profile a ready task is assigned to -- so you start one
+# gateway (worker-orchestrator) and the workers come up on demand.
+# Verified against website/docs/user-guide/features/kanban.md.
+kanban:
+  dispatch_in_gateway: true
+  dispatch_interval_seconds: 60
+  # The agent that filed a task gets notified when it completes, instead of
+  # polling -- this is what carries results back to your Telegram thread.
+  auto_subscribe_on_create: true
+  # Tasks in the review column are picked up automatically.
+  review_dispatch: true
+
 compression:
   enabled: true
   threshold: 0.50

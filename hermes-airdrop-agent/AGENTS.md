@@ -113,7 +113,7 @@ google-chrome --remote-debugging-port=9222 \
   evidence, notify, cli
 - 6 skill di `skills/` dengan frontmatter Hermes yang benar
 - 5 worker profile + SOUL.md di `config/hermes/profiles/`
-- `tests/` — **768 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
+- `tests/` — **782 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
 - `docs/research/` — hermes-schema.md, browser.md, sources.md
 - Skema config Hermes sudah diekstrak dari `DEFAULT_CONFIG` (89 top-level key)
 
@@ -207,6 +207,38 @@ approval berjenjang, scope penuh, Monad sebagai acuan.
 - **Ekstensi browser = `kind: manual_setup`.** CDP tidak bisa install ekstensi
   Chrome (Primus, Miden). Blocker keras, butuh manusia sekali.
 
+### Selesai 2026-08-27 (sesi 2) — workflow + knowledge
+
+User: "saya belum melihat workflow agent sama sekali bagaimana alurnya".
+Benar — SOUL.md berisi prinsip, bukan alur. Dan mekanisme orkestrasinya belum
+dipakai sama sekali.
+
+Riset dulu, bukan karang: Hermes punya **kanban multi-agent coordination**
+built-in (`website/docs/user-guide/features/kanban.md`), status task
+`triage|todo|ready|running|blocked|review|done|archived`, assignee = nama
+profile, dispatcher jalan **di dalam gateway** (tick 60s). Persis model mental
+user: satu bot standby, task dikirim, agent lain di-spawn sesuai kebutuhan.
+
+- **`docs/workflows.md`** — alur lengkap Telegram → orchestrator → kanban →
+  lead → workers, plus workflow per agent (trigger, langkah, stop condition).
+  `kanban_block(kind=needs_input|capability|transient)` = naik ke manusia;
+  `kind=dependency` = tunggu, auto-resume.
+- **`kanban` toolset di 7/7 profile** + `kanban:` section di config utama
+  (`dispatch_in_gateway: true`, `auto_subscribe_on_create: true` — ini yang
+  membawa hasil kembali ke thread Telegram Anda).
+- **Knowledge +2 file**: `quest-platforms.md` (Galxe/Layer3/Zealy/Talentum +
+  kegagalan senyap: verification lag & address mismatch) dan
+  `cycles-and-meta.md` (consistency > intensity, diversity > volume, lock-up
+  30 hari, cara baca narasi & sentiment, cara baca kebijakan sybil).
+- **Test**: `TestWorkflowAndKnowledgeAreWired` — kanban toolset di tiap
+  profile, dispatcher di gateway, workflows.md menyebut semua agent + tool
+  Hermes nyata + 4 block kind, 5 file knowledge ter-commit.
+
+**Bug yang saya buat sendiri di sesi ini:** script yang menambah toolset
+memakai `ts = d['toolsets']` (referensi, bukan salinan), jadi `replace`-nya
+no-op tapi tetap mencetak seolah berhasil. Tertangkap karena test membaca ulang
+dari disk, bukan dari variabel.
+
 ### Masih terbuka
 
 - Alur Telegram end-to-end belum diuji terhadap Hermes sungguhan. **Bukan**
@@ -297,6 +329,7 @@ for f in install.sh scripts/*.sh; do bash -n "$f"; done
 |---|---|
 | 2026-08-25 | Riset sumber; backend Python 11 modul; 6 skill; 5 profile; 599 test; commit `fd01dc1` |
 | 2026-08-25 | Koreksi: semua worker dapat browser; GUI default di compose |
+| 2026-08-27 | **Workflow + knowledge**: docs/workflows.md, kanban toolset 7/7 profile + dispatcher config, knowledge quest-platforms & cycles-and-meta. **782 test.** |
 | 2026-08-27 | **Task kompleks**: tiered approval, depends_on + planner, resume dari ledger, positions.py (LP/streak/expiry), max_turns dinaikkan, knowledge Monad. **768 test.** |
 | 2026-08-26 | **Kontrak otonomi**: Autonomy contract di skill, alat persepsi diwajibkan, lead dilarang catat selector, `TestNoBrittleInstructions`. **704 test.** |
 | 2026-08-26 | **Bug gitignore `skills/` ditemukan & diperbaiki** (6 SKILL.md tidak pernah ter-commit); model env-driven; install.sh symlink .env ke HERMES_HOME + profile; doctor deteksi `${VAR}`; `test_packaging.py`. **681 test.** |

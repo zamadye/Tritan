@@ -18,6 +18,7 @@ toolsets:
   - browser          # Discord web client; announcement channels are GUI-only
   - file
   - skills
+  - kanban             # create / claim / complete / block tasks
 
 terminal:
   backend: local

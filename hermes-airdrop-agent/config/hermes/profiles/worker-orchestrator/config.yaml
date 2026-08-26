@@ -23,6 +23,7 @@ toolsets:
   - delegation         # the whole point of this layer
   - file
   - skills
+  - kanban             # create / claim / complete / block tasks
 
 terminal:
   backend: local
