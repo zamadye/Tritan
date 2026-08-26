@@ -113,7 +113,7 @@ google-chrome --remote-debugging-port=9222 \
   evidence, notify, cli
 - 6 skill di `skills/` dengan frontmatter Hermes yang benar
 - 5 worker profile + SOUL.md di `config/hermes/profiles/`
-- `tests/` — **681 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
+- `tests/` — **704 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
 - `docs/research/` — hermes-schema.md, browser.md, sources.md
 - Skema config Hermes sudah diekstrak dari `DEFAULT_CONFIG` (89 top-level key)
 
@@ -151,6 +151,34 @@ google-chrome --remote-debugging-port=9222 \
   `"${VAR}"` dan Hermes gagal dengan gejala "nama model salah"
 - `haa doctor` mendeteksi `${VAR}` yang tidak teresolve
 - `.env.example`: duplikat `TELEGRAM_BOT_TOKEN` dihapus + test anti-duplikat
+
+### Selesai 2026-08-26 (sesi 3) — kontrak otonomi
+
+User menegaskan: task dinamis, UI dinamis, proyek banyak. Agent harus
+menentukan sendiri tombol mana yang diklik — TIDAK boleh diinstruksikan per
+klik dengan selector DOM (rapuh, gampang diblok, sering salah baca).
+
+Diverifikasi dulu, bukan diasumsikan: **tidak ada satu pun selector DOM di
+seluruh proyek** (src/, skills/, config/, knowledge/ = 0). Mekanisme Hermes
+memang bukan selector — `browser_snapshot` mengembalikan accessibility tree
+dengan ref ID yang dibuat ulang tiap snapshot.
+
+Yang diperbaiki (dua gap nyata):
+- Skill terbaca seperti checklist kaku → ditambah **"Autonomy contract"** di
+  daily-executor & quest-executor: "Nobody tells you which button to click.
+  You decide."
+- `browser_snapshot` / `browser_vision` / `browser_get_images` **tidak pernah
+  disebut** di skill mana pun → agent tidak diberi tahu alat persepsinya, jadi
+  akan menebak. Sekarang diwajibkan, termasuk aturan ref bersifat per-snapshot.
+- worker-lead SOUL: pembagian kerja eksplisit — lead mencatat APA, worker
+  memutuskan BAGAIMANA. Dilarang menulis selector ke catatan kampanye.
+- `tests/test_skills.py::TestNoBrittleInstructions` melarang querySelector,
+  XPath, attribute selector, klik posisional, dan klik koordinat di semua file
+  instruksi. Sudah diuji negatif: menangkap 5 jenis pelanggaran, tidak salah
+  tuduh pada "#announcements" (nama channel Discord) maupun "click the claim
+  button" (outcome-based, memang diizinkan).
+- config.yaml mendokumentasikan trade-off `backend: off` vs `browser-use`
+  beserta cara switch kalau ada proyek yang butuh.
 
 ### Masih terbuka
 
@@ -242,6 +270,7 @@ for f in install.sh scripts/*.sh; do bash -n "$f"; done
 |---|---|
 | 2026-08-25 | Riset sumber; backend Python 11 modul; 6 skill; 5 profile; 599 test; commit `fd01dc1` |
 | 2026-08-25 | Koreksi: semua worker dapat browser; GUI default di compose |
+| 2026-08-26 | **Kontrak otonomi**: Autonomy contract di skill, alat persepsi diwajibkan, lead dilarang catat selector, `TestNoBrittleInstructions`. **704 test.** |
 | 2026-08-26 | **Bug gitignore `skills/` ditemukan & diperbaiki** (6 SKILL.md tidak pernah ter-commit); model env-driven; install.sh symlink .env ke HERMES_HOME + profile; doctor deteksi `${VAR}`; `test_packaging.py`. **681 test.** |
 | 2026-08-26 | `cron-jobs.sh` 5 job 3-layer + preflight CDP; README ditulis ulang; `browser.md` ditandai superseded. **620 test lulus.** |
 | 2026-08-25 | **Pivot selesai:** Camofox → Chrome CDP di host (docker-compose.yml dihapus); install.sh jadi system installer 10 langkah; layer orchestrator + lead ditambahkan (7 profile); memory + knowledge base; Telegram gateway di installer; `browser_check` ditulis ulang untuk CDP. **617 test lulus.** |

@@ -171,7 +171,7 @@ class TestPolicyContent:
             assert "open the" in t or "browser" in t, f"{name} never mentions a browser"
 
     def test_daily_executor_uses_the_site_as_evidence(self):
-        assert "the confirmation the site itself gives" in self.read("daily-executor")
+        assert "site's own feedback" in self.read("daily-executor")
 
     def test_analyzer_uses_the_browser(self):
         """A docs page is marketing. The product has to be opened and used."""
@@ -205,3 +205,87 @@ class TestPolicyContent:
     def test_analyzer_attributes_the_framework(self):
         t = self.read("airdrop-analyzer")
         assert "HTX Insights" in t
+
+# ---------------------------------------------------------------------------
+# The brittleness ban
+# ---------------------------------------------------------------------------
+
+#: Files that instruct an agent. Anything here is treated as a directive.
+INSTRUCTION_FILES = (
+    sorted((ROOT / "skills").glob("*/SKILL.md"))
+    + sorted(ROOT.glob("knowledge/*.md"))
+    + sorted((ROOT / "config" / "hermes" / "profiles").glob("*/SOUL.md"))
+)
+
+#: Patterns that would make an instruction brittle against a dynamic UI.
+BRITTLE_PATTERNS = {
+    "DOM selector API": r'querySelector|getElementById|getElementsBy|\$\([\'"]#',
+    "XPath": r"//(?:div|button|a|input|span)\b|/html/body",
+    "attribute selector": r"\[(?:name|id|class|data-[a-z-]+)\s*=",
+    "positional click": r"\b(?:first|second|third|fourth|fifth|\d+(?:st|nd|rd|th))\s+(?:button|link|element|field|item)\b",
+    "coordinate click": r"click[^.\n]{0,40}\(\s*\d+\s*,\s*\d+\s*\)",
+}
+
+
+class TestNoBrittleInstructions:
+    """Airdrop UIs are dynamic and differ per project. A selector, an XPath, a
+    positional click or a coordinate is wrong within a week and wrong on the
+    next project. These tests make that ban enforceable instead of aspirational.
+
+    The agent is given an OUTCOME and a browser. It finds elements itself via
+    `browser_snapshot` refs, which are re-derived from the live page each time.
+    """
+
+    @pytest.mark.parametrize("path", INSTRUCTION_FILES,
+                             ids=lambda p: f"{p.parent.name}/{p.name}")
+    def test_no_brittle_patterns(self, path):
+        import re
+        text = path.read_text(encoding="utf-8")
+        hits = []
+        for label, pat in BRITTLE_PATTERNS.items():
+            for m in re.finditer(pat, text, re.M | re.I):
+                # Markdown headings and in-page anchors are not selectors.
+                line = text[:m.start()].rsplit("\n", 1)[-1] + m.group(0)
+                if line.lstrip().startswith("#"):
+                    continue
+                hits.append(f"{label}: {m.group(0)!r}")
+        assert not hits, f"{path.name} contains brittle instructions: {hits}"
+
+    @pytest.mark.parametrize("path", [p for p in INSTRUCTION_FILES
+                                      if p.parent.name in ("daily-executor", "quest-executor")],
+                             ids=lambda p: p.parent.name)
+    def test_browser_facing_skills_state_the_autonomy_contract(self, path):
+        t = path.read_text(encoding="utf-8")
+        assert "Autonomy contract" in t
+        assert "You decide" in t or "your decision" in t
+
+    @pytest.mark.parametrize("path", [p for p in INSTRUCTION_FILES
+                                      if p.parent.name in ("daily-executor", "quest-executor")],
+                             ids=lambda p: p.parent.name)
+    def test_browser_facing_skills_name_their_perception_tools(self, path):
+        """An agent that is not told about browser_snapshot / browser_vision
+        will fall back to guessing, which is exactly the 80%-wrong failure."""
+        t = path.read_text(encoding="utf-8")
+        assert "browser_snapshot" in t
+        assert "browser_vision" in t
+
+    @pytest.mark.parametrize("path", [p for p in INSTRUCTION_FILES
+                                      if p.parent.name in ("daily-executor", "quest-executor")],
+                             ids=lambda p: p.parent.name)
+    def test_refs_are_documented_as_per_snapshot(self, path):
+        t = path.read_text(encoding="utf-8")
+        assert "per-snapshot" in t
+        assert "Never reuse a ref" in t or "never reuse a ref" in t
+
+    def test_lead_soul_forbids_recording_selectors(self):
+        t = (ROOT / "config" / "hermes" / "profiles" / "worker-lead" / "SOUL.md").read_text(encoding="utf-8")
+        assert "Never record this" in t
+        assert "CSS id" in t
+
+    def test_actionspec_has_no_click_level_field(self):
+        """The data model itself must not be able to express a click sequence."""
+        from hermes_airdrop.campaign import ActionSpec
+        fields = set(ActionSpec.__dataclass_fields__)
+        assert fields == {"name", "schedule", "kind", "needs_approval", "notes"}
+        for banned in ("selector", "xpath", "steps", "clicks", "url_path"):
+            assert banned not in fields

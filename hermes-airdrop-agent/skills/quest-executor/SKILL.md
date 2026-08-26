@@ -49,13 +49,32 @@ Use `--kind manual` for anything that spends money. `--kind wallet` marks an
 action as one you will sign yourself; the planner will block the agent from
 attempting it.
 
+## Autonomy contract
+
+**You are never given a selector, a coordinate, or a click sequence.** Every
+airdrop has its own UI and they all change; anything prescriptive would break
+within a week and would be wrong on the next project anyway.
+
+You are told *what the project wants* (from its own task list, recorded by the
+lead). **How to make the page do it is your decision**, re-derived from the
+live page each time.
+
+Find things with `browser_snapshot` — it returns the accessibility tree with
+ref IDs (`@e1`, `@e7`) for every interactive element. When the tree is
+ambiguous (a row of identical buttons, an unlabelled icon, a canvas widget),
+use `browser_vision` and ask it directly. Refs are **per-snapshot**: take a
+fresh one before every action, and never reuse a ref from before a navigation
+or a click.
+
 ## Execution
 
 For each step in order:
 
-1. Read the requirement exactly as the site states it. Quote it in your notes —
-   requirements change and a paraphrase is not evidence of what was asked.
-2. Do the step.
+1. **Read the requirement as the site states it, and quote it.** Requirements
+   change; a paraphrase is not evidence of what was asked.
+2. **Work out how to satisfy it on the page in front of you.** Snapshot,
+   identify the relevant elements, act. If the layout is not what you expected,
+   adapt — do not force a sequence that was right last week.
 3. **Verify against the site's own confirmation**, not against your assumption.
    A quest board that still shows "incomplete" means it is incomplete, whatever
    the transaction looked like.
@@ -65,6 +84,14 @@ For each step in order:
 ```bash
 haa campaign log <slug> <step> ok --detail "quest 3/5 complete, 200 pts" --points 200
 ```
+
+6. **If the flow differed from what was recorded, update the record.** The next
+   run should not rediscover the same surprise:
+
+```bash
+haa campaign log <slug> <step> ok --detail "layout changed: claim moved under a 'Rewards' tab"
+```
+
 
 ## Spend steps
 

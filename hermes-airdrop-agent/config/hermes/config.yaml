@@ -62,10 +62,20 @@ browser:
   # placeholder verbatim, which would give a cdp_url of "${HAA_CDP_URL}".
   cdp_url: http://127.0.0.1:9222
   engine: chrome
-  # "off" forces the built-in tools (browser_navigate, browser_click, ...).
-  # Pages come back as accessibility trees with ref IDs -- enough for an LLM,
-  # and every step is a discrete, loggable action. Set to "browser-use" to let
-  # the agent drive the page by writing Python instead.
+  # "off" forces the built-in tools (browser_navigate, browser_snapshot,
+  # browser_click, browser_scroll, browser_vision, ...).
+  #
+  # This is NOT selector-driven. browser_snapshot returns the live
+  # accessibility tree with ref IDs (@e1, @e7) that are re-derived on every
+  # snapshot; the agent picks which element to act on each time. Nothing is
+  # hardcoded, so a redesigned UI does not break anything.
+  #
+  # Trade-off: "browser-use" instead lets the agent write Python against the
+  # page -- more expressive for unusual flows (drag, wait-for-network, iterate
+  # over N rows), but it is arbitrary code execution on the host and the steps
+  # stop being individually loggable. Hermes gates browser_exec behind the
+  # `browser-use` toolset AND this key, so it stays off unless you opt in here.
+  # Verified in tools/browser_use_cli.py::is_browser_use_cli_mode.
   backend: "off"
   # Launches a real visible Chrome window and skips per-turn cleanup so it
   # persists between turns. The visible window is how the operator takes over

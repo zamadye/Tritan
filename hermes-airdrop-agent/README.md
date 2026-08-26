@@ -201,6 +201,52 @@ hermes cron pause <job_id>
 
 ---
 
+## Otonomi: agent yang menentukan, bukan skrip
+
+Task airdrop itu dinamis, UI-nya dinamis, dan tiap proyek beda. Jadi tidak ada
+satu pun selector, XPath, koordinat, atau urutan klik di seluruh proyek ini —
+dan ada test yang melarangnya muncul.
+
+```
+querySelector / getElementById    → dilarang
+XPath (//button, /html/body)      → dilarang
+[name=..] / [id=..] / [class=..]  → dilarang
+"klik tombol kedua"               → dilarang
+klik koordinat (340, 512)         → dilarang
+```
+
+Yang agent dapat adalah **tujuan** ("selesaikan daily mission di Loqua") dan
+sebuah browser. Caranya dia putuskan sendiri, dibaca ulang dari halaman hidup
+setiap kali.
+
+Mekanismenya `browser_snapshot`: mengembalikan *accessibility tree* halaman
+beserta ref ID (`@e1`, `@e7`) untuk tiap elemen interaktif. **Ref dibuat ulang
+tiap snapshot** — bukan selector yang disimpan. Jadi UI yang di-redesign tidak
+merusak apa pun.
+
+| Alat | Untuk apa |
+|---|---|
+| `browser_snapshot` | Default. Cari elemen lewat tree, bukan menebak |
+| `browser_vision` | Kalau tree ambigu — sederet tombol seragam, ikon tanpa label, widget canvas |
+| `browser_get_images` | Kalau aksinya bergantung gambar |
+| `browser_scroll` / `browser_press` / `browser_type` | Interaksi fisik |
+
+Pembagian kerja antar layer:
+
+- **Lead** mencatat *apa* yang proyek minta (dari task list situs itu sendiri)
+- **Worker** memutuskan *bagaimana* — elemen mana, tab mana, klik mana
+
+Begitu lead menulis selector ke dalam catatan kampanye, dia sudah membangun
+hal rapuh yang desain ini hindari: seminggu lagi salah, di proyek berikutnya
+juga salah, dan gagalnya terlihat seperti worker-nya bodoh padahal
+instruksinya yang basi.
+
+**Kalau ada proyek yang butuh lebih:** set `browser.backend: "browser-use"` di
+config. Agent lalu menulis Python untuk mengendalikan halaman — lebih ekspresif
+untuk alur tidak biasa (drag, tunggu network idle, iterasi N baris), tapi itu
+eksekusi kode arbitrer di host dan langkahnya tidak lagi ter-log satu per satu.
+Dimatikan secara default dengan sengaja.
+
 ## Filter proyek
 
 Dua belas rating **0–3**, dari checklist "Sniper" di HTX Insights' *"The Last

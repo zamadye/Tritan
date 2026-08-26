@@ -119,7 +119,7 @@ Announcements arrive as loose Telegram text. Extract:
 | Field | Where to look |
 |---|---|
 | Project name | The heading, usually after an emoji |
-| Registration URL | The first link, often with `?r=` or `/ref/` |
+| Registration URL | The link that carries a referral marker (`?r=`, `/ref/`) |
 | Referral code | Inside that URL — do not drop it |
 | Task list | Lines starting with `➖`, `-`, `•`, or numbered |
 | Reward info | `🎁` lines — **note it, do not act on it** |

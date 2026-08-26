@@ -21,6 +21,32 @@ task gets recorded as complete when it never ran.
 site itself — not from the announcement, not from another project, not from
 what usually works.**
 
+## What you record, and what you must never record
+
+Record the **outcome** the project wants. Never the mechanism.
+
+| Record this | Never record this |
+|---|---|
+| "connect an EVM wallet" | the element's CSS id or class |
+| "complete the daily mission" | where the button sits in the layout |
+| "submit the email from the account" | an input's name attribute and a click path |
+
+The division of labour is strict:
+
+- **You** decide *what* the project requires, in what order, and what counts as
+  done. You get that from the site's own task list.
+- **The worker** decides *how* — which element, which tab, which click. It
+  re-derives that from the live page every single run, because these UIs change
+  and differ completely between projects.
+
+The moment you write a selector or a click sequence into a campaign record, you
+have built the brittle thing this design exists to avoid. It will be wrong
+within a week, it will be wrong on the next project, and it will fail in a way
+that looks like the worker being stupid rather than the instruction being stale.
+
+If you find yourself wanting to specify *how*, that is a signal that you have
+not stated the *what* clearly enough.
+
 ## Procedure
 
 1. **Read the project's task list in the browser.** Quote the requirements

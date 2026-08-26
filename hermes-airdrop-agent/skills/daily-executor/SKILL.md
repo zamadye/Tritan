@@ -32,26 +32,58 @@ click fails.
 Read the plan's warnings too. `needs_approval` means wait for the operator;
 `blocked` means do not attempt it at all.
 
+## Autonomy contract — read this before anything else
+
+**Nobody tells you which button to click. You decide.**
+
+There is no selector, no XPath, no coordinate, no "click the third div" anywhere
+in this system. Airdrop UIs change weekly and differ completely between
+projects; anything prescriptive would be both brittle and wrong. What you are
+given is an *outcome* ("complete the daily mission on Loqua") and a browser.
+How you get there is your judgement, re-derived from the live page every time.
+
+Your perception tools, in order of preference:
+
+| Tool | Use it for |
+|---|---|
+| `browser_snapshot` | The default. Returns the page's accessibility tree with ref IDs (`@e1`, `@e7`) for every interactive element. **This is how you find things** — not by guessing selectors. |
+| `browser_snapshot full=true` | When the compact view hides the element you need |
+| `browser_vision` | When the tree is ambiguous — a wall of similar buttons, an icon with no label, a canvas-rendered widget. Ask it a direct question: *"which element is the daily claim button?"* |
+| `browser_get_images` | When the action depends on an image (CAPTCHA-adjacent art, a banner, a QR) |
+| `browser_console` | Only to read state, never to drive the page |
+
+**Refs are per-snapshot.** `@e7` means "the seventh interactive element in the
+snapshot you just took". After any navigation, click, or DOM change the
+numbering can shift. So:
+
+- Take a fresh snapshot before every action. Never reuse a ref from an earlier
+  one.
+- If a click hits something unexpected, snapshot again rather than retrying
+  blindly.
+
 ## The loop
 
-For each `scheduled` action:
+You own the *how*. These are the outcomes each action must reach, not a script:
 
-1. **Open** the campaign URL in the browser.
-2. **Check page state first**, before doing anything. If the page shows a
-   CAPTCHA, an MFA prompt, or a wallet signature request, halt — see below.
-3. **Confirm you are logged in.** A page that looks fine but has silently
-   dropped the session will produce a "successful" action that did nothing.
-4. **Perform the action.** One action. Then re-read the page.
-5. **Verify it took.** Look for the confirmation the site itself gives — a
-   changed counter, a timestamp, a receipt. Do not infer success from the
-   absence of an error.
-6. **Screenshot** the confirmation into `data/campaigns/<slug>/screenshots/`.
-7. **Log it:**
+- **Be on the right page**, and know that you are.
+- **Know the page state before acting.** A CAPTCHA, an MFA prompt, or a wallet
+  signature request means halt — see below.
+- **Know you are logged in.** A page that looks fine but silently dropped the
+  session will produce a "successful" action that did nothing.
+- **Do the one thing**, then look at the page again.
+- **Confirm it took, using the site's own feedback** — a changed counter, a
+  timestamp, a receipt. Not the absence of an error.
+- **Capture proof**, then record it:
 
 ```bash
 haa campaign log <slug> <action> ok --points 150 \
   --evidence data/campaigns/<slug>/screenshots/2026-08-26-check_in.png
 ```
+
+If the page does something you did not expect — a new modal, a redesigned
+layout, a step that was not there yesterday — **adapt, and write down what
+changed**. That note is how the next run avoids the same surprise.
+
 
 ## Halt conditions — stop, do not improvise
 
