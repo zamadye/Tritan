@@ -4,8 +4,10 @@
 # Read-heavy, write-light. No wallet, no signing, no spend.
 # ---------------------------------------------------------------------------
 model:
-  provider: auto
-  default: ${HAA_ANALYZER_MODEL}   # strong model — this decision gates everything
+  provider: ${HAA_MODEL_PROVIDER}
+  base_url: ${CUSTOM_BASE_URL}
+  default: ${HAA_MODEL_DEFAULT}
+  context_length: ${HAA_CONTEXT_LENGTH}
 
 agent:
   max_turns: 60

@@ -3,8 +3,10 @@
 # Installs to ~/.hermes/profiles/worker-daily/config.yaml
 # ---------------------------------------------------------------------------
 model:
-  provider: auto
-  default: ${HAA_DAILY_MODEL}      # cheap model — runs every single day
+  provider: ${HAA_MODEL_PROVIDER}
+  base_url: ${CUSTOM_BASE_URL}
+  default: ${HAA_MODEL_DEFAULT}
+  context_length: ${HAA_CONTEXT_LENGTH}
 
 agent:
   max_turns: 30                    # a check-in is short; a long run means lost

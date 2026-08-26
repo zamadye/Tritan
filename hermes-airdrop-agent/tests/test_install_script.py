@@ -149,6 +149,28 @@ class TestContents:
         # container, so there must be nothing to compose.
         assert not (ROOT / "docker-compose.yml").exists()
 
+    def test_links_env_into_hermes_home(self):
+        """Hermes reads $HERMES_HOME/.env. The project .env next to install.sh
+        is read by nothing on its own."""
+        text = INSTALL.read_text(encoding="utf-8")
+        assert 'ln -s "$ENV_FILE" "$dst"' in text
+        assert 'link_env "$HERMES_HOME"' in text
+
+    def test_links_env_into_every_profile_home(self):
+        """A profile is a SEPARATE Hermes home with its OWN .env. Missing this
+        makes every ${VAR} resolve to a literal string."""
+        text = INSTALL.read_text(encoding="utf-8")
+        assert 'for pdir in "$PROJECT_DIR"/config/hermes/profiles/*/' in text
+        assert "profile homes" in text
+
+    def test_env_linking_is_visible_in_dry_run(self, repo_snapshot):
+        out = run("./install.sh", "--dry-run").stdout
+        assert "ln -s" in out and ".env" in out
+
+    def test_existing_env_is_backed_up_not_overwritten(self):
+        text = INSTALL.read_text(encoding="utf-8")
+        assert 'mv "$dst" "${dst}.bak"' in text
+
     def test_installer_never_overwrites_an_existing_env(self):
         assert "left untouched" in INSTALL.read_text(encoding="utf-8")
 

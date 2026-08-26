@@ -33,7 +33,7 @@ from .campaign import (
     Store,
     slugify,
 )
-from .config import REPO_ROOT, ConfigError, Settings, load_yaml
+from .config import REPO_ROOT, ConfigError, Settings, expand_env, load_yaml
 from .evidence import Ledger
 from .executor import build_plan, summarize
 from .hermes_schema import validate, validate_file
@@ -124,6 +124,19 @@ def cmd_doctor(args: argparse.Namespace) -> int:
             ok = ok and issue.severity != "error"
         if report.ok and not report.warnings:
             print(f"  ✓ schema valid ({cfg_path})")
+
+        # An unexpanded ${VAR} means Hermes never saw that env var. It does not
+        # error — the setting just becomes the literal string "${VAR}", which
+        # later looks like a bad model name or a bad URL. Catch it here.
+        from .config import unresolved_refs
+
+        missing = unresolved_refs(expand_env(load_yaml(cfg_path), env=dict(settings.env)))
+        if missing:
+            ok = False
+            print(f"  ✗ unresolved in config.yaml: {', '.join(missing)}")
+            print("         ↳ these are set in .env but Hermes cannot see them."
+                  " install.sh symlinks .env into $HERMES_HOME and each profile"
+                  " home; re-run it, or link the file yourself.")
 
     print("\n[3/6] worker profiles")
     prof_root = cfg_path.parent / "profiles"

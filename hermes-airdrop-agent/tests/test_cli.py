@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from fakes import ANTHROPIC, PLACEHOLDER_ANT
+from fakes import ANTHROPIC, ANTHROPIC_SHORT, PLACEHOLDER_ANT
 from hermes_airdrop.cli import main
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -306,3 +306,46 @@ class TestDoctor:
                            "doctor", "--config", str(MAIN_CONFIG))
         assert code == 1
         assert "No usable model API key" in out
+class TestDoctorUnresolvedRefs:
+    """An unexpanded ${VAR} is the failure mode that makes a correct config
+    behave like a broken one: Hermes does not error, the setting just becomes
+    the literal string "${VAR}"."""
+
+    def _setup(self, tmp_path, env_body):
+        cfg = tmp_path / "config.yaml"
+        cfg.write_text(
+            "model:\n"
+            "  provider: ${HAA_MODEL_PROVIDER}\n"
+            "  default: ${HAA_MODEL_DEFAULT}\n"
+            "agent:\n  max_turns: 30\n"
+        )
+        env = tmp_path / ".env"
+        env.write_text(env_body)
+        return cfg, env
+
+    def test_missing_var_is_reported(self, capsys, tmp_path):
+        cfg, env = self._setup(tmp_path, f"ANTHROPIC_API_KEY={ANTHROPIC_SHORT}\n")
+        code, out, _ = run(capsys, "--data-dir", str(tmp_path / "d"),
+                           "--env-file", str(env), "doctor", "--offline",
+                           "--config", str(cfg))
+        assert code == 1
+        assert "unresolved in config.yaml" in out
+        assert "HAA_MODEL_PROVIDER" in out
+
+    def test_present_var_is_not_reported(self, capsys, tmp_path):
+        cfg, env = self._setup(
+            tmp_path,
+            f"ANTHROPIC_API_KEY={ANTHROPIC_SHORT}\n"
+            "HAA_MODEL_PROVIDER=custom\nHAA_MODEL_DEFAULT=gpt-4o\n",
+        )
+        _, out, _ = run(capsys, "--data-dir", str(tmp_path / "d"),
+                        "--env-file", str(env), "doctor", "--offline",
+                        "--config", str(cfg))
+        assert "HAA_MODEL_PROVIDER" not in out.split("unresolved")[0] or "unresolved" not in out
+
+    def test_message_points_at_the_real_fix(self, capsys, tmp_path):
+        cfg, env = self._setup(tmp_path, f"ANTHROPIC_API_KEY={ANTHROPIC_SHORT}\n")
+        _, out, _ = run(capsys, "--data-dir", str(tmp_path / "d"),
+                        "--env-file", str(env), "doctor", "--offline",
+                        "--config", str(cfg))
+        assert "install.sh" in out and "profile" in out

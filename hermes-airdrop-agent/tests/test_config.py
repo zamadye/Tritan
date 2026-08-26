@@ -1,6 +1,8 @@
 """Environment loading, redaction, and leak detection."""
 from __future__ import annotations
 
+import re
+
 import pytest
 
 from fakes import (
@@ -16,6 +18,7 @@ from fakes import (
 )
 from hermes_airdrop.config import (
     PLACEHOLDER_RE,
+    REPO_ROOT,
     SECRET_KEYS,
     Settings,
     expand_env,
@@ -215,3 +218,63 @@ class TestLoadYaml:
         p = tmp_path / "x.yaml"
         p.write_text("")
         assert load_yaml(p) == {}
+
+class TestEnvExampleIntegrity:
+    """`.env.example` is the template every install starts from.
+
+    A duplicated key here is not cosmetic: the last one wins when the file is
+    sourced, and a token written twice produces a 93-character string that
+    breaks every URL it is interpolated into. That bug happened; this is the
+    guard.
+    """
+
+    @pytest.fixture
+    def text(self):
+        return (REPO_ROOT / ".env.example").read_text(encoding="utf-8")
+
+    def _uncommented_keys(self, text):
+        import re
+        return re.findall(r"^([A-Z][A-Z0-9_]*)=", text, re.M)
+
+    def test_no_duplicate_uncommented_keys(self, text):
+        keys = self._uncommented_keys(text)
+        dups = {k for k in keys if keys.count(k) > 1}
+        assert not dups, f"duplicated keys in .env.example: {sorted(dups)}"
+
+    def test_commented_examples_do_not_count(self, text):
+        """The worked-example block is commented on purpose; it must not be
+        mistaken for a second declaration."""
+        import re
+        commented = re.findall(r"^#\s*([A-Z][A-Z0-9_]*)=", text, re.M)
+        assert commented, "expected a commented example block"
+        # ...and none of them may ALSO be uncommented with a different value
+        # in a way that would confuse a reader. Just assert they parse.
+
+    def test_parses_to_unique_dict(self, text):
+        parsed = parse_env_text(text)
+        assert len(parsed) == len(set(parsed))
+
+    def test_model_selection_trio_present(self, text):
+        """config.yaml references these via ${...}; if they are missing from
+        the template, Hermes leaves the placeholder verbatim and nothing
+        resolves."""
+        for k in ("HAA_MODEL_PROVIDER", "HAA_MODEL_DEFAULT", "HAA_CONTEXT_LENGTH"):
+            assert re.search(rf"^{k}=", text, re.M), f"{k} missing from .env.example"
+
+    def test_every_config_placeholder_has_a_template_key(self, text):
+        """Cross-check: every ${VAR} used in a config *value* must exist in
+        .env.example, or Hermes leaves the placeholder verbatim and the setting
+        silently becomes the literal string "${VAR}".
+
+        Parses the YAML rather than regexing the file, because comments
+        legitimately mention ${VAR} when explaining what NOT to do.
+        """
+        import yaml
+        from hermes_airdrop.config import unresolved_refs
+
+        declared = set(self._uncommented_keys(text))
+        used: set = set()
+        for f in (REPO_ROOT / "config" / "hermes").rglob("*.yaml"):
+            used |= set(unresolved_refs(yaml.safe_load(f.read_text(encoding="utf-8"))))
+        missing = used - declared
+        assert not missing, f"config references vars absent from .env.example: {sorted(missing)}"

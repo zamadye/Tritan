@@ -291,21 +291,50 @@ else
   run cp "$PROJECT_DIR/.env.example" "$ENV_FILE"
   ok "created .env from .env.example"
 fi
-if (( ! DRY_RUN )) && [[ -e "$ENV_FILE" ]]; then
-  chmod 600 "$ENV_FILE"
-  for pair in "HAA_PROJECT_DIR=$PROJECT_DIR" "HAA_DATA_DIR=$PROJECT_DIR/data" \
-              "HAA_CDP_PORT=$CDP_PORT" \
-              "HAA_CHROME_PROFILE=$HOME/.hermes/chrome-debug"; do
-    key="${pair%%=*}"; val="${pair#*=}"
-    if grep -q "^${key}=" "$ENV_FILE"; then
-      sed -i.bak "s|^${key}=.*|${key}=${val}|" "$ENV_FILE" && rm -f "${ENV_FILE}.bak"
-    elif grep -q "^#\? *${key}=" "$ENV_FILE"; then
-      sed -i.bak "s|^#\? *${key}=.*|${key}=${val}|" "$ENV_FILE" && rm -f "${ENV_FILE}.bak"
-    else
-      printf '%s=%s\n' "$key" "$val" >> "$ENV_FILE"
+# Populate the paths the configs interpolate, then make Hermes actually see
+# the file. The linking is the part that is easy to miss and expensive to
+# debug: without it every ${VAR} in the configs resolves to the literal string
+# "${VAR}", and Hermes fails looking like it has a bad model name.
+if [[ -e "$ENV_FILE" ]] || (( DRY_RUN )); then
+  if (( ! DRY_RUN )); then
+    chmod 600 "$ENV_FILE"
+    for pair in "HAA_PROJECT_DIR=$PROJECT_DIR" "HAA_DATA_DIR=$PROJECT_DIR/data" \
+                "HAA_CDP_PORT=$CDP_PORT" \
+                "HAA_CHROME_PROFILE=$HOME/.hermes/chrome-debug"; do
+      key="${pair%%=*}"; val="${pair#*=}"
+      if grep -qE "^#?\s*${key}=" "$ENV_FILE"; then
+        sed -i.bak -E "s|^#?\s*${key}=.*|${key}=${val}|" "$ENV_FILE" && rm -f "${ENV_FILE}.bak"
+      else
+        printf '%s=%s\n' "$key" "$val" >> "$ENV_FILE"
+      fi
+    done
+    ok "set HAA_PROJECT_DIR, HAA_DATA_DIR, HAA_CDP_PORT, HAA_CHROME_PROFILE"
+  else
+    info "would set HAA_PROJECT_DIR, HAA_DATA_DIR, HAA_CDP_PORT, HAA_CHROME_PROFILE"
+  fi
+
+  # Hermes reads $HERMES_HOME/.env -- and a profile is a SEPARATE Hermes home
+  # with its OWN .env. Symlinked, not copied, so there is one file to edit.
+  link_env() {  # link_env <hermes-home-dir>
+    local dir="$1" dst="$1/.env"
+    run mkdir -p "$dir"
+    if [[ -L "$dst" ]]; then
+      run rm -f "$dst"
+    elif [[ -e "$dst" ]] && (( ! ASSUME_YES )); then
+      run mv "$dst" "${dst}.bak"
     fi
+    run ln -s "$ENV_FILE" "$dst"
+  }
+
+  link_env "$HERMES_HOME"
+  ok "linked .env -> \$HERMES_HOME/.env"
+  NPROF=$(find "$PROJECT_DIR"/config/hermes/profiles -mindepth 1 -maxdepth 1 -type d | wc -l)
+  for pdir in "$PROJECT_DIR"/config/hermes/profiles/*/; do
+    link_env "$HERMES_HOME/profiles/$(basename "$pdir")"
   done
-  ok "set HAA_PROJECT_DIR, HAA_DATA_DIR, HAA_CDP_PORT, HAA_CHROME_PROFILE"
+  ok "linked .env into $NPROF profile homes"
+else
+  warn "no .env to link — copy .env.example to .env first, then re-run"
 fi
 
 # --- Telegram gateway ------------------------------------------------------

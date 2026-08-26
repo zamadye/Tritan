@@ -113,7 +113,7 @@ google-chrome --remote-debugging-port=9222 \
   evidence, notify, cli
 - 6 skill di `skills/` dengan frontmatter Hermes yang benar
 - 5 worker profile + SOUL.md di `config/hermes/profiles/`
-- `tests/` — **620 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
+- `tests/` — **681 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
 - `docs/research/` — hermes-schema.md, browser.md, sources.md
 - Skema config Hermes sudah diekstrak dari `DEFAULT_CONFIG` (89 top-level key)
 
@@ -136,9 +136,28 @@ google-chrome --remote-debugging-port=9222 \
 - `docs/research/browser.md` diberi banner SUPERSEDED — risetnya tetap valid
   sebagai catatan, tapi bukan lagi panduan
 
+### Selesai 2026-08-26 (sesi 2)
+
+- **BUG KRITIS ditemukan:** `.gitignore` repo induk punya aturan `skills/` tanpa
+  anchor, yang cocok dengan SEMUA direktori `skills/` termasuk punya kita.
+  `git add` melewati path ter-ignore tanpa peringatan — jadi 6 SKILL.md tidak
+  pernah masuk commit mana pun, sementara semua test hijau karena membaca
+  working tree. Sudah diperbaiki: `skills/` → `/skills/` (di-anchor ke root).
+  `tests/test_packaging.py` sekarang memeriksa pandangan *git*, bukan filesystem.
+- `model:` di 8 config jadi env-driven (`HAA_MODEL_PROVIDER` / `CUSTOM_BASE_URL`
+  / `HAA_MODEL_DEFAULT` / `HAA_CONTEXT_LENGTH`) — ganti provider cukup edit .env
+- **`install.sh` sekarang symlink `.env` ke `$HERMES_HOME/.env` DAN ke tiap
+  profile home.** Sebelumnya tidak, jadi semua `${VAR}` resolve jadi literal
+  `"${VAR}"` dan Hermes gagal dengan gejala "nama model salah"
+- `haa doctor` mendeteksi `${VAR}` yang tidak teresolve
+- `.env.example`: duplikat `TELEGRAM_BOT_TOKEN` dihapus + test anti-duplikat
+
 ### Masih terbuka
 
-- Alur Telegram end-to-end belum diuji terhadap Hermes sungguhan (butuh token)
+- Alur Telegram end-to-end belum diuji terhadap Hermes sungguhan. **Bukan**
+  karena kurang konfigurasi: sandbox ini memblokir TLS ke api.telegram.org dan
+  ke installer Hermes (`SSL_ERROR_SYSCALL`), Hermes tidak terpasang, tidak ada
+  browser, dan `DISPLAY` kosong. Harus dijalankan di mesin user.
 - `docs/research/hermes-schema.md` + `sources.md` belum ditinjau ulang pasca-pivot
 - `haa` belum punya subcommand untuk mendelegasikan task ke lead secara eksplisit
 
@@ -223,5 +242,6 @@ for f in install.sh scripts/*.sh; do bash -n "$f"; done
 |---|---|
 | 2026-08-25 | Riset sumber; backend Python 11 modul; 6 skill; 5 profile; 599 test; commit `fd01dc1` |
 | 2026-08-25 | Koreksi: semua worker dapat browser; GUI default di compose |
+| 2026-08-26 | **Bug gitignore `skills/` ditemukan & diperbaiki** (6 SKILL.md tidak pernah ter-commit); model env-driven; install.sh symlink .env ke HERMES_HOME + profile; doctor deteksi `${VAR}`; `test_packaging.py`. **681 test.** |
 | 2026-08-26 | `cron-jobs.sh` 5 job 3-layer + preflight CDP; README ditulis ulang; `browser.md` ditandai superseded. **620 test lulus.** |
 | 2026-08-25 | **Pivot selesai:** Camofox → Chrome CDP di host (docker-compose.yml dihapus); install.sh jadi system installer 10 langkah; layer orchestrator + lead ditambahkan (7 profile); memory + knowledge base; Telegram gateway di installer; `browser_check` ditulis ulang untuk CDP. **617 test lulus.** |

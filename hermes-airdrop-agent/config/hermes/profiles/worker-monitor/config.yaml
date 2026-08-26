@@ -7,8 +7,10 @@
 # look. A monitor that cannot see the dApp can only report the symptom.
 # ---------------------------------------------------------------------------
 model:
-  provider: auto
-  default: ${HAA_MONITOR_MODEL}
+  provider: ${HAA_MODEL_PROVIDER}
+  base_url: ${CUSTOM_BASE_URL}
+  default: ${HAA_MODEL_DEFAULT}
+  context_length: ${HAA_CONTEXT_LENGTH}
 
 agent:
   max_turns: 40

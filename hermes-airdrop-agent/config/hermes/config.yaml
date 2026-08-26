@@ -13,13 +13,23 @@
 # ===========================================================================
 
 model:
-  # "auto" detects the provider from whichever *_API_KEY is present in .env.
-  provider: auto
-  # Hermes addresses models as "<provider>/<model>". A bare name will not resolve.
-  default: anthropic/claude-sonnet-4.5
-  # Only for a custom / OpenAI-compatible endpoint (vLLM, Ollama, LM Studio).
-  # base_url: ${CUSTOM_BASE_URL}
-  # Leave context_length unset — Hermes auto-detects it from the provider.
+  # All three come from .env so switching provider is a one-line edit there,
+  # not a hunt through eight config files.
+  #
+  #   HAA_MODEL_PROVIDER=custom   + CUSTOM_BASE_URL + CUSTOM_API_KEY
+  #                               -> any OpenAI-compatible gateway
+  #                                  (agentrouter.org, OpenRouter, vLLM, Ollama)
+  #   HAA_MODEL_PROVIDER=auto     -> detect from whichever *_API_KEY is present
+  #   HAA_MODEL_PROVIDER=anthropic-> direct Anthropic API
+  provider: ${HAA_MODEL_PROVIDER}
+  base_url: ${CUSTOM_BASE_URL}
+  # For provider=custom this is the gateway's bare model name (check with:
+  #   curl $CUSTOM_BASE_URL/models -H "Authorization: Bearer $CUSTOM_API_KEY")
+  # For direct providers Hermes wants "<provider>/<model>".
+  default: ${HAA_MODEL_DEFAULT}
+  # A gateway that proxies many upstreams often cannot report a reliable
+  # context window, so Hermes' auto-detection gets it wrong. Set it explicitly.
+  context_length: ${HAA_CONTEXT_LENGTH}
 
 agent:
   max_turns: 90

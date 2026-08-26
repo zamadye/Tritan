@@ -13,8 +13,10 @@
 # are not.
 # ---------------------------------------------------------------------------
 model:
-  provider: auto
-  default: ${HAA_LEAD_MODEL}
+  provider: ${HAA_MODEL_PROVIDER}
+  base_url: ${CUSTOM_BASE_URL}
+  default: ${HAA_MODEL_DEFAULT}
+  context_length: ${HAA_CONTEXT_LENGTH}
 
 agent:
   max_turns: 80
