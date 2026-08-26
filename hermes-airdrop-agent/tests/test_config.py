@@ -92,12 +92,12 @@ class TestRedaction:
 
     def test_no_secret_key_is_a_plain_name(self):
         for k in SECRET_KEYS:
-            assert k.endswith(("_KEY", "_TOKEN", "_PASSWORD")), k
+            assert k.endswith(("_KEY", "_TOKEN")), k
 
-    def test_vnc_password_is_treated_as_a_secret(self):
-        # It drives a browser logged into your accounts; it must be redacted.
-        assert "VNC_PASSWORD" in SECRET_KEYS
-        assert redact("VNC_PASSWORD", "hunter2hunter2hunter2") != "hunter2hunter2hunter2"
+    def test_telegram_bot_token_is_a_secret(self):
+        # It drives the whole UI; leaking it lets anyone impersonate the bot.
+        assert "TELEGRAM_BOT_TOKEN" in SECRET_KEYS
+
 
 
 class TestSettings:

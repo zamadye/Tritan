@@ -54,10 +54,24 @@ class TestDryRun:
         r = run("./install.sh", "--dry-run")
         assert r.returncode == 0, r.stderr
 
-    def test_all_eight_steps_run(self, repo_snapshot):
+    def test_all_ten_steps_run(self, repo_snapshot):
         out = run("./install.sh", "--dry-run").stdout
-        for n in range(1, 9):
-            assert f"{n}/8" in out, f"step {n} missing from dry run"
+        for n in range(1, 11):
+            assert f"{n}/10" in out, f"step {n} missing from dry run"
+
+    def test_installs_rather_than_only_checking(self, repo_snapshot):
+        """The whole point: this is a system installer. It must actually run
+        package-manager installs, not just report what is missing."""
+        out = run("./install.sh", "--dry-run").stdout
+        assert "[dry-run] sudo apt-get install" in out or "brew install" in out
+
+    def test_installs_hermes_framework(self, repo_snapshot):
+        out = run("./install.sh", "--dry-run").stdout
+        assert "hermes-agent.nousresearch.com/install.sh" in out
+
+    def test_sets_up_memory_and_knowledge(self, repo_snapshot):
+        out = run("./install.sh", "--dry-run").stdout
+        assert "memories" in out and "knowledge" in out
 
     def test_changes_nothing(self, tmp_path, repo_snapshot):
         """The whole point of --dry-run. Run it into a throwaway HERMES_HOME
@@ -72,22 +86,27 @@ class TestDryRun:
         assert "dry run" in out.lower()
         assert "Dry run complete" in out
 
-    def test_prerequisite_check_passes(self, repo_snapshot):
+    def test_toolchain_check_passes(self, repo_snapshot):
         out = run("./install.sh", "--dry-run").stdout
         assert "✓ git" in out
-        assert "✓ python3" in out
+        assert "Python 3" in out
 
 
 class TestFlags:
-    @pytest.mark.parametrize("flag", ["--skip-browser", "--skip-hermes", "--no-cron", "-y"])
+    @pytest.mark.parametrize("flag", ["--skip-chrome", "--skip-hermes", "--no-cron",
+                                      "--no-gateway", "-y"])
     def test_flag_accepted(self, flag, repo_snapshot):
         r = run("./install.sh", "--dry-run", flag)
         assert r.returncode == 0, r.stderr
 
-    def test_skip_browser_skips_step_three(self, repo_snapshot):
-        out = run("./install.sh", "--dry-run", "--skip-browser").stdout
-        assert "3/8" in out
-        assert "skipped (--skip-browser)" in out
+    def test_skip_chrome_skips_step_four(self, repo_snapshot):
+        out = run("./install.sh", "--dry-run", "--skip-chrome").stdout
+        assert "4/10" in out
+        assert "skipped (--skip-chrome)" in out
+
+    def test_skip_gateway_is_reported(self, repo_snapshot):
+        out = run("./install.sh", "--dry-run", "--no-gateway").stdout
+        assert "Telegram gateway skipped" in out
 
     def test_skip_hermes_skips_step_two(self, repo_snapshot):
         out = run("./install.sh", "--dry-run", "--skip-hermes").stdout
@@ -113,9 +132,10 @@ class TestContents:
         text = INSTALL.read_text(encoding="utf-8")
         assert "https://hermes-agent.nousresearch.com/install.sh" in text
 
-    def test_uses_the_real_camofox_image(self):
-        text = INSTALL.read_text(encoding="utf-8")
-        assert "jo-inc/camofox-browser" in text
+    def test_targets_chrome_not_an_antidetect_browser(self):
+        text = INSTALL.read_text(encoding="utf-8").lower()
+        assert "chromium" in text or "chrome" in text
+        assert "camofox" not in text
 
     def test_never_overwrites_an_existing_env(self):
         text = INSTALL.read_text(encoding="utf-8")
@@ -124,9 +144,27 @@ class TestContents:
     def test_locks_down_env_permissions(self):
         assert "chmod 600" in INSTALL.read_text(encoding="utf-8")
 
-    def test_compose_file_matches_installer_image(self):
-        compose = (ROOT / "docker-compose.yml").read_text(encoding="utf-8")
-        assert "jo-inc/camofox-browser" in compose
+    def test_no_docker_compose_file_shipped(self):
+        # Chrome runs on the host with a real window; there is no browser
+        # container, so there must be nothing to compose.
+        assert not (ROOT / "docker-compose.yml").exists()
+
+    def test_installer_never_overwrites_an_existing_env(self):
+        assert "left untouched" in INSTALL.read_text(encoding="utf-8")
+
+    def test_start_browser_handles_the_chrome_136_trap(self):
+        sb = (ROOT / "scripts" / "start-browser.sh").read_text(encoding="utf-8")
+        assert "--user-data-dir" in sb, "a dedicated profile dir is mandatory"
+        assert "136" in sb, "must document the silent-failure trap"
+        assert "/json/version" in sb, "must probe the port, not assume it opened"
+
+    def test_start_browser_does_not_pass_no_sandbox(self):
+        """Host Chrome runs as the user, so the sandbox stays on. (--no-sandbox
+        is only needed for root-in-Docker; it is mentioned in this script's
+        header comment to say so, which is why comments are stripped here.)"""
+        sb = (ROOT / "scripts" / "start-browser.sh").read_text(encoding="utf-8")
+        code = "\n".join(l for l in sb.splitlines() if not l.lstrip().startswith("#"))
+        assert "--no-sandbox" not in code
 
     def test_cron_script_uses_hermes_cron_not_system_crontab(self):
         text = (ROOT / "scripts" / "cron-jobs.sh").read_text(encoding="utf-8")

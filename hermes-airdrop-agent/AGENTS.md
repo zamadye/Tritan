@@ -113,18 +113,25 @@ google-chrome --remote-debugging-port=9222 \
   evidence, notify, cli
 - 6 skill di `skills/` dengan frontmatter Hermes yang benar
 - 5 worker profile + SOUL.md di `config/hermes/profiles/`
-- `tests/` — **599 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
+- `tests/` — **617 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
 - `docs/research/` — hermes-schema.md, browser.md, sources.md
 - Skema config Hermes sudah diekstrak dari `DEFAULT_CONFIG` (89 top-level key)
 
-### Yang PERLU DIROMBAK (bukan diulang dari nol)
+### Sudah dirombak (2026-08-25)
 
-- `docker-compose.yml` + semua `browser.camofox.*` → ganti ke `browser.cdp_url`
-- `install.sh` → naikkan dari "cek & suruh install" jadi **installer sistem**
-  yang benar-benar memasang dependency (pola: `setup-hermes.sh` Hermes)
-- Tambah setup **Telegram gateway** (belum ada sama sekali)
-- Tambah setup **memory + knowledge base** (belum ada)
-- `browser_check.py` → audit CDP, bukan Camofox/VNC
+- `browser.camofox.*` → `browser.cdp_url` di semua 8 config; `docker-compose.yml` dihapus
+- `install.sh` → system installer 10 langkah (apt/dnf/pacman/zypper/brew, Python,
+  Node, Chrome, Hermes, haa, config, skills, memory+knowledge, env+gateway+cron)
+- Telegram gateway: dicek & di-setup oleh installer
+- `config/hermes/memories/{MEMORY,USER}.md` + `knowledge/*.md`
+- `browser_check.py` → audit CDP (bukan Camofox/noVNC)
+- `worker-orchestrator` + `worker-lead` (struktur 3 lapis)
+
+### Masih terbuka
+
+- `cron-jobs.sh` masih menjadwalkan 4 job lama; belum ada job untuk orchestrator
+- README masih mendeskripsikan setup Camofox/VNC — perlu ditulis ulang
+- Alur Telegram end-to-end belum diuji terhadap Hermes sungguhan (butuh token)
 
 ---
 
@@ -207,4 +214,4 @@ for f in install.sh scripts/*.sh; do bash -n "$f"; done
 |---|---|
 | 2026-08-25 | Riset sumber; backend Python 11 modul; 6 skill; 5 profile; 599 test; commit `fd01dc1` |
 | 2026-08-25 | Koreksi: semua worker dapat browser; GUI default di compose |
-| 2026-08-25 | **Pivot: Camofox → Chrome CDP. Telegram jadi UI utama. install.sh jadi system installer.** (belum dikerjakan) |
+| 2026-08-25 | **Pivot selesai:** Camofox → Chrome CDP di host (docker-compose.yml dihapus); install.sh jadi system installer 10 langkah; layer orchestrator + lead ditambahkan (7 profile); memory + knowledge base; Telegram gateway di installer; `browser_check` ditulis ulang untuk CDP. **617 test lulus.** |

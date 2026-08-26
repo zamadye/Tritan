@@ -1,93 +1,145 @@
 #!/usr/bin/env bash
 # ---------------------------------------------------------------------------
-# Start the Camofox GUI browser server and confirm BOTH endpoints answer:
-#   :9377  agent control API   (what Hermes talks to)
-#   :6080  noVNC GUI           (what YOU watch and take over through)
+# Launch Chrome with remote debugging (CDP) and verify the port is really open.
 #
-# The GUI check is not optional. Camofox runs on an Xvfb display at 1x1
-# resolution unless the VNC plugin is enabled — so without :6080 the browser
-# is unwatchable and nobody can solve the CAPTCHA or MFA prompt the agent
-# halts on.
+#   ./scripts/start-browser.sh
+#
+# Runs on the HOST with a real visible window. No Docker, no --no-sandbox,
+# no VNC -- the window is the GUI.
+#
+# ---------------------------------------------------------------------------
+# THE TRAP THIS SCRIPT EXISTS TO AVOID
+# ---------------------------------------------------------------------------
+# From Hermes' browser docs, verbatim:
+#
+#   "Chrome 136+ makes the dedicated profile mandatory. As a security
+#    hardening change, Chrome 136 and later silently refuse to open the
+#    remote debugging port when --remote-debugging-port is combined with the
+#    *default* user-data-dir -- even from a cold start with no other Chrome
+#    running. The browser launches normally but nothing ever listens on 9222,
+#    so /browser connect fails with connection refused.
+#    There is no error message."
+#
+# So: a dedicated --user-data-dir is not optional, and "Chrome looks like it
+# opened" proves nothing. The only trustworthy check is an HTTP GET on
+# /json/version. This script does that check and fails loudly.
 # ---------------------------------------------------------------------------
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-PORT="${CAMOFOX_PORT:-9377}"
-NOVNC="${NOVNC_PORT:-6080}"
-API="http://localhost:${PORT}"
-GUI="http://localhost:${NOVNC}/vnc.html"
+
+CDP_PORT="${HAA_CDP_PORT:-9222}"
+CDP_URL="http://127.0.0.1:${CDP_PORT}"
+PROFILE_DIR="${HAA_CHROME_PROFILE:-$HOME/.hermes/chrome-debug}"
 
 [[ -f "$PROJECT_DIR/.env" ]] && set -a && . "$PROJECT_DIR/.env" && set +a
 
-compose_cmd() {
-  if docker compose version >/dev/null 2>&1; then echo "docker compose"
-  elif command -v docker-compose >/dev/null 2>&1; then echo "docker-compose"
-  else return 1; fi
-}
+ok()   { printf '  \033[0;32m✓\033[0m %s\n' "$*"; }
+info() { printf '  → %s\n' "$*"; }
+err()  { printf '  \033[0;31m✗\033[0m %s\n' "$*" >&2; }
 
-up() {
-  if compose_cmd >/dev/null 2>&1; then
-    ( cd "$PROJECT_DIR" && $(compose_cmd) up -d camofox )
-  elif command -v npx >/dev/null 2>&1; then
-    echo "→ no Docker; starting the npm server with the GUI plugin"
-    ENABLE_VNC=1 nohup npx -y @askjo/camofox-browser >/tmp/camofox.log 2>&1 &
-  else
-    echo "✗ Need Docker (preferred) or Node.js." >&2
-    exit 1
-  fi
-}
+# ------------------------------------------------------- already running? ---
+cdp_up() { curl -fsS -m 3 "$CDP_URL/json/version" >/dev/null 2>&1; }
 
-if curl -fsS -m 5 -o /dev/null "$API" 2>/dev/null; then
-  echo "✓ Camofox API already responding at ${API}"
-else
-  up
+if cdp_up; then
+  ok "Chrome CDP already listening on $CDP_URL"
+  curl -fsS -m 3 "$CDP_URL/json/version" | python3 -c \
+    'import json,sys; d=json.load(sys.stdin); print("    browser:", d.get("Browser","?"))' 2>/dev/null || true
+  info "profile: $PROFILE_DIR"
+  exit 0
 fi
 
-echo -n "→ waiting for the control API at ${API} "
-for _ in $(seq 1 90); do
-  if curl -fsS -m 3 -o /dev/null "$API" 2>/dev/null; then echo; break; fi
-  echo -n "."; sleep 2
-done
-curl -fsS -m 5 -o /dev/null "$API" 2>/dev/null || {
-  echo; echo "✗ control API did not come up within 180s." >&2
-  echo "  docker compose logs camofox   (or: cat /tmp/camofox.log)" >&2
-  exit 1; }
-echo "✓ control API up at ${API}"
+# --------------------------------------------------------- find a browser ---
+find_browser() {
+  local c
+  for c in google-chrome google-chrome-stable chromium chromium-browser brave-browser microsoft-edge; do
+    command -v "$c" >/dev/null 2>&1 && { echo "$c"; return 0; }
+  done
+  # Common absolute paths the PATH may not cover.
+  for c in /usr/bin/google-chrome /usr/bin/chromium /opt/google/chrome/google-chrome \
+           /snap/bin/chromium /opt/brave-bin/brave-browser \
+           "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+           "/Applications/Chromium.app/Contents/MacOS/Chromium" \
+           "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser" \
+           "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"; do
+    [[ -x "$c" ]] && { echo "$c"; return 0; }
+  done
+  return 1
+}
 
-echo -n "→ waiting for the GUI at ${GUI} "
-GUI_OK=0
-for _ in $(seq 1 45); do
-  if curl -fsS -m 3 -o /dev/null "$GUI" 2>/dev/null; then GUI_OK=1; echo; break; fi
-  echo -n "."; sleep 2
-done
+BROWSER="$(find_browser || true)"
+if [[ -z "$BROWSER" ]]; then
+  err "No Chromium-family browser found."
+  echo "    Install one of: google-chrome, chromium, brave-browser, microsoft-edge" >&2
+  echo "    Debian/Ubuntu : sudo apt install -y chromium" >&2
+  echo "    macOS         : brew install --cask google-chrome" >&2
+  exit 1
+fi
+ok "browser: $BROWSER"
 
-if (( GUI_OK )); then
-  echo "✓ GUI up at ${GUI}"
-  [[ -z "${VNC_PASSWORD:-}" ]] && \
-    echo "  ! VNC_PASSWORD is unset — set it in .env; this port drives a browser" \
-         "that is logged into your accounts"
-else
-  echo
-  echo "✗ The GUI is not reachable. The browser is running UNWATCHABLE:" >&2
-  echo "  you will not be able to take over for a CAPTCHA or MFA prompt." >&2
-  echo "  Fix: make sure ENABLE_VNC=1 is set for the Camofox server." >&2
-  echo "       'docker compose up -d camofox' does this by default;" >&2
-  echo "       the 'headless' profile deliberately does not." >&2
+# -------------------------------------------------------------- no display? ---
+# A real window needs a display. On a headless server there isn't one, and
+# Chrome will fail or silently background itself.
+if [[ -z "${DISPLAY:-}" && "$(uname -s)" == "Linux" && -z "${WAYLAND_DISPLAY:-}" ]]; then
+  err "No DISPLAY set -- this machine has no graphical session."
+  echo "    This setup runs Chrome on the host with a real window, which needs" >&2
+  echo "    a desktop. On a headless server either:" >&2
+  echo "      - run it where you have a desktop, or" >&2
+  echo "      - use a containerised browser with VNC instead (not this script)." >&2
   exit 1
 fi
 
+# ------------------------------------------------------------------ launch ---
+mkdir -p "$PROFILE_DIR"
+info "profile dir : $PROFILE_DIR   (dedicated -- required by Chrome 136+)"
+info "CDP port    : $CDP_PORT"
+
+"$BROWSER" \
+  --remote-debugging-port="$CDP_PORT" \
+  --user-data-dir="$PROFILE_DIR" \
+  --no-first-run \
+  --no-default-browser-check \
+  >/tmp/haa-chrome.log 2>&1 &
+
+# ------------------------------------------------------------------ verify ---
+echo -n "  → waiting for $CDP_URL/json/version "
+for _ in $(seq 1 30); do
+  if cdp_up; then echo; break; fi
+  echo -n "."
+  sleep 1
+done
+
+if ! cdp_up; then
+  echo
+  err "Port $CDP_PORT never opened."
+  echo >&2
+  echo "    The usual cause is exactly the Chrome 136+ trap: Chrome launched" >&2
+  echo "    fine but refused to open the debug port. Check, in order:" >&2
+  echo "      1. Is another Chrome already running with your DEFAULT profile?" >&2
+  echo "         A new window joins that process, which has no debug port." >&2
+  echo "         Close every Chrome window and re-run." >&2
+  echo "      2. Is $PROFILE_DIR writable and not your default profile dir?" >&2
+  echo "      3. Chrome log: /tmp/haa-chrome.log" >&2
+  exit 1
+fi
+
+ok "CDP is live at $CDP_URL"
+curl -fsS -m 3 "$CDP_URL/json/version" | python3 -c \
+  'import json,sys; d=json.load(sys.stdin); print("    browser:", d.get("Browser","?"))' 2>/dev/null || true
+
 cat <<DONE
 
-Camofox ready.
-  agent API : ${API}
-  GUI       : ${GUI}
+Chrome ready. A real window should be visible on your desktop.
 
-Set in .env:  CAMOFOX_URL=${API}
+  CDP endpoint : $CDP_URL
+  Profile      : $PROFILE_DIR
+  Config       : browser.cdp_url in config/hermes/**/config.yaml already
+                 points at $CDP_URL
 
-Sessions persist per worker (browser.camofox.user_id), so logins survive
-restarts. Each worker keeps its own profile:
-  haa-worker-analyzer / -daily / -quests / -discord / -monitor
+Log into your accounts in that window now -- the session persists in the
+profile directory, so you only do it once.
 
 Check readiness with:  haa browser check
+
 DONE

@@ -21,9 +21,19 @@ for s in airdrop-analyzer daily-executor quest-executor discord-engager \
   rm -rf "${HERMES_HOME}/skills/${s}"
 done
 
-if command -v docker >/dev/null 2>&1 && docker ps -a --format '{{.Names}}' | grep -qx camofox-browser; then
-  docker rm -f camofox-browser >/dev/null
-  echo "✓ removed camofox-browser container"
+# Close the CDP Chrome we launched, if it is still running.
+CDP_PORT="${HAA_CDP_PORT:-9222}"
+if curl -fsS -m 2 "http://127.0.0.1:${CDP_PORT}/json/version" >/dev/null 2>&1; then
+  echo "  Chrome is still listening on :${CDP_PORT} — close that window yourself"
+  echo "  (killing it from here could lose work in your other tabs)"
+fi
+
+PROFILE="${HAA_CHROME_PROFILE:-$HOME/.hermes/chrome-debug}"
+if [[ -d "$PROFILE" ]] && (( PURGE )); then
+  rm -rf "$PROFILE"
+  echo "✓ removed the Chrome profile at $PROFILE (logins gone)"
+else
+  echo "  Chrome profile kept at $PROFILE (your logins survive)"
 fi
 
 echo "✓ removed airdrop profiles and skills"

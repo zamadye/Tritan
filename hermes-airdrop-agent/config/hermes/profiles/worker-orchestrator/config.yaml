@@ -1,0 +1,84 @@
+# ---------------------------------------------------------------------------
+# worker-orchestrator — LAYER 1. The Telegram-facing agent.
+# Installs to ~/.hermes/profiles/worker-orchestrator/config.yaml
+#
+# It receives a raw airdrop announcement from the operator, works out what the
+# project actually requires, and delegates. It does not farm anything itself.
+# ---------------------------------------------------------------------------
+model:
+  provider: auto
+  default: ${HAA_ORCHESTRATOR_MODEL}   # strongest model — it decides what everyone else does
+
+agent:
+  max_turns: 50
+  reasoning_effort: high
+  stall_guards: true
+  verify_guidance: true
+
+toolsets:
+  - hermes-cli
+  - browser            # it must be able to look at a project itself
+  - delegation         # the whole point of this layer
+  - file
+  - skills
+
+terminal:
+  backend: local
+  cwd: ${HAA_PROJECT_DIR}
+  timeout: 180
+
+browser:
+  cdp_url: http://127.0.0.1:9222
+  engine: chrome
+  backend: "off"
+  headed: true
+  inactivity_timeout: 900
+  command_timeout: 90
+  record_sessions: true
+
+approvals:
+  mode: smart
+  cron_mode: deny
+  single_query_mode: deny
+  deny:
+    - "*cast send*"
+    - "*cast wallet*"
+    - "*cast keystore*"
+    - "*solana transfer*"
+    - "*solana keygen*"
+    - "*--private-key*"
+    - "*--private_key*"
+    - "*PRIVATE_KEY*"
+    - "*mnemonic*"
+    - "*seed phrase*"
+
+security:
+  redact_secrets: true
+  allow_private_urls: false
+
+compression:
+  enabled: true
+  threshold: 0.50
+  protect_last_n: 20
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  memory_char_limit: 2200
+  user_char_limit: 1375
+  nudge_interval: 10
+
+delegation:
+  # Sub-agents run in the worker profiles, never with this profile's budget.
+  inherit_parent_model: false
+
+session_reset:
+  mode: idle
+  idle_minutes: 240
+
+tool_loop_guardrails:
+  hard_stop_enabled: true
+  warn_after:
+    same_tool_failure: 3
+  hard_stop_after:
+    same_tool_failure: 6

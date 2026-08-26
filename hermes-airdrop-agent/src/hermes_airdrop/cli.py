@@ -105,10 +105,13 @@ def cmd_doctor(args: argparse.Namespace) -> int:
             print(f"  ✗ {p}")
     else:
         print(f"  ✓ model credential present: {', '.join(settings.model_provider_keys())}")
-    if settings.get("CAMOFOX_URL"):
-        print(f"  ✓ CAMOFOX_URL = {settings.get('CAMOFOX_URL')}")
+    if settings.get("TELEGRAM_BOT_TOKEN"):
+        print("  ✓ TELEGRAM_BOT_TOKEN set")
+        if not settings.get("TELEGRAM_ALLOWED_USERS"):
+            print("  ! TELEGRAM_ALLOWED_USERS is empty — anyone who finds the bot "
+                  "can drive your browser")
     else:
-        print("  · CAMOFOX_URL unset — Hermes will use its default browser provider")
+        print("  · TELEGRAM_BOT_TOKEN unset — the Telegram UI will not start")
 
     print("\n[2/6] hermes config.yaml")
     cfg_path = Path(getattr(args, "config", None) or DEFAULT_CONFIG)
@@ -143,23 +146,18 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     else:
         print(f"  · no profiles directory at {prof_root}")
 
-    print("\n[4/6] browser readiness (GUI + persistence)")
+    print("\n[4/6] browser readiness (CDP Chrome)")
     from .browser_check import audit_all
 
-    camofox_url = settings.get("CAMOFOX_URL") or "http://localhost:9377"
-    novnc_url = settings.get("NOVNC_URL") or ""
     bcfg = Path(getattr(args, "config", None) or DEFAULT_CONFIG).parent
     browser_report = audit_all(
         bcfg,
-        camofox_url=camofox_url,
-        novnc_url=novnc_url,
+        cdp_url=settings.get("BROWSER_CDP_URL") or "",
         live=not getattr(args, "offline", False),
     )
     for line in browser_report.render().splitlines()[1:]:
         print(line)
     if browser_report.errors:
-        ok = False
-    if browser_report.api and not browser_report.api.ok:
         ok = False
 
     print("\n[5/6] wallet registry")
@@ -231,8 +229,7 @@ def cmd_browser_check(args: argparse.Namespace) -> int:
     cfg_root = Path(args.config).parent if args.config else DEFAULT_CONFIG.parent
     report = audit_all(
         cfg_root,
-        camofox_url=args.url or settings.get("CAMOFOX_URL") or "http://localhost:9377",
-        novnc_url=args.novnc_url or settings.get("NOVNC_URL") or "",
+        cdp_url=args.url or settings.get("BROWSER_CDP_URL") or "",
         live=not args.offline,
     )
     print(report.render())
@@ -559,16 +556,15 @@ def build_parser() -> argparse.ArgumentParser:
     sp = sub.add_parser("doctor", help="full health check")
     sp.add_argument("--config", help="path to hermes config.yaml")
     sp.add_argument("--offline", action="store_true",
-                    help="skip the live Camofox/noVNC probes")
+                    help="skip the live CDP probe")
     sp.set_defaults(func=cmd_doctor)
 
     br = sub.add_parser("browser", help="GUI browser readiness").add_subparsers(
         dest="sub2", required=True)
-    brc = br.add_parser("check", help="verify every worker has a visible, persistent browser")
+    brc = br.add_parser("check", help="verify every worker has a visible CDP browser")
     brc.add_argument("--config", help="path to hermes config.yaml")
-    brc.add_argument("--url", help="Camofox control API (default: CAMOFOX_URL or :9377)")
-    brc.add_argument("--novnc-url", help="noVNC origin (default: derived, port 6080)")
-    brc.add_argument("--offline", action="store_true", help="config audit only, no probes")
+    brc.add_argument("--url", help="CDP endpoint (default: from config.yaml / BROWSER_CDP_URL)")
+    brc.add_argument("--offline", action="store_true", help="config audit only, no probe")
     brc.set_defaults(func=cmd_browser_check)
 
     cfg = sub.add_parser("config", help="configuration helpers").add_subparsers(dest="sub2", required=True)

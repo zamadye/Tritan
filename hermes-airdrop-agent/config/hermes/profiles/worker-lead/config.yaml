@@ -1,0 +1,93 @@
+# ---------------------------------------------------------------------------
+# worker-lead — LAYER 2. One per airdrop project.
+# Installs to ~/.hermes/profiles/worker-lead/config.yaml
+#
+# Owns the understanding of ONE project: its task format, its rules, its
+# quirks, what has already been done. It turns that understanding into ordered
+# instructions for the layer-3 workers.
+#
+# Every airdrop is different. MemeBitcoin wants register -> connect Twitter ->
+# easy task -> submit email -> submit EVM address -> daily mission. Elyon wants
+# register -> connect EVM wallet -> complete task. Neither flow transfers to
+# the other, and assuming otherwise is how tasks get marked done when they
+# are not.
+# ---------------------------------------------------------------------------
+model:
+  provider: auto
+  default: ${HAA_LEAD_MODEL}
+
+agent:
+  max_turns: 80
+  reasoning_effort: high
+  stall_guards: true
+  verify_guidance: true
+  task_completion_guidance: true
+
+toolsets:
+  - hermes-cli
+  - browser            # it reads the project's own task list, in the browser
+  - delegation
+  - file
+  - skills
+
+terminal:
+  backend: local
+  cwd: ${HAA_PROJECT_DIR}
+  timeout: 180
+
+browser:
+  cdp_url: http://127.0.0.1:9222
+  engine: chrome
+  backend: "off"
+  headed: true
+  inactivity_timeout: 900
+  command_timeout: 90
+  record_sessions: true
+
+approvals:
+  mode: smart
+  cron_mode: deny
+  single_query_mode: deny
+  deny:
+    - "*cast send*"
+    - "*cast wallet*"
+    - "*cast keystore*"
+    - "*solana transfer*"
+    - "*solana keygen*"
+    - "*--private-key*"
+    - "*--private_key*"
+    - "*PRIVATE_KEY*"
+    - "*mnemonic*"
+    - "*seed phrase*"
+
+security:
+  redact_secrets: true
+  allow_private_urls: false
+
+compression:
+  enabled: true
+  threshold: 0.50
+  target_ratio: 0.20
+  protect_last_n: 25
+
+memory:
+  # The lead's whole job is accumulated per-project knowledge.
+  memory_enabled: true
+  user_profile_enabled: false
+  memory_char_limit: 2200
+  user_char_limit: 0
+  nudge_interval: 5
+
+delegation:
+  inherit_parent_model: false
+
+session_reset:
+  mode: idle
+  idle_minutes: 180
+
+tool_loop_guardrails:
+  hard_stop_enabled: true
+  warn_after:
+    same_tool_failure: 3
+  hard_stop_after:
+    same_tool_failure: 6

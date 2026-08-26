@@ -42,32 +42,31 @@ terminal:
   timeout: 180
 
 browser:
-  # Camofox is the browser for every worker. Selected here; its URL comes from
-  # CAMOFOX_URL in .env (there is no config.yaml key for it).
-  cloud_provider: camofox
-  # Camofox exposes no CDP endpoint, so the Browser Use harness cannot attach.
-  # "off" keeps the built-in browser tools, which is what Camofox needs.
+  # Attach to a real Chrome running on this machine with remote debugging on.
+  # Launch it with ./scripts/start-browser.sh.
+  #
+  # Precedence (verified in tools/browser_cdp_tool.py::_resolve_cdp_endpoint):
+  #   1. BROWSER_CDP_URL env var  (live override, e.g. from /browser connect)
+  #   2. browser.cdp_url below
+  # Hardcoded rather than ${HAA_CDP_URL} on purpose: Hermes leaves an unset
+  # placeholder verbatim, which would give a cdp_url of "${HAA_CDP_URL}".
+  cdp_url: http://127.0.0.1:9222
+  engine: chrome
+  # "off" forces the built-in tools (browser_navigate, browser_click, ...).
+  # Pages come back as accessibility trees with ref IDs -- enough for an LLM,
+  # and every step is a discrete, loggable action. Set to "browser-use" to let
+  # the agent drive the page by writing Python instead.
   backend: "off"
-  camofox:
-    # Persistent Firefox profile keyed by user_id below. Logins survive
-    # restarts -- this is what makes the session "berkelanjutan".
-    managed_persistence: true
-    # Stable per-worker identity. One per ROLE (not per wallet), so the daily
-    # worker's logins do not collide with the quest worker's.
-    user_id: haa-worker-main
-    # Reuse an already-open tab after a gateway restart instead of orphaning it.
-    adopt_existing_tab: true
-  # NOTE: this controls Hermes' *local Chromium* fallback only. It does not
-  # make Camofox visible -- ENABLE_VNC=1 in the Camofox container does that.
-  # Kept on so the fallback path is also visible rather than silent.
+  # Launches a real visible Chrome window and skips per-turn cleanup so it
+  # persists between turns. The visible window is how the operator takes over
+  # for a CAPTCHA or MFA prompt, so this is not optional.
   headed: true
-  # dApp pages are slow. 15 min before an idle session is closed, and 90s per
+  # dApp pages are slow: 15 min idle before the session closes, 90s per
   # command, so a heavy claim page is not cut off mid-flow.
   inactivity_timeout: 900
   command_timeout: 90
   # Session recordings become part of the evidence trail.
   record_sessions: true
-
 compression:
   enabled: true
   threshold: 0.50

@@ -42,8 +42,6 @@ SECRET_KEYS: frozenset[str] = frozenset(
         "BROWSER_USE_API_KEY",
         "BROWSERBASE_API_KEY",
         "FIRECRAWL_API_KEY",
-        "CAMOFOX_SESSION_KEY",
-        "VNC_PASSWORD",
         "GITHUB_TOKEN",
     }
 )

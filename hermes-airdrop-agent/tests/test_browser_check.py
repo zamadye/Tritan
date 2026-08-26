@@ -1,8 +1,9 @@
-"""Every worker must have a working, visible, persistent GUI browser.
+"""Every worker must have a working, visible CDP browser.
 
 Airdrop work is GUI: connect wallet, click claim, approve, sign, read a quest
 board. There is no CLI path for any of it, so a worker without a browser is not
-degraded — it is useless. These tests pin that requirement down.
+degraded — it is useless. These tests pin that requirement down for the
+CDP-Chrome-on-host setup.
 """
 from __future__ import annotations
 
@@ -14,14 +15,14 @@ import pytest
 import yaml
 
 from hermes_airdrop.browser_check import (
+    CDP_VERSION_PATH,
     Finding,
-    NOVNC_PATH,
+    ProbeResult,
     ProfileBrowser,
-    _guess_novnc,
     _label,
+    _looks_like_unresolved,
     audit_all,
     audit_profile,
-    audit_user_id_collisions,
     inspect_profile,
     probe,
 )
@@ -31,7 +32,16 @@ CONFIG_ROOT = ROOT / "config" / "hermes"
 PROFILES = sorted((CONFIG_ROOT / "profiles").glob("*/config.yaml"))
 ALL_CONFIGS = [CONFIG_ROOT / "config.yaml"] + PROFILES
 
-WORKERS = ["worker-analyzer", "worker-daily", "worker-discord", "worker-monitor", "worker-quests"]
+#: Three layers: orchestrator -> lead -> workers.
+WORKERS = [
+    "worker-analyzer",
+    "worker-daily",
+    "worker-discord",
+    "worker-lead",
+    "worker-monitor",
+    "worker-orchestrator",
+    "worker-quests",
+]
 
 
 def write_profile(tmp_path: Path, data: dict) -> Path:
@@ -45,15 +55,13 @@ def write_profile(tmp_path: Path, data: dict) -> Path:
 GOOD = {
     "toolsets": ["hermes-cli", "browser", "file"],
     "browser": {
-        "cloud_provider": "camofox",
+        "cdp_url": "http://127.0.0.1:9222",
+        "engine": "chrome",
         "backend": "off",
         "headed": True,
         "inactivity_timeout": 900,
-        "camofox": {
-            "managed_persistence": True,
-            "user_id": "haa-worker-daily",
-            "adopt_existing_tab": True,
-        },
+        "command_timeout": 90,
+        "record_sessions": True,
     },
 }
 
@@ -82,20 +90,19 @@ class TestShippedConfigs:
         assert inspect_profile(path).has_browser_toolset
 
     @pytest.mark.parametrize("path", PROFILES, ids=lambda p: p.parent.name)
-    def test_worker_uses_camofox(self, path):
-        assert inspect_profile(path).cloud_provider == "camofox"
-
-    @pytest.mark.parametrize("path", PROFILES, ids=lambda p: p.parent.name)
-    def test_worker_session_is_persistent(self, path):
-        """Persistence needs BOTH managed_persistence and a stable user_id."""
+    def test_worker_points_at_cdp(self, path):
         pb = inspect_profile(path)
-        assert pb.managed_persistence, "managed_persistence is off"
-        assert pb.user_id, "user_id is empty — profile would be random per session"
-        assert pb.persistent
+        assert pb.cdp_url.startswith("http"), f"{path.parent.name}: cdp_url={pb.cdp_url!r}"
 
     @pytest.mark.parametrize("path", PROFILES, ids=lambda p: p.parent.name)
-    def test_worker_visible_fallback(self, path):
+    def test_worker_browser_is_visible(self, path):
+        """headed is what makes local Chrome open a real window — the operator's
+        only way to take over for a CAPTCHA or MFA prompt."""
         assert inspect_profile(path).headed
+
+    @pytest.mark.parametrize("path", PROFILES, ids=lambda p: p.parent.name)
+    def test_worker_uses_chrome(self, path):
+        assert inspect_profile(path).engine == "chrome"
 
     @pytest.mark.parametrize("path", PROFILES, ids=lambda p: p.parent.name)
     def test_worker_records_sessions(self, path):
@@ -105,77 +112,38 @@ class TestShippedConfigs:
     def test_worker_timeout_long_enough_for_dapps(self, path):
         assert inspect_profile(path).inactivity_timeout >= 900
 
-    def test_every_expected_worker_present(self):
+    @pytest.mark.parametrize("path", PROFILES, ids=lambda p: p.parent.name)
+    def test_worker_is_config_ready(self, path):
+        assert inspect_profile(path).ready
+
+    def test_all_expected_workers_present(self):
         assert [p.parent.name for p in PROFILES] == WORKERS
 
-    def test_user_ids_are_unique(self):
-        ids = [inspect_profile(p).user_id for p in ALL_CONFIGS]
-        assert len(ids) == len(set(ids)), f"colliding user_ids: {ids}"
+    def test_three_layer_structure_exists(self):
+        """Orchestrator (Telegram) -> lead (per project) -> workers."""
+        names = {p.parent.name for p in PROFILES}
+        assert "worker-orchestrator" in names
+        assert "worker-lead" in names
 
-    def test_user_ids_are_stable_strings(self):
-        """An unresolved ${VAR} would silently become a per-install identity."""
-        for p in ALL_CONFIGS:
-            uid = inspect_profile(p).user_id
-            assert uid.startswith("haa-worker-"), uid
-            assert "$" not in uid and "{" not in uid
+    def test_delegating_layers_have_the_delegation_toolset(self):
+        for layer in ("worker-orchestrator", "worker-lead"):
+            pb = inspect_profile(CONFIG_ROOT / "profiles" / layer / "config.yaml")
+            assert "delegation" in pb.toolsets, f"{layer} cannot delegate"
+
+    def test_no_camofox_left_in_configs(self):
+        for f in ALL_CONFIGS:
+            assert "camofox" not in f.read_text().lower().replace(
+                "under the old camofox", ""
+            ), f"{f} still configures Camofox"
 
     def test_audit_of_shipped_configs_is_clean(self):
         report = audit_all(CONFIG_ROOT, live=False)
         assert report.ok, "\n".join(str(f) for f in report.errors)
         assert not report.findings
 
-    def test_main_config_also_has_browser(self):
-        assert inspect_profile(CONFIG_ROOT / "config.yaml").has_browser_toolset
-
-
-class TestComposeDefaults:
-    """The GUI must be on by default, not behind an opt-in profile."""
-
-    @pytest.fixture
-    def compose(self):
-        return yaml.safe_load((ROOT / "docker-compose.yml").read_text(encoding="utf-8"))
-
-    def test_default_service_enables_vnc(self, compose):
-        env = compose["services"]["camofox"]["environment"]
-        assert str(env["ENABLE_VNC"]) == "1"
-
-    def test_default_service_exposes_novnc_port(self, compose):
-        ports = compose["services"]["camofox"]["ports"]
-        assert any("6080" in str(p) for p in ports)
-
-    def test_default_service_exposes_native_vnc(self, compose):
-        ports = compose["services"]["camofox"]["ports"]
-        assert any(":5900" in str(p) for p in ports)
-
-    def test_vnc_is_not_behind_a_profile(self, compose):
-        """If the GUI service had `profiles:`, plain `up -d` would skip it."""
-        assert "profiles" not in compose["services"]["camofox"]
-
-    def test_headless_is_the_opt_in(self, compose):
-        assert compose["services"]["camofox-headless"]["profiles"] == ["headless"]
-
-    def test_resolution_is_human_usable(self, compose):
-        env = compose["services"]["camofox"]["environment"]
-        assert env["VNC_RESOLUTION"] == "1920x1080"
-
-    def test_session_timeouts_raised_for_sustained_runs(self, compose):
-        """Defaults are 30 min session / 5 min browser idle — far too short."""
-        env = compose["services"]["camofox"]["environment"]
-        assert int(env["SESSION_TIMEOUT_MS"]) >= 3600000
-        assert int(env["BROWSER_IDLE_TIMEOUT_MS"]) >= 1800000
-
-    def test_profile_dir_is_persisted_on_a_volume(self, compose):
-        svc = compose["services"]["camofox"]
-        assert any("/root/.camofox" in str(v) for v in svc["volumes"])
-        assert "camofox-data" in compose["volumes"]
-
-    def test_vnc_password_is_configurable(self, compose):
-        env = compose["services"]["camofox"]["environment"]
-        assert "VNC_PASSWORD" in env
-
-    def test_headless_service_has_no_vnc(self, compose):
-        env = compose["services"]["camofox-headless"]["environment"]
-        assert "ENABLE_VNC" not in env
+    def test_no_docker_compose_file(self):
+        """Chrome runs on the host, so there is no browser container to compose."""
+        assert not (ROOT / "docker-compose.yml").exists()
 
 
 # ---------------------------------------------------------------------------
@@ -189,101 +157,100 @@ class TestAuditRejectsBrokenProfiles:
 
     def test_missing_browser_toolset_is_an_error(self, tmp_path):
         pb = inspect_profile(write_profile(tmp_path, mutate(toolsets=["hermes-cli", "file"])))
-        errs = [f for f in audit_profile(pb) if f.level == "error"]
-        assert any("cannot open a page" in f.message for f in errs)
+        assert any("cannot open a page" in f.message for f in audit_profile(pb))
 
-    def test_missing_cloud_provider_is_an_error(self, tmp_path):
-        pb = inspect_profile(write_profile(tmp_path, mutate(browser__cloud_provider="")))
-        assert any("no browser backend" in f.message for f in audit_profile(pb))
+    def test_missing_cdp_url_is_an_error(self, tmp_path):
+        pb = inspect_profile(write_profile(tmp_path, mutate(browser__cdp_url="")))
+        errs = audit_profile(pb)
+        assert any("cdp_url is unset" in f.message for f in errs)
+        assert any("start-browser.sh" in f.fix for f in errs)
 
-    def test_persistence_off_is_an_error(self, tmp_path):
-        pb = inspect_profile(
-            write_profile(tmp_path, mutate(browser__camofox={"user_id": "x"}))
-        )
-        assert any("starts logged out" in f.message for f in audit_profile(pb))
+    def test_unresolved_placeholder_is_an_error(self, tmp_path):
+        """Hermes leaves an unset ${VAR} verbatim, which would land here."""
+        pb = inspect_profile(write_profile(tmp_path, mutate(browser__cdp_url="${HAA_CDP_URL}")))
+        errs = audit_profile(pb)
+        assert any("not a URL" in f.message for f in errs)
+        assert any("placeholder" in f.fix for f in errs)
 
-    def test_persistence_without_user_id_is_an_error(self, tmp_path):
-        """managed_persistence alone is not enough — Camofox keys the profile
-        store by userId, so an empty id means a random one every session."""
-        pb = inspect_profile(
-            write_profile(tmp_path, mutate(browser__camofox={"managed_persistence": True}))
-        )
-        assert any("user_id is empty" in f.message for f in audit_profile(pb))
-        assert pb.persistent is False
-
-    def test_headless_fallback_is_a_warning(self, tmp_path):
+    def test_headless_is_an_error_not_a_warning(self, tmp_path):
+        """Unlike the Camofox setup, headed genuinely controls local Chrome —
+        so a headless config means an unwatchable, un-take-over-able browser."""
         pb = inspect_profile(write_profile(tmp_path, mutate(browser__headed=False)))
-        warns = [f for f in audit_profile(pb) if f.level == "warn"]
-        assert any("ENABLE_VNC" in f.fix for f in warns)
+        errs = [f for f in audit_profile(pb) if f.level == "error"]
+        assert any("headed is off" in f.message for f in errs)
+        assert any("take over" in f.message for f in errs)
 
     def test_short_timeout_is_a_warning(self, tmp_path):
         pb = inspect_profile(write_profile(tmp_path, mutate(browser__inactivity_timeout=60)))
-        assert any("reaped mid-action" in f.message for f in audit_profile(pb))
+        warns = [f for f in audit_profile(pb) if f.level == "warn"]
+        assert any("reaped mid-action" in f.message for f in warns)
 
-    def test_browser_use_backend_on_camofox_is_a_warning(self, tmp_path):
-        """Camofox has no CDP endpoint for the harness to attach to."""
-        pb = inspect_profile(write_profile(tmp_path, mutate(browser__backend="browser-use")))
-        assert any("cannot attach" in f.message for f in audit_profile(pb))
+    def test_unknown_engine_is_a_warning(self, tmp_path):
+        pb = inspect_profile(write_profile(tmp_path, mutate(browser__engine="lightpanda")))
+        warns = [f for f in audit_profile(pb) if f.level == "warn"]
+        assert any("cannot screenshot" in f.fix for f in warns)
 
     def test_toolsets_as_comma_string_still_parsed(self, tmp_path):
         pb = inspect_profile(write_profile(tmp_path, mutate(toolsets="browser,file")))
         assert pb.has_browser_toolset
 
-    def test_empty_browser_section_does_not_crash(self, tmp_path):
-        pb = inspect_profile(write_profile(tmp_path, {"toolsets": []}))
-        assert pb.has_browser_toolset is False
+    def test_empty_config_does_not_crash(self, tmp_path):
+        pb = inspect_profile(write_profile(tmp_path, {}))
+        assert pb.ready is False
         assert audit_profile(pb)
-
-
-class TestCollisions:
-    def test_shared_user_id_is_an_error(self, tmp_path):
-        profiles = [
-            ProfileBrowser(name="a", path=Path("a"), user_id="same"),
-            ProfileBrowser(name="b", path=Path("b"), user_id="same"),
-        ]
-        errs = audit_user_id_collisions(profiles)
-        assert len(errs) == 1
-        assert "share one cookie jar" in errs[0].message
-
-    def test_distinct_ids_pass(self):
-        profiles = [
-            ProfileBrowser(name="a", path=Path("a"), user_id="one"),
-            ProfileBrowser(name="b", path=Path("b"), user_id="two"),
-        ]
-        assert audit_user_id_collisions(profiles) == []
-
-    def test_empty_ids_are_not_a_collision(self):
-        profiles = [
-            ProfileBrowser(name="a", path=Path("a"), user_id=""),
-            ProfileBrowser(name="b", path=Path("b"), user_id=""),
-        ]
-        assert audit_user_id_collisions(profiles) == []
 
 
 class TestAuditAll:
     def test_reports_every_profile(self):
-        report = audit_all(CONFIG_ROOT, live=False)
-        assert {pb.name for pb in report.profiles} == {"main", *WORKERS}
+        names = {pb.name for pb in audit_all(CONFIG_ROOT, live=False).profiles}
+        assert names == {"main", *WORKERS}
 
     def test_main_is_labelled_main(self):
-        report = audit_all(CONFIG_ROOT, live=False)
-        assert "main" in {pb.name for pb in report.profiles}
+        assert "main" in {pb.name for pb in audit_all(CONFIG_ROOT, live=False).profiles}
 
     def test_missing_root_reports_error(self, tmp_path):
         report = audit_all(tmp_path / "nothing", live=False)
         assert not report.ok
         assert any("no Hermes config" in f.message for f in report.findings)
 
-    def test_failing_api_adds_an_error(self):
+    def test_failing_probe_adds_an_error_with_the_chrome_136_hint(self, tmp_path):
+        cfg = tmp_path / "config.yaml"
+        cfg.write_text(yaml.safe_dump(GOOD))
         with mock.patch("hermes_airdrop.browser_check.probe") as m:
-            m.return_value = type("R", (), {"ok": False, "detail": "refused", "__str__": lambda s: "x"})()
-            report = audit_all(CONFIG_ROOT, camofox_url="http://localhost:9377", live=True)
+            m.return_value = ProbeResult("http://x", False, "Connection refused")
+            report = audit_all(tmp_path, cdp_url="http://127.0.0.1:9222", live=True)
         assert not report.ok
+        msg = " ".join(f.message + " " + f.fix for f in report.findings)
+        assert "Chrome 136" in msg, "must explain the silent-failure trap"
+
+    def test_disagreeing_cdp_urls_warn(self, tmp_path):
+        (tmp_path / "config.yaml").write_text(yaml.safe_dump(GOOD))
+        other = mutate(browser__cdp_url="http://127.0.0.1:9333")
+        (tmp_path / "profiles" / "a").mkdir(parents=True)
+        (tmp_path / "profiles" / "a" / "config.yaml").write_text(yaml.safe_dump(other))
+        with mock.patch("hermes_airdrop.browser_check.probe") as m:
+            m.return_value = ProbeResult("http://x", True, "HTTP 200")
+            report = audit_all(tmp_path, live=True)
+        assert any("disagree" in f.message for f in report.findings)
+
+    def test_unresolved_endpoint_short_circuits_before_probing(self, tmp_path):
+        cfg = tmp_path / "config.yaml"
+        cfg.write_text(yaml.safe_dump(mutate(browser__cdp_url="${MISSING_VAR}")))
+        with mock.patch("hermes_airdrop.browser_check.probe") as m:
+            report = audit_all(tmp_path, live=True)
+        m.assert_not_called()
+        assert any("unresolved" in f.message for f in report.findings)
 
     def test_render_lists_every_worker(self):
         text = audit_all(CONFIG_ROOT, live=False).render()
         for w in WORKERS:
             assert w in text
+
+    def test_render_flags_a_headless_worker(self, tmp_path):
+        (tmp_path / "config.yaml").write_text(
+            yaml.safe_dump(mutate(browser__headed=False))
+        )
+        assert "HEADLESS" in audit_all(tmp_path, live=False).render()
 
 
 class TestProbe:
@@ -294,55 +261,49 @@ class TestProbe:
 
     def test_success(self):
         with mock.patch("urllib.request.urlopen", return_value=self._resp()):
-            r = probe("http://localhost:9377")
+            r = probe("http://127.0.0.1:9222", path=CDP_VERSION_PATH)
         assert r.ok and "200" in r.detail
 
     def test_http_error_still_means_the_server_is_up(self):
         err = urllib.error.HTTPError("u", 404, "Not Found", {}, None)
         with mock.patch("urllib.request.urlopen", side_effect=err):
-            r = probe("http://localhost:9377")
-        assert r.ok, "a 404 still proves something is listening"
+            assert probe("http://127.0.0.1:9222").ok
 
     def test_connection_refused(self):
         with mock.patch("urllib.request.urlopen", side_effect=urllib.error.URLError("refused")):
-            r = probe("http://localhost:9377")
+            r = probe("http://127.0.0.1:9222")
         assert not r.ok and "refused" in r.detail
 
     def test_timeout(self):
         with mock.patch("urllib.request.urlopen", side_effect=TimeoutError()):
-            assert not probe("http://localhost:9377").ok
+            assert not probe("http://127.0.0.1:9222").ok
 
     def test_path_is_appended(self):
         with mock.patch("urllib.request.urlopen", return_value=self._resp()) as m:
-            probe("http://localhost:6080/", path=NOVNC_PATH)
-        assert m.call_args[0][0].full_url.endswith("/vnc.html")
+            probe("http://127.0.0.1:9222/", path=CDP_VERSION_PATH)
+        assert m.call_args[0][0].full_url.endswith("/json/version")
 
     def test_str_marks_success_and_failure(self):
-        from hermes_airdrop.browser_check import ProbeResult
-
         assert str(ProbeResult("http://x", True, "HTTP 200")).startswith("✓")
         assert str(ProbeResult("http://x", False, "refused")).startswith("✗")
 
 
 class TestHelpers:
-    @pytest.mark.parametrize("url,expected", [
-        ("http://localhost:9377", "http://localhost:6080"),
-        ("http://localhost:9377/", "http://localhost:6080"),
-        ("http://192.168.1.5:9377", "http://192.168.1.5:6080"),
-        ("https://camofox.example.com:9377", "https://camofox.example.com:6080"),
-    ])
-    def test_guess_novnc(self, url, expected):
-        assert _guess_novnc(url) == expected
-
-    def test_guess_novnc_gives_up_on_junk(self):
-        assert _guess_novnc("not a url") == ""
-
     def test_label_main(self):
         assert _label(CONFIG_ROOT / "config.yaml", CONFIG_ROOT) == "main"
 
     def test_label_profile_uses_parent_dir(self):
-        p = CONFIG_ROOT / "profiles" / "worker-daily" / "config.yaml"
-        assert _label(p, CONFIG_ROOT) == "worker-daily"
+        p = CONFIG_ROOT / "profiles" / "worker-lead" / "config.yaml"
+        assert _label(p, CONFIG_ROOT) == "worker-lead"
+
+    @pytest.mark.parametrize("v,expected", [
+        ("${HAA_CDP_URL}", True),
+        ("http://127.0.0.1:${PORT}", True),
+        ("http://127.0.0.1:9222", False),
+        ("", False),
+    ])
+    def test_looks_like_unresolved(self, v, expected):
+        assert _looks_like_unresolved(v) is expected
 
     def test_finding_str_with_fix(self):
         s = str(Finding("error", "x", "broken", fix="do this"))
