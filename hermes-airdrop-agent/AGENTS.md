@@ -113,7 +113,7 @@ google-chrome --remote-debugging-port=9222 \
   evidence, notify, cli
 - 6 skill di `skills/` dengan frontmatter Hermes yang benar
 - 5 worker profile + SOUL.md di `config/hermes/profiles/`
-- `tests/` — **617 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
+- `tests/` — **620 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
 - `docs/research/` — hermes-schema.md, browser.md, sources.md
 - Skema config Hermes sudah diekstrak dari `DEFAULT_CONFIG` (89 top-level key)
 
@@ -127,11 +127,20 @@ google-chrome --remote-debugging-port=9222 \
 - `browser_check.py` → audit CDP (bukan Camofox/noVNC)
 - `worker-orchestrator` + `worker-lead` (struktur 3 lapis)
 
+### Selesai 2026-08-26
+
+- `cron-jobs.sh` → 5 job, 3-layer aware. Orchestrator jalan 08:30 (sebelum
+  worker 09:00) dengan sengaja. Semua job browser diawali preflight
+  `haa browser check` yang berhenti cepat kalau Chrome tertutup.
+- `README.md` ditulis ulang untuk arsitektur baru (Bahasa Indonesia)
+- `docs/research/browser.md` diberi banner SUPERSEDED — risetnya tetap valid
+  sebagai catatan, tapi bukan lagi panduan
+
 ### Masih terbuka
 
-- `cron-jobs.sh` masih menjadwalkan 4 job lama; belum ada job untuk orchestrator
-- README masih mendeskripsikan setup Camofox/VNC — perlu ditulis ulang
 - Alur Telegram end-to-end belum diuji terhadap Hermes sungguhan (butuh token)
+- `docs/research/hermes-schema.md` + `sources.md` belum ditinjau ulang pasca-pivot
+- `haa` belum punya subcommand untuk mendelegasikan task ke lead secara eksplisit
 
 ---
 
@@ -214,4 +223,5 @@ for f in install.sh scripts/*.sh; do bash -n "$f"; done
 |---|---|
 | 2026-08-25 | Riset sumber; backend Python 11 modul; 6 skill; 5 profile; 599 test; commit `fd01dc1` |
 | 2026-08-25 | Koreksi: semua worker dapat browser; GUI default di compose |
+| 2026-08-26 | `cron-jobs.sh` 5 job 3-layer + preflight CDP; README ditulis ulang; `browser.md` ditandai superseded. **620 test lulus.** |
 | 2026-08-25 | **Pivot selesai:** Camofox → Chrome CDP di host (docker-compose.yml dihapus); install.sh jadi system installer 10 langkah; layer orchestrator + lead ditambahkan (7 profile); memory + knowledge base; Telegram gateway di installer; `browser_check` ditulis ulang untuk CDP. **617 test lulus.** |

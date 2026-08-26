@@ -195,9 +195,27 @@ class TestCronScriptPrompts:
     def test_discord_prompt_forbids_auto_posting(self, text):
         assert "Do not post anything" in text
 
-    def test_all_four_jobs_registered(self, text):
-        for name in ("airdrop-daily", "airdrop-verify", "airdrop-weekly", "airdrop-discord"):
+    def test_all_five_jobs_registered(self, text):
+        for name in ("airdrop-orchestrator", "airdrop-daily", "airdrop-verify",
+                     "airdrop-weekly", "airdrop-discord"):
             assert name in text
+
+    def test_orchestrator_runs_before_the_workers(self, text):
+        """Layer 1 decides whether today's work is worth doing, so it must be
+        scheduled ahead of the 09:00 lead run."""
+        assert '"30 8 * * *"' in text
+        assert text.index("airdrop-orchestrator") < text.index("airdrop-daily")
+
+    def test_browser_jobs_preflight_cdp(self, text):
+        """Chrome runs on the host. If the operator closed the window, the job
+        must fail fast instead of spending an hour failing every click."""
+        assert "haa browser check" in text
+        assert "do NOT continue" in text
+        # The lead and discord jobs are the browser-driven ones.
+        assert text.count("${PREFLIGHT}") >= 2
+
+    def test_lead_prompt_insists_on_per_project_rules(self, text):
+        assert "Never assume one project's flow applies to another" in text
 
     def test_jobs_are_idempotent(self, text):
         # Re-running must not duplicate jobs.

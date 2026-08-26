@@ -1,4 +1,30 @@
-# Browser layer — how GUI mode actually works
+# Browser layer — research notes
+
+> ## ⚠️ SUPERSEDED — read this first
+>
+> This file records research done for the **Camofox** setup. On 2026-08-25 the
+> project pivoted to **Chrome via CDP on the host** (decision D8 in
+> `AGENTS.md`), so the configuration guidance below no longer applies.
+>
+> Still true and worth keeping:
+>
+> - **Camofox runs on Xvfb at 1×1 unless `ENABLE_VNC=1`.** Verified from the
+>   `jo-inc/camofox-browser` source. Anyone revisiting an anti-detect browser
+>   needs this — "headless" there means *unwatchable*, not merely windowless.
+> - **Hermes' `browser.headed` only affects its local Chromium fallback.** It
+>   never reaches a separate browser server. Still true, and now load-bearing
+>   in the other direction: for local Chrome it *does* open the real window.
+> - **Camofox default timeouts** (30 min session / 5 min browser idle) are far
+>   too short for a campaign run. General lesson: check a browser server's
+>   idle defaults before trusting session persistence.
+>
+> For the current setup read instead:
+>
+> - `README.md` § "Browser: Chrome asli via CDP"
+> - `scripts/start-browser.sh` — including the Chrome 136+ silent-failure trap
+> - `AGENTS.md` § 4a — that trap, quoted and explained
+>
+> The rest of this file is preserved as a research record, not as guidance.
 
 Airdrop work is essentially all GUI: connect wallet, click claim, approve a
 transaction, sign, read a quest board, scroll Discord. There is no CLI for any

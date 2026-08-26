@@ -1,212 +1,197 @@
 # Hermes Airdrop Agent
 
-A ready-to-run control plane for [Hermes Agent](https://github.com/NousResearch/hermes-agent)
-that screens airdrop opportunities, schedules the daily work, drives a **visible
-GUI browser**, and keeps a hash-stamped audit trail of what actually happened.
+Kirim task airdrop ke bot Telegram. Sistem memahaminya, mengerjakannya, dan
+melapor balik. Anda tidak perlu membuka terminal.
 
 ```bash
-./install.sh --dry-run   # see every step first — changes nothing
-./install.sh             # install for real
-nano .env                # add one API key
-haa doctor               # verify
+./install.sh --dry-run   # lihat 10 langkahnya dulu, tidak mengubah apa pun
+./install.sh
+nano .env                # API key model + token bot Telegram
+./scripts/start-browser.sh
+hermes --profile worker-orchestrator gateway run
 ```
 
-**599 tests.** Anything this README claims is enforced by a test that runs the
-real code — not a description of it.
+Lalu cukup kirim pesan ke bot Anda.
 
 ---
 
-## Why there is a Python layer under an LLM agent
+## Alur kerja
 
-Hermes drives the browser and calls the model. This package is the boring,
-auditable part: scoring, scheduling, storage, evidence, guardrails. Nothing in
-`src/` talks to an LLM.
+```
+Telegram  ──►  orchestrator  ──►  lead  ──►  workers
+  (Anda)         layer 1         layer 2      layer 3
+                 │                │            │
+                 │                │            └─ satu aksi, diverifikasi
+                 │                └─ paham aturan SATU proyek
+                 └─ parse task, screening, delegasi, lapor
+```
 
-That split is deliberate. A decision that gates weeks of attention, or a claim
-that a check-in happened, has to be reproducible from disk without asking a
-model what it thinks it did.
+Anda kirim teks seperti ini:
 
-| Module | Does |
-|---|---|
-| `analyzer.py` | The 4-dimension project filter, deterministic |
-| `scheduler.py` | Real cron parser + next-run |
-| `campaign.py` | Campaign and progress store (atomic JSON writes) |
-| `executor.py` | "What is due today" |
-| `browser_check.py` | GUI + persistence audit for every worker |
-| `hermes_schema.py` | Validates YAML against Hermes' **real** schema |
-| `guardrails.py` | Hard stops: keys, CAPTCHA, MFA, approvals, spend limits |
-| `wallets.py` | Wallet tier registry — addresses only |
-| `evidence.py` | Append-only, hash-stamped ledger |
-| `notify.py` | Telegram alerts, secrets redacted |
-| `cli.py` | `haa` |
+```
+🔈 MemeBitcoin Airdrop
+➖ Register  https://www.memebitcoin.org/register?r=vngqrra7
+➖ Connect Twitter
+➖ Complete Easy Task
+➖ Submit Email Address
+➖ Submit EVM Address
+➖ Complete Daily Mission
+```
+
+Orchestrator mengekstrak nama proyek, URL, referral code, dan daftar task. Lalu
+**membuka situsnya sendiri** — pengumuman Telegram cepat basi, situs yang
+berwenang. Kalau proyeknya baru, discreening dulu sebelum ada yang dikerjakan.
 
 ---
 
-## The browser is the product
+## Kenapa ada 3 layer
 
-Airdrop work is essentially all GUI — connect wallet, click claim, approve,
-sign, read a quest board. There is no CLI for any of it. Three things have to
-be true, and each fails independently:
+Karena airdrop tidak bisa dipertukarkan. Dua contoh nyata:
 
-### 1. Every worker has browser tools
+| | MemeBitcoin | Elyon |
+|---|---|---|
+| Langkah | 6 | 3 |
+| Butuh Twitter | ya | tidak |
+| Butuh email | ya | tidak |
+| Daily mission | **ada** | **tidak ada** |
+| Selesai | berjalan mingguan | satu sore |
 
-All six configs — main plus `analyzer`, `daily`, `quests`, `discord`,
-`monitor` — include `browser` in `toolsets`.
+Keduanya berbagi kata "airdrop" dan hampir tidak ada yang lain. Layer 2
+(`worker-lead`) ada supaya ada satu agent yang **paham aturan proyek itu
+spesifik** — bukan menebak dari proyek lain.
 
-Including **`worker-monitor`**. A monitor that cannot open the page can report
-the symptom ("campaign X stalled") but never the cause. Hermes drops a missing
-toolset *without erroring*, so this is asserted by tests rather than trusted.
+`knowledge/airdrop-task-patterns.md` berisi tipe task atomik (register, connect
+wallet, connect social, submit email, complete task, daily mission, on-chain)
+beserta cara mengenali tiap-tiapnya dari pengumuman mentah.
 
-### 2. The browser is actually visible
+| Layer | Profile | Model | Tugas |
+|---|---|---|---|
+| 1 | `worker-orchestrator` | kuat | Terima task, screening, delegasi, lapor |
+| 2 | `worker-lead` | kuat | Punya satu proyek: format, aturan, urutan |
+| 3 | `worker-analyzer` | kuat | Skor proyek 4 dimensi |
+| 3 | `worker-daily` | hemat | Check-in harian |
+| 3 | `worker-quests` | kuat | Onboarding + quest sequence |
+| 3 | `worker-discord` | sedang | Baca komunitas, **draft** balasan |
+| 3 | `worker-monitor` | sedang | Verifikasi, laporan, alert |
 
-Camofox always runs on an Xvfb virtual display, but at **1×1 resolution** unless
-the VNC plugin is on. Without `ENABLE_VNC=1` it is not merely headless — it is
-unwatchable, and nobody can take over for the CAPTCHA the agent halts on.
+Tiap profile punya `SOUL.md` sendiri — itu system prompt-nya. (Hermes tidak
+punya key `system_prompt`; identitas ada di `SOUL.md`.)
 
-So `docker-compose.yml` enables the GUI **by default** and puts headless behind
-an opt-in profile — the reverse of the usual arrangement.
+---
 
-> ⚠️ **Hermes' `browser.headed` does not make Camofox visible.** It only affects
-> Hermes' *local Chromium* fallback. `ENABLE_VNC=1` is what turns the GUI on.
-> We set `headed: true` anyway so the fallback path is visible, and the config
-> comment says so.
+## Browser: Chrome asli via CDP
 
-```
-docker compose up -d
-open http://localhost:6080/vnc.html    # watch, and take over when it halts
-```
+Airdrop itu ~100% GUI: connect wallet, klik claim, approve, sign, baca quest
+board. Tidak ada CLI untuk semua itu. Jadi browser-nya adalah produknya.
 
-Set `VNC_PASSWORD`. That port drives a browser logged into your accounts.
-
-### 3. The session persists
-
-Camofox keys its cookie store by `userId`, so persistence needs *both*
-`managed_persistence: true` **and** a stable `user_id`. Each worker pins its own
-(`haa-worker-daily`, `haa-worker-quests`, …) — one identity per **role**, so
-their logins don't collide.
-
-Camofox's default timeouts will drop a session mid-run: 30 min session, 5 min
-browser idle, 5 min tab. Compose raises these to 6 h / 1 h / 1 h, and Hermes'
-`browser.inactivity_timeout` to 900 s.
-
-### Verify it
+Chrome jalan **di mesin Anda dengan window sungguhan**. Tanpa Docker, tanpa
+`--no-sandbox`, tanpa VNC.
 
 ```bash
-haa browser check            # config audit + live probes
-haa browser check --offline  # config audit only
+./scripts/start-browser.sh
+```
+
+Script itu membuka Chrome dengan remote debugging di `:9222`, lalu **memeriksa
+port-nya benar-benar terbuka**. Ini bukan formalitas:
+
+> Chrome 136 and later **silently refuse** to open the remote debugging port
+> when `--remote-debugging-port` is combined with the *default* user-data-dir…
+> The browser launches normally but nothing ever listens on 9222.
+> **There is no error message.**
+> — dokumentasi browser Hermes
+
+Jadi "Chrome-nya kelihatan kebuka" tidak membuktikan apa pun. Script memaksa
+`--user-data-dir` khusus dan memverifikasi lewat HTTP ke `/json/version`.
+
+Login sekali di window itu — sesinya tersimpan di profil, jadi tidak perlu
+diulang.
+
+```bash
+haa browser check            # audit config + probe CDP
+haa browser check --offline  # audit config saja
 ```
 
 ```
 browser readiness
-  main                 browser · camofox · persistent · user_id=haa-worker-main · visible-fallback
-  worker-analyzer      browser · camofox · persistent · user_id=haa-worker-analyzer · visible-fallback
-  worker-daily         browser · camofox · persistent · user_id=haa-worker-daily · visible-fallback
-  worker-discord       browser · camofox · persistent · user_id=haa-worker-discord · visible-fallback
-  worker-monitor       browser · camofox · persistent · user_id=haa-worker-monitor · visible-fallback
-  worker-quests        browser · camofox · persistent · user_id=haa-worker-quests · visible-fallback
+  main                 browser · http://127.0.0.1:9222 · visible · engine=chrome
+  worker-orchestrator  browser · http://127.0.0.1:9222 · visible · engine=chrome
+  worker-lead          browser · http://127.0.0.1:9222 · visible · engine=chrome
+  worker-analyzer      browser · http://127.0.0.1:9222 · visible · engine=chrome
+  worker-daily         browser · http://127.0.0.1:9222 · visible · engine=chrome
+  worker-discord       browser · http://127.0.0.1:9222 · visible · engine=chrome
+  worker-monitor       browser · http://127.0.0.1:9222 · visible · engine=chrome
+  worker-quests        browser · http://127.0.0.1:9222 · visible · engine=chrome
 ```
 
-Missing browser tools, missing persistence, or a colliding `user_id` are
-**errors**; a missing GUI is a warning that names the reason.
+Tanpa `browser` di toolsets, tanpa `cdp_url`, atau dengan `headed: false` →
+**error**, bukan warning. Window yang terlihat adalah satu-satunya cara Anda
+mengambil alih saat agent berhenti di CAPTCHA.
 
-Details: [`docs/research/browser.md`](docs/research/browser.md).
+> `/browser connect` **tidak** dipakai. Itu slash command khusus CLI
+> interaktif dan tidak di-dispatch gateway — dari Telegram tidak akan jalan.
+> Karena itu `browser.cdp_url` di `config.yaml`.
 
 ---
 
 ## Install
 
+`install.sh` adalah **system installer**, bukan sekadar pengecek. Dia
+memasang, bukan menyuruh Anda memasang.
+
+| Langkah | Yang dilakukan |
+|---|---|
+| 1 | Paket sistem — deteksi apt/dnf/yum/pacman/zypper/brew, pasang git, curl, xz, ripgrep |
+| 2 | Python 3.10+ (install kalau belum ada) |
+| 3 | Node.js (install kalau belum ada) |
+| 4 | Chromium-family browser |
+| 5 | Hermes Agent framework |
+| 6 | Control plane `haa` (venv + symlink) |
+| 7 | config + profiles + `SOUL.md` → `~/.hermes/` |
+| 8 | skills → `~/.hermes/skills/` |
+| 9 | memory + knowledge base |
+| 10 | `.env` + Telegram gateway + cron + verifikasi |
+
 ```bash
-git clone <repo> && cd <repo>/hermes-airdrop-agent
-./install.sh --dry-run    # prints all 8 steps, changes nothing
+./install.sh --dry-run    # cetak semua langkah, tidak mengubah apa pun
 ./install.sh
 ```
 
-Prerequisites: `git`, `curl`, `python3` 3.10+, and Docker (or Node.js). On Linux
-also `xz-utils` — Hermes' installer downloads Node as a `.tar.xz`.
+Prasyarat: hanya `git` (dan `curl` + `xz-utils` di Linux). Sisanya diurus
+installer.
 
-| Step | What it does |
+Idempotent — dijalankan ulang memperbaiki instalasi yang gagal separuh tanpa
+merusak state. `.env` dan `config.yaml` yang sudah ada **tidak pernah**
+ditimpa; sebagai gantinya ditulis file `.new` untuk dibandingkan.
+
+| Flag | Efek |
 |---|---|
-| 1 | Checks prerequisites |
-| 2 | Installs Hermes → `~/.hermes/` |
-| 3 | Starts Camofox **with the GUI on** |
-| 4 | Installs `haa` |
-| 5 | Copies config, profiles, `SOUL.md`, skills |
-| 6 | Creates `.env` — **never overwrites an existing one** |
-| 7 | Installs Hermes cron jobs |
-| 8 | Runs `haa doctor` |
-
-Idempotent. Re-running repairs a partial install without destroying state.
-
-### Without Docker
-
-`install.sh` falls back to `npx -y @askjo/camofox-browser` with `ENABLE_VNC=1`.
-Docker is preferred — it survives reboots via `--restart unless-stopped`.
-
-### Then
-
-```bash
-nano .env                              # one model API key is enough
-./scripts/start-browser.sh             # starts Camofox, verifies :9377 AND :6080
-haa doctor
-hermes --profile worker-analyzer
-```
+| `--dry-run` | cetak semua langkah, ubah tidak ada |
+| `--skip-chrome` | lewati instalasi browser |
+| `--skip-hermes` | pakai Hermes yang sudah ada |
+| `--no-gateway` | lewati setup Telegram |
+| `--no-cron` | jangan jadwalkan job |
 
 ---
 
-## Workers
+## Jadwal
 
-Each profile is a separate Hermes home: its own `config.yaml`, `.env`,
-`SOUL.md`, memory, skills and cron jobs.
+Dipasang lewat **cron Hermes**, bukan crontab sistem. Hanya cron Hermes yang
+menegakkan `approvals.cron_mode: deny` — crontab sistem tidak bisa.
 
-| Profile | Job | Model | Turns |
-|---|---|---|---|
-| `worker-analyzer` | Score projects on 4 dimensions | strong | 60 |
-| `worker-daily` | 09:00 check-ins | cheap | 30 |
-| `worker-quests` | Onboarding + quest sequences | strong | 120 |
-| `worker-discord` | Read communities, **draft** replies | mid | 40 |
-| `worker-monitor` | Verify, report, alert | mid | 40 |
-
-Identity lives in `SOUL.md`, not in a `system_prompt:` config key — that key
-does not exist in Hermes.
-
-```bash
-hermes --profile worker-daily
-hermes --profile worker-analyzer chat -q "Analyze https://example.org"
-```
-
-Note `-q`. Hermes takes a non-interactive prompt as `chat -q "..."`, not as a
-bare positional argument.
-
-## Skills
-
-| Skill | Purpose |
-|---|---|
-| `airdrop-analyzer` | Gather evidence, fill 12 ratings, call the scorer |
-| `daily-executor` | Run, verify, screenshot, log — or halt |
-| `quest-executor` | Ordered multi-step onboarding with spend gating |
-| `discord-engager` | Read and draft; **never auto-post** |
-| `portfolio-tracker` | Rollups, staleness detection, ledger verification |
-| `wallet-isolation` | Tier separation; no keys, ever |
-
-`tests/test_skills.py` checks each skill's frontmatter **and** that every
-`haa ...` command it documents actually exists in the CLI. A skill telling the
-agent to run a command that isn't there produces an agent that fails
-confidently every morning.
-
----
-
-## Scheduled jobs
-
-Installed with **Hermes' own cron**, not the system crontab. Hermes jobs run
-through the same guardrails as an interactive session — which is what makes
-`approvals.cron_mode: deny` enforceable. The system crontab cannot do that.
-
-| Schedule | Job | Profile |
+| Waktu | Job | Layer |
 |---|---|---|
-| `0 9 * * *` | Daily check-ins | `worker-daily` |
-| `0 13 * * *` | Verify the morning run + `haa evidence verify` | `worker-monitor` |
-| `0 20 * * 0` | Weekly report | `worker-monitor` |
-| `0 11 * * 1` | Discord scan | `worker-discord` |
+| 08:30 harian | `airdrop-orchestrator` — review state, flag yang butuh keputusan | 1 |
+| 09:00 harian | `airdrop-daily` — jalankan aksi harian tiap proyek | 2 |
+| 13:00 harian | `airdrop-verify` — verifikasi + cek hash bukti | 3 |
+| 20:00 Minggu | `airdrop-weekly` — laporan mingguan | 3 |
+| 11:00 Senin | `airdrop-discord` — scan komunitas | 3 |
+
+Orchestrator jalan **sebelum** worker dengan sengaja: dialah yang memutuskan
+apakah pekerjaan hari ini layak dikerjakan.
+
+Setiap job browser dimulai dengan preflight `haa browser check`. Chrome jalan
+di host, jadi kalau window-nya ditutup job berhenti segera dan memberi tahu —
+bukan menghabiskan sejam untuk menemukan semua klik gagal.
 
 ```bash
 hermes cron list
@@ -214,19 +199,17 @@ hermes cron run <job_id>
 hermes cron pause <job_id>
 ```
 
-Prompts are self-contained: a cron run has no conversation history.
-
 ---
 
-## The project filter
+## Filter proyek
 
-Twelve ratings, each **0–3**, from the "Sniper" checklist in HTX Insights'
-*"The Last Time I'll Talk About Backpack…"* (2026-03-23):
+Dua belas rating **0–3**, dari checklist "Sniper" di HTX Insights' *"The Last
+Time I'll Talk About Backpack…"* (2026-03-23):
 
-- **Team** — insight, execution, integrity. All three required; a `0` zeroes it.
-- **Product** — PMF, delivery quality, ownership. Weighted highest.
-- **Narrative** — Web3 narrative, Web2 capital alignment, premium.
-- **Timing** — FOMO, cost, crowding. **Inverted**: 0 is good.
+- **Team** — insight, eksekusi, integritas. Ketiganya wajib; satu `0` menolkan dimensi
+- **Product** — PMF, kualitas delivery, tanggung jawab. Bobot tertinggi
+- **Narrative** — naratif Web3, keselarasan tren Web2, premium
+- **Timing** — FOMO, biaya, crowding. **Terbalik**: 0 itu bagus
 
 ```bash
 haa analyze --project "Foo" --url https://foo.xyz \
@@ -236,39 +219,40 @@ haa analyze --project "Foo" --url https://foo.xyz \
   --timing-fomo 1 --timing-cost 1 --timing-crowding 1 --save-to
 ```
 
-Hard vetoes force `SKIP` and cap the score at 4.0, so a report can never read
-"9/10 but skipped": unusable delivery, everyone already farming it, operator
-hesitation, or high cost during peak FOMO.
+Veto keras memaksa `SKIP` dan membatasi skor di 4.0, supaya laporan tidak
+pernah terbaca "9/10 tapi di-skip": delivery tidak bisa dipakai, semua orang
+sudah farming, operator ragu, atau biaya tinggi saat puncak FOMO.
 
-A `1` rating is honest — it means "looked, couldn't confirm". Enough of them
-push confidence under 0.70, which routes the decision to a human.
+Rating `1` itu jujur — artinya "sudah dilihat, tidak bisa dikonfirmasi". Cukup
+banyak `1` menurunkan confidence di bawah 0.70, yang mengarahkan keputusan ke
+manusia.
 
-Scoring is code, not an LLM. Two runs on the same ratings give the same verdict
-forever, so a decision can be audited months later.
+Scoring-nya kode, bukan LLM. Dua kali jalan dengan rating sama memberi verdict
+sama selamanya, jadi keputusan bisa diaudit berbulan-bulan kemudian.
 
 ---
 
 ## Guardrails
 
-| Condition | Behaviour |
+| Kondisi | Perilaku |
 |---|---|
-| CAPTCHA / Cloudflare challenge | Halt. **Never** solved. |
-| MFA / one-time code | Halt. Operator completes it. |
-| Wallet signature or approval prompt | Halt. Signing is a human decision. |
-| Session expired | Halt. No autonomous re-auth. |
-| Private key / mnemonic / keystore detected | Refused — in `.env`, in the ledger, in `wallets add` |
-| Spend action (`bridge`, `swap`, `approve`, `transfer`, …) | Always needs approval; **cannot** be pre-approved from config |
-| Above `HAA_MAX_SPEND_USD` | Halt |
-| Repeated identical tool failures | Hermes' `tool_loop_guardrails` hard-stops |
+| CAPTCHA / Cloudflare challenge | Berhenti. **Tidak pernah** diselesaikan |
+| MFA / one-time code | Berhenti. Operator yang menyelesaikan |
+| Wallet signature / approval prompt | Berhenti. Signing keputusan manusia |
+| Sesi expired | Berhenti. Tidak re-auth sendiri |
+| Private key / mnemonic / keystore terdeteksi | Ditolak — di `.env`, di ledger, di `wallets add` |
+| Aksi spend (`bridge`, `swap`, `approve`, `transfer`, …) | Selalu butuh approval; **tidak bisa** di-pre-approve dari config |
+| Di atas `HAA_MAX_SPEND_USD` | Berhenti |
+| Tool gagal identik berulang | `tool_loop_guardrails` Hermes menghentikan paksa |
 
-`approvals.deny` in every config hard-blocks `cast send`, `solana transfer`,
-`--private-key`, `mnemonic` and friends — refused even under `mode: off` or
-`--yolo`.
+Aturan terpenting, ada di `daily-executor`: **jangan pernah log `ok` untuk aksi
+yang tidak diverifikasi.** Operasi yang mencatat keberhasilan yang tidak
+dikonfirmasi lebih buruk daripada yang tidak melakukan apa-apa, karena operator
+terus percaya sistemnya jalan.
 
-The single most important rule, in `daily-executor`: **never log `ok` for an
-action you did not verify.** An operation that records successes it did not
-confirm is worse than one that does nothing, because the operator keeps
-believing it works.
+Bukti dinilai berjenjang (`knowledge/verification-rules.md`): hash on-chain dan
+state yang bertahan setelah reload itu kuat; toast yang hilang dalam 3 detik
+itu lemah; "tidak ada error" **bukan** bukti.
 
 ---
 
@@ -277,90 +261,84 @@ believing it works.
 ```
 data/
 ├── campaigns/<slug>/
-│   ├── info.json          # campaign + analyzer verdict
-│   ├── progress.json      # tallies + append-only action log
+│   ├── info.json          # kampanye + verdict analyzer
+│   ├── progress.json      # tally + log aksi append-only
 │   └── screenshots/
-├── logs/evidence.jsonl    # hash-stamped audit trail
-└── wallets.json           # addresses only, mode 0600
+├── logs/evidence.jsonl    # audit trail ber-hash
+└── wallets.json           # alamat saja, mode 0600
 ```
 
-Plain JSON, atomic writes. Git-ignored — this is your audit trail; back it up
-yourself.
+JSON polos, tulis atomik. Di-git-ignore — ini audit trail Anda, backup sendiri.
 
 ```bash
-haa plan                     # what is due today
-haa report --days 7          # weekly rollup
+haa plan                     # apa yang jatuh tempo hari ini
+haa report --days 7          # rollup mingguan
 haa evidence tail -n 20
-haa evidence verify          # re-hash every artifact
+haa evidence verify          # hash ulang semua bukti
 ```
 
-`haa evidence verify` re-hashes each referenced screenshot. A mismatch means a
-proof changed after it was recorded — that leads the report, because the ledger
-is the only way to tell "I did this" from "I believe I did this".
+`haa evidence verify` menghitung ulang hash tiap screenshot. Mismatch berarti
+bukti berubah setelah dicatat — itu yang memimpin laporan, karena ledger adalah
+satu-satunya cara membedakan "saya melakukan ini" dari "saya rasa saya
+melakukan ini".
 
 ---
 
-## Scope and limits
+## Batas scope
 
-**What this does not do: it does not help you present multiple wallets as
-multiple people.**
+**Yang tidak dilakukan sistem ini: membantu Anda menyajikan banyak wallet
+sebagai banyak orang.**
 
-There is no fingerprint spoofing, no per-wallet proxy assignment, and no timing
-jitter aimed at defeating a protocol's clustering. Those exist for one purpose —
-to make one operator's wallets look like several unrelated humans so a
-fraud-detection system allocates rewards multiple times. A protocol that detects
-that is not malfunctioning; it is working.
+Tidak ada fingerprint spoofing, tidak ada rotasi proxy per-wallet, tidak ada
+timing jitter untuk mengalahkan clustering. Ketiganya ada untuk satu tujuan:
+membuat wallet satu operator terlihat seperti beberapa orang asing supaya
+sistem deteksi fraud mengalokasikan reward berkali-kali. Protokol yang
+mendeteksi itu bukan rusak — dia bekerja.
 
-The brief this project was built from described a "4-layer identity isolation"
-model. **Layer 1 is implemented** — wallet tiers, no keys on disk, funding
-hygiene, main wallet never touches a dApp. That is ordinary risk management and
-worth doing with a single wallet. **Layers 2–4 are not**, because their stated
-purpose is evading the counterparty's anti-fraud system.
+Ini konsekuensi langsung dari browser-nya: **satu Chrome asli dengan satu
+profil asli**. Itu memang persis seperti satu partisipan sungguhan.
 
-Practically: getting flagged usually costs the allocation *and* the reputation
-of every linked address. If a project says one identity gets one allocation,
-running thirty wallets is breaking the rule, not interpreting it cleverly.
+Juga di luar scope: auto-posting Discord (melanggar ToS mereka dan
+membahayakan akun yang kampanye Anda butuhkan — agent men-draft, Anda yang
+kirim), dan menyelesaikan CAPTCHA.
 
-Also out of scope: automated Discord posting (violates their ToS and risks the
-accounts a campaign depends on — the agent drafts, you send), and solving
-CAPTCHAs.
+Yang **masuk**: wallet tiering (`main` / `farming` / `high-risk`) sebagai
+manajemen risiko biasa — layak dilakukan walau Anda cuma punya satu wallet.
+Wallet `main` tidak pernah dipakai farming; ditegakkan di kode, bukan imbauan.
 
 ---
 
-## Development
+## Verifikasi
 
 ```bash
-make dev      # venv + package + tests
-make test     # 599 tests
-make lint     # shellcheck/bash -n + compileall
+make test      # 620 test
+make lint
+./install.sh --dry-run
+haa browser check --offline
+haa doctor --offline
 ```
 
-The test suite runs the real code: it executes `install.sh --dry-run` and
-asserts it changes nothing, parses the shipped YAML through the schema
-validator, drives `main()` end to end, and checks the Camofox GUI defaults in
-`docker-compose.yml`. One test asserts no test run creates files in the repo —
-added after `haa init` was caught writing a `.env` into the working tree.
+Test-nya menjalankan kode sungguhan: mengeksekusi `install.sh --dry-run` dan
+memastikan tidak ada file berubah, mem-parse tiap YAML lewat validator,
+memanggil `main()` end-to-end, dan memastikan audit **menolak** profile tanpa
+browser / tanpa `cdp_url` / dengan `headed: false`.
 
-## Troubleshooting
+Satu test memastikan tidak ada test run yang membuat file di repo — ditambahkan
+setelah `haa init` ketahuan menulis `.env` ke working tree.
 
-| Symptom | Fix |
-|---|---|
-| `haa doctor` reports no model key | Placeholders like `sk-xxx` count as unset. Put a real key in `.env`. |
-| Browser unreachable | `./scripts/start-browser.sh`, then `docker compose logs camofox` |
-| GUI at `:6080` dead | Needs `ENABLE_VNC=1`. `docker compose up -d` sets it; the `headless` profile deliberately doesn't |
-| Config edit had no effect | `haa config check` — Hermes ignores unknown keys silently |
-| Logins keep expiring | Check `user_id` is set and non-empty, and the Camofox volume persisted |
-| `hermes` not found | `export PATH=$HOME/.local/bin:$PATH` |
+## Dokumentasi riset
 
-## Sources
+- `docs/research/hermes-schema.md` — asal-usul skema config + key yang tidak ada
+- `docs/research/browser.md` — temuan browser (sebagian masih menyebut setup Camofox lama)
+- `docs/research/sources.md` — sumber terverifikasi, termasuk 2 URL yang 404
+- `AGENTS.md` — memory proyek: keputusan terkunci, progress, hal yang jangan diulang
 
-Every claim is traced in [`docs/research/sources.md`](docs/research/sources.md) —
-including two URLs from the original brief that return 404 and one that could
-not be fetched. Nothing attributed to an unverified source is implemented here.
+## Yang belum selesai
 
-Schema derivation: [`docs/research/hermes-schema.md`](docs/research/hermes-schema.md).
-Browser findings: [`docs/research/browser.md`](docs/research/browser.md).
+- `README` bagian riset `docs/research/browser.md` masih mendeskripsikan setup
+  Camofox/VNC yang sudah tidak dipakai
+- Alur Telegram belum diuji terhadap bot sungguhan (butuh `TELEGRAM_BOT_TOKEN`)
 
-## License
+## Lisensi
 
 MIT
