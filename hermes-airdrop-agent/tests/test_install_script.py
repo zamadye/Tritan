@@ -427,3 +427,62 @@ class TestInstallerScopeAndIdempotency:
         a = subprocess.run(["./install.sh","--dry-run"],cwd=ROOT,capture_output=True,text=True).stdout
         b = subprocess.run(["./install.sh","--dry-run"],cwd=ROOT,capture_output=True,text=True).stdout
         assert a == b, "dry-run must be deterministic (no hidden state mutation)"
+
+class TestPerAgentDebugRoster:
+    """The agreed strategy: debug each agent one-by-one BEFORE orchestration.
+    The roster must match the 5-agent chain and each worker must be runnable
+    standalone with full browser control and no self-launched browser."""
+
+    ROSTER = ["worker-quests", "worker-daily", "worker-research",
+              "worker-social", "worker-discord"]
+
+    def _cfg(self, n):
+        import yaml
+        return yaml.safe_load((ROOT/"config"/"hermes"/"profiles"/n/"config.yaml").read_text())
+
+    @pytest.mark.parametrize("n", ROSTER)
+    def test_worker_has_browser_and_skills(self, n):
+        ts = set(self._cfg(n)["toolsets"])
+        assert {"browser","skills"} <= ts, f"{n} needs browser+skills"
+
+    @pytest.mark.parametrize("n", ROSTER)
+    def test_worker_no_terminal_and_denies_self_launch(self, n):
+        c = self._cfg(n)
+        assert "terminal" not in c["toolsets"]
+        assert "*google-chrome*" in c["approvals"]["deny"]
+
+    @pytest.mark.parametrize("n", ["worker-research", "worker-social"])
+    def test_new_agents_have_soul(self, n):
+        assert (ROOT/"config"/"hermes"/"profiles"/n/"SOUL.md").is_file()
+
+    def test_research_writes_and_social_reads_handoff(self):
+        r = (ROOT/"config"/"hermes"/"profiles"/"worker-research"/"SOUL.md").read_text()
+        s = (ROOT/"config"/"hermes"/"profiles"/"worker-social"/"SOUL.md").read_text()
+        assert "research.md" in r and "research.md" in s
+        assert "never" in r.lower()  # research must not act/post
+
+    def test_handoff_chain_documented_in_souls(self):
+        for n, key in [("worker-quests","Agent 1"),("worker-daily","Agent 2"),
+                       ("worker-discord","Agent 5")]:
+            t = (ROOT/"config"/"hermes"/"profiles"/n/"SOUL.md").read_text()
+            assert "Posisi Anda dalam rantai" in t and key in t, f"{n} missing chain position"
+
+    def test_daily_hands_off_content_creation(self):
+        t = (ROOT/"config"/"hermes"/"profiles"/"worker-daily"/"SOUL.md").read_text()
+        assert "worker-social" in t and "create content" in t
+
+    def test_debug_script_lists_the_roster(self):
+        r = subprocess.run(["./scripts/debug-agent.sh","--list"],cwd=ROOT,
+                           capture_output=True,text=True)
+        assert r.returncode == 0
+        for a in ["onboard","daily","research","social","discord"]:
+            assert a in r.stdout
+
+    def test_debug_script_rejects_unknown_agent(self):
+        r = subprocess.run(["./scripts/debug-agent.sh","bogus","x"],cwd=ROOT,
+                           capture_output=True,text=True)
+        assert r.returncode == 2
+
+    def test_roster_doc_exists(self):
+        t = (ROOT/"docs"/"agents-roster.md").read_text()
+        assert "debug per-agent" in t and "research.md" in t

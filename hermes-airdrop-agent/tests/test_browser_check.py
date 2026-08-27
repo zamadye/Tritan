@@ -41,6 +41,8 @@ WORKERS = [
     "worker-monitor",
     "worker-orchestrator",
     "worker-quests",
+    "worker-research",
+    "worker-social",
 ]
 
 
