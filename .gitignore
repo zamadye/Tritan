@@ -34,3 +34,7 @@ web/.env.local
 # hermes-airdrop-agent/skills/ on `git add`.
 .openclaw/
 /skills/
+
+# ACTIVITY LOG — JANGAN di-gitignore (harus ter-commit supaya error bisa dilacak).
+!activity/
+!activity/**
