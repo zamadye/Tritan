@@ -53,17 +53,27 @@ cdp_up() { curl -fsS -m 3 "$CDP_URL/json/version" >/dev/null 2>&1; }
 open_tabs() { curl -fsS -m 3 "$CDP_URL/json/list" 2>/dev/null | python3 -c \
     'import json,sys; print(len(json.load(sys.stdin)))' 2>/dev/null || echo 0; }
 
-kill_port() {  # lepaskan port CDP dari Chrome lama yang tak berjendela
-  if command -v fuser >/dev/null 2>&1; then fuser -k "$1/tcp" 2>/dev/null || true
-  elif command -v lsof >/dev/null 2>&1; then lsof -ti tcp:"$1" 2>/dev/null | xargs -r kill 2>/dev/null || true
+pid_on_port() {  # PID yang memegang port CDP (coba beberapa alat)
+  if command -v lsof >/dev/null 2>&1; then lsof -ti tcp:"$1" 2>/dev/null | head -1
+  elif command -v fuser >/dev/null 2>&1; then fuser "$1/tcp" 2>/dev/null | tr -s " " "\n" | head -1
+  elif command -v ss >/dev/null 2>&1; then ss -tlnp "sport = :$1" 2>/dev/null | grep -oE "pid=[0-9]+" | head -1 | cut -d= -f2
   fi
-  sleep 1
+}
+
+stop_stale_chrome() {
+  local pid; pid="$(pid_on_port "$CDP_PORT")"
+  [[ -n "$pid" ]] && kill "$pid" 2>/dev/null
+  # Chrome yang memakai profil debug kita, walau sudah melepas port.
+  pkill -f "user-data-dir=$PROFILE_DIR" 2>/dev/null || true
+  for _ in $(seq 1 10); do cdp_up || return 0; sleep 1; done
+  return 1   # port masih ditempati
 }
 
 # ------------------------------------------------------- already running? ---
 if (( RESTART )); then
-  info "--restart: melepaskan port $CDP_PORT dari Chrome lama (jika ada)"
-  kill_port "$CDP_PORT"
+  info "--restart: menutup Chrome lama di port $CDP_PORT"
+  if stop_stale_chrome; then ok "port $CDP_PORT bebas — meluncurkan Chrome headed"
+  else err "port $CDP_PORT masih ditempati; tutup Chrome manual lalu ulangi"; exit 1; fi
 fi
 
 if cdp_up; then
