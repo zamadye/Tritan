@@ -505,5 +505,9 @@ class TestStartBrowserHandlesWindowlessChrome:
     def test_forces_a_tab_when_none_open(self, text):
         assert "open_tabs" in text and "/json/new" in text
 
-    def test_can_kill_stale_port(self, text):
-        assert "kill_port" in text and ("fuser" in text or "lsof" in text)
+    def test_can_kill_stale_chrome(self, text):
+        # Must be able to free the port even when fuser/lsof are absent
+        # (falls back to ss + pkill by profile).
+        assert "stop_stale_chrome" in text
+        assert "pkill" in text and ("lsof" in text or "fuser" in text or "ss " in text)
+        assert "user-data-dir=$PROFILE_DIR" in text
