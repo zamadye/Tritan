@@ -237,15 +237,15 @@ else
     run bash "$HERMES_REPO/setup-hermes.sh"
   elif (( ${HAA_HERMES_FULL:-0} == 1 )); then
     info "full official install (HAA_HERMES_FULL=1) — large download"
-    curl -fsSL "$HERMES_INSTALL_URL" | bash
+    curl -fsSL "$HERMES_INSTALL_URL" | bash -s -- --skip-browser   # kita pakai CDP Chrome; lewati unduh browser/Playwright Hermes yang lambat
   elif [[ -d "$HERMES_REPO/.git" ]] || git clone --depth 1 "$HERMES_GIT_URL" "$HERMES_REPO"; then
     info "shallow clone ready — running setup-hermes.sh (venv + symlink)"
     bash "$HERMES_REPO/setup-hermes.sh" \
       || { warn "setup-hermes.sh failed; falling back to official installer"; \
-           curl -fsSL "$HERMES_INSTALL_URL" | bash; }
+           curl -fsSL "$HERMES_INSTALL_URL" | bash -s -- --skip-browser; }
   else
     warn "shallow clone failed; falling back to official installer (full clone)"
-    curl -fsSL "$HERMES_INSTALL_URL" | bash
+    curl -fsSL "$HERMES_INSTALL_URL" | bash -s -- --skip-browser   # kita pakai CDP Chrome; lewati unduh browser/Playwright Hermes yang lambat
   fi
   export PATH="$HOME/.local/bin:$PATH"
   have hermes && ok "hermes installed" \
