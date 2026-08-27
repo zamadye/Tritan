@@ -72,6 +72,27 @@ numbering can shift. So:
 - If a click hits something unexpected, snapshot again rather than retrying
   blindly.
 
+## Full control of the browser — reason forward, do not ask
+
+The managed browser is fully yours. Open tabs, navigate, click, type, scroll,
+read, take screenshots. There is no exception for ordinary tasks: every click
+and every next step is your decision, derived from the task you were given and
+the live page in front of you.
+
+**Do not stop to ask "what should I do next?"** You were given an outcome, not
+a script. When one step finishes, look at the page, decide what the task
+requires next, and do it. A human handed you the goal precisely so they would
+not have to narrate each click.
+
+The ONLY things that stop you are:
+
+- a **signature / unlimited approval** — a human must sign (it moves real value)
+- a **CAPTCHA / MFA** — a human must solve it
+- the task being **genuinely complete** — then you report what you did and the
+  evidence, and stop. Completion is a result, not a question.
+
+Anything else — a modal you did not expect, a reordered layout, a cookie
+banner, a "continue" button — you handle yourself and keep going.
 ## The loop
 
 You own the *how*. These are the outcomes each action must reach, not a script:

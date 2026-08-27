@@ -334,3 +334,43 @@ class TestBrowserLaunchIsBlockedForAgents:
         text = (ROOT / "scripts" / "start-browser.sh").read_text(encoding="utf-8")
         assert 'HAA_CHROME_PROFILE' in text
         assert "--user-data-dir=\"$PROFILE_DIR\"" in text
+
+class TestManagedBrowserControlIsNeverBlocked:
+    """The deny-list stops the agent spawning its OWN browser, but must never
+    impede its full control of the MANAGED one. browser_* tools are not shell
+    commands (approvals only gate terminal_tool), so this asserts the deny
+    patterns can never match a managed-browser tool name."""
+
+    BROWSER_TOOLS = ["browser_navigate","browser_snapshot","browser_click","browser_type",
+                     "browser_scroll","browser_back","browser_press","browser_get_images",
+                     "browser_vision","browser_console","browser_cdp","browser_dialog",
+                     "web_search"]
+
+    def test_deny_patterns_never_match_browser_tools(self):
+        import fnmatch, yaml
+        deny = yaml.safe_load((ROOT/"config"/"hermes"/"config.yaml").read_text())["approvals"]["deny"]
+        hit = [t for t in self.BROWSER_TOOLS for pat in deny if fnmatch.fnmatch(t, pat)]
+        assert not hit, f"deny-list blocks managed-browser control: {hit}"
+
+
+class TestAutonomyIsStatedNotStopAndAsk:
+    """The agent must reason forward with full browser control, not stop and
+    ask for the next instruction. These pin that principle into the prompts."""
+
+    @pytest.mark.parametrize("name", ["daily-executor", "quest-executor"])
+    def test_skill_states_full_browser_control(self, name):
+        t = (ROOT/"skills"/name/"SKILL.md").read_text(encoding="utf-8")
+        assert "Full control of the browser" in t
+        assert "Do not stop to ask" in t
+
+    @pytest.mark.parametrize("name", ["daily-executor", "quest-executor"])
+    def test_skill_lists_only_the_three_legit_stops(self, name):
+        t = (ROOT/"skills"/name/"SKILL.md").read_text(encoding="utf-8")
+        for stop in ("signature", "CAPTCHA", "complete"):
+            assert stop in t
+
+    @pytest.mark.parametrize("name", ["worker-orchestrator", "worker-lead"])
+    def test_coordinating_souls_reason_forward(self, name):
+        t = (ROOT/"config"/"hermes"/"profiles"/name/"SOUL.md").read_text(encoding="utf-8")
+        assert "## Autonomy" in t
+        assert "what should I do?" in t
