@@ -113,7 +113,7 @@ google-chrome --remote-debugging-port=9222 \
   evidence, notify, cli
 - 6 skill di `skills/` dengan frontmatter Hermes yang benar
 - 5 worker profile + SOUL.md di `config/hermes/profiles/`
-- `tests/` — **782 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
+- `tests/` — **799 test lulus**, termasuk yang menjalankan `install.sh --dry-run`
 - `docs/research/` — hermes-schema.md, browser.md, sources.md
 - Skema config Hermes sudah diekstrak dari `DEFAULT_CONFIG` (89 top-level key)
 
@@ -239,6 +239,37 @@ memakai `ts = d['toolsets']` (referensi, bukan salinan), jadi `replace`-nya
 no-op tapi tetap mencetak seolah berhasil. Tertangkap karena test membaca ulang
 dari disk, bukan dari variabel.
 
+### Selesai 2026-08-27 (sesi 3) — pemisahan repo
+
+User benar: repo induk  adalah **Polymarket prediction-market trading
+agent** (README: "TRITAN — Prediction Market Edge System"; `agent/` 20 modul
+trading; `requirements.txt` = py-clob-client + polymarket-apis). Proyek airdrop
+tidak seharusnya hidup di dalamnya.
+
+Kendala yang diverifikasi, bukan diasumsikan:
+- Sesi Arena ini **terikat** ke branch `arena/01a037e2-tritan` — tidak bisa
+  push ke branch lain
+- `gh api user` → **403 "Resource not accessible by integration"** — token
+  hanya untuk repo ini, **tidak bisa membuat repo baru**
+
+Jadi yang bisa dilakukan: siapkan ekstraksinya supaya user tinggal satu perintah.
+
+- **`scripts/extract-standalone.sh`** — `git subtree split`, memverifikasi
+  hasil (jumlah file, jumlah commit, tidak ada file induk yang bocor,
+  `install.sh` ada di root), opsi `--push <remote>` dan `--dir <path>`.
+  Diuji: 80 file, 7 commit, nol kode Tritan, test suite lulus di hasil ekspor.
+
+Dua bug di script itu yang ditemukan dengan menjalankannya:
+1. Nama branch `hermes-airdrop-agent` bentrok dengan nama direktori → git
+   "ambiguous argument". Harus pakai `refs/heads/$BRANCH`.
+2. `set -o pipefail` + `grep` yang tidak menemukan apa pun (exit 1) membunuh
+   script tepat saat seharusnya melapor sukses. Perlu `|| true`.
+
+Fakta yang perlu diingat: commit di branch ini **tidak tercampur** pekerjaan
+agent lain — 7/7 commit milik saya, nol file Tritan (`agent/`, `web/`,
+`main.py`, `requirements.txt`) tersentuh. Satu-satunya file di luar
+subdirektori adalah `.gitignore` root (perbaikan anchor `skills/`).
+
 ### Masih terbuka
 
 - Alur Telegram end-to-end belum diuji terhadap Hermes sungguhan. **Bukan**
@@ -329,6 +360,7 @@ for f in install.sh scripts/*.sh; do bash -n "$f"; done
 |---|---|
 | 2026-08-25 | Riset sumber; backend Python 11 modul; 6 skill; 5 profile; 599 test; commit `fd01dc1` |
 | 2026-08-25 | Koreksi: semua worker dapat browser; GUI default di compose |
+| 2026-08-27 | **Pemisahan repo**: `scripts/extract-standalone.sh` (subtree split + verifikasi); terverifikasi token tidak bisa buat repo baru. **799 test.** |
 | 2026-08-27 | **Workflow + knowledge**: docs/workflows.md, kanban toolset 7/7 profile + dispatcher config, knowledge quest-platforms & cycles-and-meta. **782 test.** |
 | 2026-08-27 | **Task kompleks**: tiered approval, depends_on + planner, resume dari ledger, positions.py (LP/streak/expiry), max_turns dinaikkan, knowledge Monad. **768 test.** |
 | 2026-08-26 | **Kontrak otonomi**: Autonomy contract di skill, alat persepsi diwajibkan, lead dilarang catat selector, `TestNoBrittleInstructions`. **704 test.** |

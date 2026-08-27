@@ -242,3 +242,49 @@ class TestCronScriptPrompts:
     def test_jobs_are_idempotent(self, text):
         # Re-running must not duplicate jobs.
         assert "exists:" in text
+
+class TestExtractStandalone:
+    """This project currently lives inside an unrelated repository (Tritan, a
+    Polymarket trading agent). The extraction path has to work, and two bugs in
+    it were found the hard way."""
+
+    @pytest.fixture
+    def script(self):
+        return ROOT / "scripts" / "extract-standalone.sh"
+
+    def test_exists_and_is_executable(self, script):
+        import os
+        assert script.is_file()
+        assert os.access(script, os.X_OK)
+
+    def test_syntax(self, script):
+        r = subprocess.run(["bash", "-n", str(script)], capture_output=True, text=True)
+        assert r.returncode == 0, r.stderr
+
+    def test_uses_fully_qualified_refs(self, script):
+        """The branch name collides with the directory name, so a bare
+        `$BRANCH` makes git report 'ambiguous argument'."""
+        text = script.read_text(encoding="utf-8")
+        assert 'REF="refs/heads/$BRANCH"' in text
+        assert 'ls-tree -r --name-only "$REF"' in text
+
+    def test_guards_the_grep_pipefail_trap(self, script):
+        """With `set -o pipefail`, a grep that finds nothing exits 1 and kills
+        the script at exactly the moment it should report success."""
+        text = script.read_text(encoding="utf-8")
+        assert "|| true" in text
+
+    def test_verifies_no_parent_files_leak(self, script):
+        text = script.read_text(encoding="utf-8")
+        assert "agent/" in text and "main" in text
+        assert "no parent-project files present" in text
+
+    def test_verifies_install_sh_is_at_the_root(self, script):
+        """If the split left a wrapper directory, the repo would not be usable."""
+        assert "install.sh is at the root" in script.read_text(encoding="utf-8")
+
+    def test_does_not_modify_the_parent_repository(self, script):
+        text = script.read_text(encoding="utf-8")
+        # Only reads the parent repo and creates a branch; never rewrites it.
+        for forbidden in ("filter-branch", "rebase", "git push --force"):
+            assert forbidden not in text
