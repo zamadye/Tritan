@@ -320,12 +320,12 @@ class TestBrowserLaunchIsBlockedForAgents:
             assert "terminal" not in ts, f"{f.parent.name} explicitly grants terminal"
 
     def test_chromium_is_not_the_default_browser(self):
-        for script in ("install.sh", "scripts/start-browser.sh"):
-            text = (ROOT / script).read_text(encoding="utf-8")
-            # Chrome detection must come before any chromium fallback.
-            assert text.index("find_chrome") < text.index("find_chromium")
-            # Chromium must sit behind the explicit opt-in, not run silently.
-            assert "HAA_ALLOW_CHROMIUM" in text
+        inst = (ROOT / "install.sh").read_text(encoding="utf-8")
+        assert inst.index("find_chrome") < inst.index("find_chromium")
+        assert "HAA_ALLOW_CHROMIUM" in inst
+        # start-browser hanya mencari Chrome (extension wallet), bukan Chromium.
+        sb = (ROOT / "scripts" / "start-browser.sh").read_text(encoding="utf-8")
+        assert "find_chrome" in sb and "find_chromium" not in sb
 
     def test_no_silent_chromium_install_message(self):
         text = (ROOT / "install.sh").read_text(encoding="utf-8")
@@ -500,14 +500,14 @@ class TestStartBrowserHandlesWindowlessChrome:
         return (ROOT / "scripts" / "start-browser.sh").read_text(encoding="utf-8")
 
     def test_restart_flag_supported(self, text):
-        assert '--restart' in text and "RESTART=1" in text
+        assert '--restart' in text and 'MODE="${1:-start}"' in text
 
     def test_forces_a_tab_when_none_open(self, text):
         assert "open_tabs" in text and "/json/new" in text
 
     def test_can_kill_stale_chrome(self, text):
-        # Must be able to free the port even when fuser/lsof are absent
-        # (falls back to ss + pkill by profile).
-        assert "stop_stale_chrome" in text
-        assert "pkill" in text and ("lsof" in text or "fuser" in text or "ss " in text)
+        # Must free the port even when fuser/lsof are absent (ss fallback) and
+        # pkill any chrome using our debug profile.
+        assert "stop_chrome" in text and "pkill" in text
+        assert ("lsof" in text or "fuser" in text or "ss " in text)
         assert "user-data-dir=$PROFILE_DIR" in text

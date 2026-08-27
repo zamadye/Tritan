@@ -210,10 +210,28 @@ elif [[ "$PKG" == "brew" ]]; then
   info "installing Google Chrome via Homebrew cask"
   run brew install --cask google-chrome
 else
-  warn "Google Chrome not found."
-  warn "This flow uses your real Chrome so wallet extensions carry over."
-  warn "Install it from google.com/chrome, or with: brew install --cask google-chrome"
-  warn "Chromium fallback (no extensions): HAA_ALLOW_CHROMIUM=1 ./install.sh"
+  # Pasang Chrome resmi via .deb — apt ikut menarik dependensi X11 yang dibutuhkan
+  # untuk membuka window headed. Best-effort; gagal tidak menghentikan instalasi.
+  if (( DRY_RUN )); then
+    run curl -fsSL -o /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    run $SUDO apt-get install -y /tmp/google-chrome.deb
+  elif [[ "$PKG" == "apt" ]]; then
+    info "Google Chrome tidak ditemukan — memasang via .deb resmi"
+    if curl -fsSL -o /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb; then
+      run $SUDO apt-get install -y /tmp/google-chrome.deb || warn "apt install Chrome gagal — pasang manual google.com/chrome"
+    else
+      warn "unduh .deb gagal — pasang manual google.com/chrome (Chromium: HAA_ALLOW_CHROMIUM=1)"
+    fi
+  else
+    warn "pasang manual: google.com/chrome (Chromium fallback: HAA_ALLOW_CHROMIUM=1)"
+  fi
+fi
+# Dependensi display + alat verifikasi window headed (xdotool/wmctrl), best-effort.
+if [[ "$PKG" == "apt" ]]; then
+  info "memastikan libs X11 + xdotool/wmctrl agar window benar-benar terbuka"
+  run $SUDO apt-get install -y --no-install-recommends libnss3 libnspr4 libgbm1 \
+      libxkbcommon0 libgtk-3-0 libasound2 libx11-xcb1 xdotool wmctrl x11-utils \
+      || warn "sebagian dependensi display gagal (butuh sudo)"
 fi
 BROWSER="$(pick_browser || true)"
 [[ -n "$BROWSER" ]] && ok "browser ready: $BROWSER" \
