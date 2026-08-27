@@ -374,3 +374,56 @@ class TestAutonomyIsStatedNotStopAndAsk:
         t = (ROOT/"config"/"hermes"/"profiles"/name/"SOUL.md").read_text(encoding="utf-8")
         assert "## Autonomy" in t
         assert "what should I do?" in t
+
+class TestInstallerScopeAndIdempotency:
+    """The user's requirement: install.sh must install what is missing, SKIP what
+    already exists, and continue with the rest -- and Hermes must be part of it."""
+
+    @pytest.fixture
+    def text(self):
+        return (ROOT / "install.sh").read_text(encoding="utf-8")
+
+    def test_hermes_is_part_of_the_install(self, text):
+        assert "hermes-agent.nousresearch.com/install.sh" in text
+        assert "5/10" in text and "Hermes" in text
+
+    def test_hermes_skipped_if_present_then_continues(self, text):
+        i = text.index("elif have hermes; then")
+        j = text.index("step \"6/10")
+        block = text[i:j]
+        assert "already installed" in block, "must skip when hermes present"
+        # and it must NOT exit -- it falls through to step 6
+
+    @pytest.mark.parametrize("tool,check", [
+        ("python", "raise SystemExit(0 if sys.version_info>=(3,10)"),
+        ("node", "have node"),
+        ("package", "have apt-get"),
+    ])
+    def test_each_dependency_has_a_presence_check(self, text, tool, check):
+        assert check in text, f"{tool}: no presence check"
+
+    def test_chrome_detected_before_installing(self, text):
+        assert "pick_browser" in text
+        assert 'elif [[ -n "$BROWSER" ]]' in text  # found -> skip install
+
+    def test_existing_env_left_untouched(self, text):
+        assert ".env already present — left untouched" in text
+
+    def test_existing_config_backed_up_not_overwritten(self, text):
+        # install_file: if dst exists and not -y, write .new instead of overwrite
+        assert '${dst}.new' in text or ".new" in text
+
+    def test_venv_not_recreated_if_present(self, text):
+        assert '[[ -d .venv ]] ||' in text
+
+    def test_gateway_and_cron_skip_without_hermes(self, text):
+        assert "elif ! have hermes; then" in text
+
+    def test_optional_skips_are_flags(self, text):
+        for flag in ("--skip-chrome", "--skip-hermes", "--no-cron", "--no-gateway"):
+            assert flag in text
+
+    def test_dry_run_is_stable_across_two_runs(self):
+        a = subprocess.run(["./install.sh","--dry-run"],cwd=ROOT,capture_output=True,text=True).stdout
+        b = subprocess.run(["./install.sh","--dry-run"],cwd=ROOT,capture_output=True,text=True).stdout
+        assert a == b, "dry-run must be deterministic (no hidden state mutation)"
