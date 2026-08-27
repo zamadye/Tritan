@@ -33,6 +33,7 @@ VERSION="0.2.0"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 PROJECT_DIR="$SCRIPT_DIR"
 HERMES_INSTALL_URL="https://hermes-agent.nousresearch.com/install.sh"
+HERMES_GIT_URL="https://github.com/NousResearch/hermes-agent.git"
 HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
 CDP_PORT="${HAA_CDP_PORT:-9222}"
 
@@ -225,10 +226,25 @@ elif have hermes; then
   ok "already installed: $(command -v hermes)"
   info "update later with: hermes update"
 else
-  info "installing from $HERMES_INSTALL_URL"
+  # The repo is ~240MB with full history (226k objects) — over a slow link the
+  # official full clone can look frozen for hours. Default to a SHALLOW clone
+  # (--depth 1) plus the repo's own setup-hermes.sh, which is far smaller, and
+  # fall back to the official installer only if that fails. Force the official
+  # full install with HAA_HERMES_FULL=1.
+  HERMES_REPO="$HERMES_HOME/hermes-agent"
   if (( DRY_RUN )); then
-    run bash -c "curl -fsSL ${HERMES_INSTALL_URL} | bash"
+    run git clone --depth 1 "$HERMES_GIT_URL" "$HERMES_REPO"
+    run bash "$HERMES_REPO/setup-hermes.sh"
+  elif (( ${HAA_HERMES_FULL:-0} == 1 )); then
+    info "full official install (HAA_HERMES_FULL=1) — large download"
+    curl -fsSL "$HERMES_INSTALL_URL" | bash
+  elif [[ -d "$HERMES_REPO/.git" ]] || git clone --depth 1 "$HERMES_GIT_URL" "$HERMES_REPO"; then
+    info "shallow clone ready — running setup-hermes.sh (venv + symlink)"
+    bash "$HERMES_REPO/setup-hermes.sh" \
+      || { warn "setup-hermes.sh failed; falling back to official installer"; \
+           curl -fsSL "$HERMES_INSTALL_URL" | bash; }
   else
+    warn "shallow clone failed; falling back to official installer (full clone)"
     curl -fsSL "$HERMES_INSTALL_URL" | bash
   fi
   export PATH="$HOME/.local/bin:$PATH"

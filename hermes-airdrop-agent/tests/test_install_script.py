@@ -66,8 +66,11 @@ class TestDryRun:
         assert "[dry-run] sudo apt-get install" in out or "brew install" in out
 
     def test_installs_hermes_framework(self, repo_snapshot):
-        out = run("./install.sh", "--dry-run").stdout
-        assert "hermes-agent.nousresearch.com/install.sh" in out
+        # Shallow-first (small) with the official installer as fallback; both
+        # must be present so a failed shallow clone still yields Hermes.
+        text = (ROOT / "install.sh").read_text(encoding="utf-8")
+        assert "git clone --depth 1" in text and "setup-hermes.sh" in text
+        assert "hermes-agent.nousresearch.com/install.sh" in text
 
     def test_sets_up_memory_and_knowledge(self, repo_snapshot):
         out = run("./install.sh", "--dry-run").stdout
