@@ -153,9 +153,11 @@ class TestEnvOnlyKeys:
         issue = next(i for i in r.errors if i.path == "browser.camofox.url")
         assert "CAMOFOX_URL" in issue.hint
 
-    def test_api_key_belongs_in_env(self):
-        r = validate({"model": {"api_key": "sk-abc"}})
-        assert any(i.path == "model.api_key" for i in r.errors)
+    def test_model_api_key_allowed_in_config_for_custom(self):
+        # Hermes docs show model.api_key is valid for a custom endpoint; the
+        # secret itself still lives in .env via ${CUSTOM_API_KEY}.
+        r = validate({"model": {"api_key": "${CUSTOM_API_KEY}"}})
+        assert not any(i.path == "model.api_key" for i in r.errors)
 
 
 class TestReport:

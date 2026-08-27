@@ -365,7 +365,6 @@ BROWSER_PROVIDERS: frozenset[str] = frozenset(
 ENV_ONLY_KEYS: dict[str, str] = {
     "browser.camofox.url": "CAMOFOX_URL",
     "browser.camofox.port": "CAMOFOX_PORT",
-    "model.api_key": "the provider's *_API_KEY variable",
 }
 
 

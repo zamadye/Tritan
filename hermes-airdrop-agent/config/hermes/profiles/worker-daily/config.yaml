@@ -1,6 +1,9 @@
 model:
   provider: ${HAA_MODEL_PROVIDER}
   base_url: ${CUSTOM_BASE_URL}
+  # Key dibaca dari .env (CUSTOM_API_KEY). Untuk provider direct
+  # (anthropic/openrouter) kosongkan baris ini dan isi *_API_KEY di .env.
+  api_key: ${CUSTOM_API_KEY}
   default: ${HAA_MODEL_DEFAULT}
   context_length: ${HAA_CONTEXT_LENGTH}
 agent:
