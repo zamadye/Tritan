@@ -29,5 +29,8 @@ web/.next/
 web/.env.local
 
 # Internal workspace
+# NOTE: anchored with a leading slash on purpose. An unanchored `skills/`
+# matches every skills/ directory in the repo, which silently swallowed
+# hermes-airdrop-agent/skills/ on `git add`.
 .openclaw/
-skills/
+/skills/
