@@ -388,3 +388,22 @@ setelah `haa init` ketahuan menulis `.env` ke working tree.
 ## Lisensi
 
 MIT
+
+
+---
+
+## Activity log (di dalam framework, ter-commit)
+
+Seluruh aktivitas framework tercatat ke `activity/activity.log` (JSONL) — bukan
+di `data/`, dan **tidak** di-gitignore, jadi ikut ter-commit & ter-push. Saat
+Anda menjalankan di mesin Anda lalu push, log ini terbaca dan menunjukkan persis
+perintah/agent mana yang gagal dan kenapa.
+
+```bash
+haa activity tail       # aktivitas terbaru
+haa activity failures   # hanya yang exit != 0, dengan pesan error
+```
+
+Yang tercatat: tiap perintah `haa`, tiap run `debug-agent.sh` (agent + task +
+error tail), serta `install.sh` / `start-browser.sh`. Tiap record membawa
+timestamp, git HEAD, host, dan exit code.

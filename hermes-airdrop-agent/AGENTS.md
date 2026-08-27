@@ -302,6 +302,23 @@ Temuan kunci:
 Sisa VNC hanya 3 komentar penjelasan (bukan kode), sudah dibersihkan yang
 menyesatkan.
 
+### Selesai 2026-08-27 — activity log di dalam framework, ter-commit
+
+User (terakhir sebelum jalan di mesinnya): log SEMUA aktivitas framework,
+tersimpan DI DALAM framework, TIDAK di-gitignore, bisa di-commit/push, supaya
+saat error saya bisa langsung tahu letaknya.
+
+- \`src/hermes_airdrop/activity_log.py\` — JSONL append-only di
+  \`activity/activity.log\` (bukan di data/, yang di-ignore). stdlib-only.
+  Tiap record: ts, source (haa/debug-agent/install/start-browser), agent,
+  cmd/task, exit, duration, git HEAD, host, error tail (≤1200 char).
+- Hook: \`cli.main\` (setiap perintah haa + exit code), \`debug-agent.sh\`
+  (tiap run agent + error tail), \`install.sh\` & \`start-browser.sh\` (trap EXIT).
+- \`haa activity tail\` / \`haa activity failures\` untuk membaca.
+- \`.gitignore\` diberi \`!activity/\` + komentar JANGAN di-ignore.
+- record() tidak pernah melempar: disk penuh/checkout read-only → silent no-op.
+- Test: test_activity_log.py + test_packaging (tracked & tidak di-ignore).
+
 ### Masih terbuka
 
 - Alur Telegram end-to-end belum diuji terhadap Hermes sungguhan. **Bukan**

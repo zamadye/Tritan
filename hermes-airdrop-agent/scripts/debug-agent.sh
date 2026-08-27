@@ -49,10 +49,23 @@ if ! command -v hermes >/dev/null 2>&1; then
 fi
 
 echo "→ agent: $NAME  (profile: $PROFILE)"
+ERR_FILE="$(mktemp)"
+LOG() {  # LOG <exit>
+  PYTHONPATH="$ROOT/src" python3 -m hermes_airdrop.activity_log record \
+    --source debug-agent --agent "$NAME" --exit "$1" \
+    --task "${TASK:-interactive}" --error-file "$ERR_FILE" 2>/dev/null || true
+}
 if [[ "${1:-}" == "" ]]; then
+  TASK="interactive"
   echo "  mode interaktif — ketik task, /exit untuk keluar"
-  exec hermes --profile "$PROFILE"
+  hermes --profile "$PROFILE" 2>>"$ERR_FILE"
+  RC=$?
 else
-  echo "  task: $*"
-  exec hermes --profile "$PROFILE" chat -q "$*"
+  TASK="$*"
+  echo "  task: $TASK"
+  hermes --profile "$PROFILE" chat -q "$TASK" 2>>"$ERR_FILE"
+  RC=$?
 fi
+LOG "$RC"
+rm -f "$ERR_FILE"
+exit "$RC"

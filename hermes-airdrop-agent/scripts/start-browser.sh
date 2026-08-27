@@ -26,6 +26,11 @@
 # ---------------------------------------------------------------------------
 set -euo pipefail
 
+# Catat aktivitas ke dalam framework (ter-commit) supaya error bisa dilacak.
+ALOG() { PYTHONPATH="$PROJECT_DIR/src" python3 -m hermes_airdrop.activity_log record \
+          --source start-browser --exit "$1" --error-file "${ERR_TMP:-/dev/null}" 2>/dev/null || true; }
+trap 'ALOG $?' EXIT
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 

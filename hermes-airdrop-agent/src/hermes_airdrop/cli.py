@@ -401,6 +401,32 @@ def _pstore(args: argparse.Namespace):
     return PositionStore(_data_root(args) / "campaigns")
 
 
+
+def cmd_activity(args: argparse.Namespace) -> int:
+    from . import activity_log
+
+    if args.sub2 == "tail":
+        rows = activity_log.read(args.n)
+        if not rows:
+            print("(belum ada aktivitas tercatat)")
+            return 0
+        for r in rows:
+            mark = "✗" if (r.get("exit") or 0) != 0 else "·"
+            agent = f" [{r['agent']}]" if r.get("agent") else ""
+            what = r.get("task") or r.get("cmd") or ""
+            print(f"{mark} {r['ts']} {r['source']}{agent} exit={r.get('exit')} {what}")
+            if r.get("error"):
+                print(f"    error: {r['error'].splitlines()[-1]}")
+        return 0
+    rows = activity_log.failures()
+    if not rows:
+        print("(tidak ada kegagalan tercatat)")
+        return 0
+    for r in rows:
+        print(json.dumps(r, ensure_ascii=False))
+    return 0
+
+
 def cmd_positions_add(args: argparse.Namespace) -> int:
     from .positions import Position, PositionError
 
@@ -769,6 +795,14 @@ def build_parser() -> argparse.ArgumentParser:
     wau = wa.add_parser("audit")
     wau.set_defaults(func=cmd_wallets_audit)
 
+    act = sub.add_parser("activity", help="log aktivitas framework (tersimpan & ter-commit)").add_subparsers(
+        dest="sub2", required=True)
+    act_t = act.add_parser("tail", help="lihat aktivitas terbaru")
+    act_t.add_argument("-n", type=int, default=20)
+    act_t.set_defaults(func=cmd_activity)
+    act_f = act.add_parser("failures", help="hanya yang gagal")
+    act_f.set_defaults(func=cmd_activity)
+
     pos = sub.add_parser("positions", help="long-horizon state: LP, stakes, streaks").add_subparsers(
         dest="sub2", required=True)
     pa = pos.add_parser("add")
@@ -810,14 +844,35 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    import time as _t
+
+    from . import activity_log
+
+    started = _t.time()
+    argv = list(argv) if argv is not None else sys.argv[1:]
     parser = build_parser()
     args = parser.parse_args(argv)
+    code = 0
+    err = None
     try:
-        return int(args.func(args) or 0)
+        code = int(args.func(args) or 0)
+        return code
     except (CampaignError, ConfigError, WalletError, FileNotFoundError, ValueError) as exc:
         # A config or usage problem is an operator error, not a crash: print one
         # line and exit non-zero so cron and CI see the failure.
-        return _fail(str(exc))
+        code = 1
+        err = str(exc)
+        return _fail(err)
+    finally:
+        # Record EVERY haa invocation (inside the framework, committed) so a
+        # later reader can see what was attempted and where it broke.
+        activity_log.record(
+            "haa",
+            cmd=" ".join(argv) or "(interactive)",
+            exit_code=code,
+            duration_s=_t.time() - started,
+            error=err,
+        )
 
 
 if __name__ == "__main__":  # pragma: no cover

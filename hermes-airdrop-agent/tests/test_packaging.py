@@ -217,3 +217,26 @@ class TestWorkflowAndKnowledgeAreWired:
         text = (ROOT / "knowledge" / "quest-platforms.md").read_text(encoding="utf-8")
         assert "Verification lag" in text
         assert "Address mismatch" in text or "address" in text.lower()
+
+class TestActivityLogIsTrackedNotIgnored:
+    """The operator's requirement: the activity log lives INSIDE the framework
+    and is committed, so a pushed branch reveals where anything failed."""
+
+    def test_activity_log_not_gitignored(self):
+        import subprocess
+        r = subprocess.run(["git", "check-ignore", "-q", "hermes-airdrop-agent/activity/activity.log"],
+                           cwd=str(REPO), capture_output=True)
+        assert r.returncode != 0, "activity log must NOT be gitignored"
+
+    def test_gitignore_explicitly_keeps_activity(self):
+        gi = (REPO / ".gitignore").read_text(encoding="utf-8")
+        assert "!activity/" in gi
+
+    def test_log_file_exists_in_framework(self):
+        assert (ROOT / "activity" / "activity.log").is_file()
+
+    def test_haa_and_scripts_hook_the_log(self):
+        cli = (ROOT / "src" / "hermes_airdrop" / "cli.py").read_text()
+        dbg = (ROOT / "scripts" / "debug-agent.sh").read_text()
+        assert "activity_log.record" in cli or "activity_log" in cli
+        assert "activity_log" in dbg

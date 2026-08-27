@@ -45,3 +45,11 @@ node_modules/
 *.swp
 .idea/
 .vscode/
+
+# ---------------------------------------------------------------------------
+# ACTIVITY LOG — JANGAN di-gitignore.
+# Operator meminta seluruh aktivitas framework tercatat DI DALAM framework dan
+# ter-commit, supaya saat di-push agent bisa membaca letak error.
+# ---------------------------------------------------------------------------
+!activity/
+!activity/**
