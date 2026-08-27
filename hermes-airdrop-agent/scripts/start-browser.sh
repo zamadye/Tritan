@@ -51,42 +51,80 @@ if cdp_up; then
 fi
 
 # --------------------------------------------------------- find a browser ---
-find_browser() {
+# Use the operator's real CHROME, not Chromium.
+#
+# The airdrop flow frequently depends on a wallet that is a browser EXTENSION
+# (MetaMask / Phantom / Rabby). Those live inside the operator's real Chrome
+# profile. A bare apt Chromium does not carry them, and logging the agent in
+# to a fresh browser means re-doing auth for every dApp. So Chrome is the
+# required default; Chromium is only used if you explicitly opt in with
+# HAA_ALLOW_CHROMIUM=1 and understand the extension limitation.
+#
+# CDP itself works with either, but the PROFILE (and thus the extensions) is
+# what actually matters here.
+find_chrome() {
   local c
-  for c in google-chrome google-chrome-stable chromium chromium-browser brave-browser microsoft-edge; do
+  for c in google-chrome google-chrome-stable google-chrome-beta google-chrome-dev; do
     command -v "$c" >/dev/null 2>&1 && { echo "$c"; return 0; }
   done
-  # Common absolute paths the PATH may not cover.
-  for c in /usr/bin/google-chrome /usr/bin/chromium /opt/google/chrome/google-chrome \
-           /snap/bin/chromium /opt/brave-bin/brave-browser \
+  for c in /usr/bin/google-chrome /opt/google/chrome/google-chrome \
            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-           "/Applications/Chromium.app/Contents/MacOS/Chromium" \
-           "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser" \
-           "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"; do
+           "/Applications/Google Chrome Dev.app/Contents/MacOS/Google Chrome"; do
     [[ -x "$c" ]] && { echo "$c"; return 0; }
   done
   return 1
 }
 
-BROWSER="$(find_browser || true)"
-if [[ -z "$BROWSER" ]]; then
-  err "No Chromium-family browser found."
-  echo "    Install one of: google-chrome, chromium, brave-browser, microsoft-edge" >&2
-  echo "    Debian/Ubuntu : sudo apt install -y chromium" >&2
-  echo "    macOS         : brew install --cask google-chrome" >&2
-  exit 1
+find_chromium() {
+  local c
+  for c in chromium chromium-browser brave-browser microsoft-edge; do
+    command -v "$c" >/dev/null 2>&1 && { echo "$c"; return 0; }
+  done
+  for c in /usr/bin/chromium /snap/bin/chromium /opt/brave-bin/brave-browser; do
+    [[ -x "$c" ]] && { echo "$c"; return 0; }
+  done
+  return 1
+}
+
+if [[ -n "${HAA_BROWSER_BIN:-}" ]]; then
+  BROWSER="$HAA_BROWSER_BIN"
+  warn "using HAA_BROWSER_BIN=$BROWSER (explicit override)"
+else
+  BROWSER="$(find_chrome || true)"
+  if [[ -z "$BROWSER" ]]; then
+    CHROMIUM="$(find_chromium || true)"
+    if [[ -n "$CHROMIUM" && "${HAA_ALLOW_CHROMIUM:-0}" == "1" ]]; then
+      BROWSER="$CHROMIUM"
+      warn "Google Chrome not found; falling back to $CHROMIUM (HAA_ALLOW_CHROMIUM=1)."
+      warn "Wallet-as-extension will NOT be present in a fresh Chromium profile."
+    else
+      err "Google Chrome not found."
+      echo "    This flow uses your real Chrome so wallet extensions carry over." >&2
+      echo "    Install Chrome:  brew install --cask google-chrome  (macOS)" >&2
+      echo "                     or download from google.com/chrome" >&2
+      echo "    To force a Chromium-family browser anyway (no extensions):" >&2
+      echo "                     HAA_ALLOW_CHROMIUM=1 ./scripts/start-browser.sh" >&2
+      exit 1
+    fi
+  fi
 fi
 ok "browser: $BROWSER"
+
+# ------------------------------------------- profile must match the agent ---
+# The agent's browser tools attach to the CDP port this script opens, so they
+# use exactly the --user-data-dir below. Keep it identical to HAA_CHROME_PROFILE
+# that install.sh writes into .env; if they ever diverge the agent would run in
+# a different profile from the one you logged into.
+echo "  profile dir : $PROFILE_DIR"
 
 # -------------------------------------------------------------- no display? ---
 # A real window needs a display. On a headless server there isn't one, and
 # Chrome will fail or silently background itself.
 if [[ -z "${DISPLAY:-}" && "$(uname -s)" == "Linux" && -z "${WAYLAND_DISPLAY:-}" ]]; then
   err "No DISPLAY set -- this machine has no graphical session."
-  echo "    This setup runs Chrome on the host with a real window, which needs" >&2
-  echo "    a desktop. On a headless server either:" >&2
-  echo "      - run it where you have a desktop, or" >&2
-  echo "      - use a containerised browser with VNC instead (not this script)." >&2
+  echo "    This setup runs your real Chrome with a visible window, which needs" >&2
+  echo "    a desktop session. Run this from a machine with a GUI, or from a" >&2
+  echo "    terminal inside your desktop (not a bare SSH shell with no X)." >&2
   exit 1
 fi
 

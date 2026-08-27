@@ -1,172 +1,102 @@
-# ===========================================================================
-# Hermes Agent — main config for the Airdrop Agent
-# ===========================================================================
-# Installs to:  ~/.hermes/config.yaml
-#
-# Every key here was checked against Hermes' own authoritative default config
-# (hermes_cli/config_defaults.py::DEFAULT_CONFIG) and cli-config.yaml.example.
-# Run `haa config check` after editing — Hermes silently ignores unknown keys,
-# so a typo here fails quietly.
-#
-# Secrets do NOT go here; they go in .env. Reference them as ${VAR_NAME}; an
-# unset variable is left verbatim and warned about, not silently blanked.
-# ===========================================================================
-
 model:
-  # All three come from .env so switching provider is a one-line edit there,
-  # not a hunt through eight config files.
-  #
-  #   HAA_MODEL_PROVIDER=custom   + CUSTOM_BASE_URL + CUSTOM_API_KEY
-  #                               -> any OpenAI-compatible gateway
-  #                                  (agentrouter.org, OpenRouter, vLLM, Ollama)
-  #   HAA_MODEL_PROVIDER=auto     -> detect from whichever *_API_KEY is present
-  #   HAA_MODEL_PROVIDER=anthropic-> direct Anthropic API
   provider: ${HAA_MODEL_PROVIDER}
   base_url: ${CUSTOM_BASE_URL}
-  # For provider=custom this is the gateway's bare model name (check with:
-  #   curl $CUSTOM_BASE_URL/models -H "Authorization: Bearer $CUSTOM_API_KEY")
-  # For direct providers Hermes wants "<provider>/<model>".
   default: ${HAA_MODEL_DEFAULT}
-  # A gateway that proxies many upstreams often cannot report a reliable
-  # context window, so Hermes' auto-detection gets it wrong. Set it explicitly.
   context_length: ${HAA_CONTEXT_LENGTH}
-
 agent:
   max_turns: 150
-  reasoning_effort: high   # none|minimal|low|medium|high|xhigh|max|ultra
+  reasoning_effort: high
   stall_guards: true
   verify_guidance: true
-
 toolsets:
-  # Registered names only — `file`, not `file_ops`. An unregistered name is
-  # dropped without an error; `haa config check` catches it.
-  - hermes-cli
-  - browser
-  - terminal
-  - file
-  - skills
-
+- hermes-cli
+- browser
+- file
+- skills
 terminal:
   backend: local
   cwd: ${HAA_PROJECT_DIR}
   timeout: 180
-
 browser:
-  # Attach to a real Chrome running on this machine with remote debugging on.
-  # Launch it with ./scripts/start-browser.sh.
-  #
-  # Precedence (verified in tools/browser_cdp_tool.py::_resolve_cdp_endpoint):
-  #   1. BROWSER_CDP_URL env var  (live override, e.g. from /browser connect)
-  #   2. browser.cdp_url below
-  # Hardcoded rather than ${HAA_CDP_URL} on purpose: Hermes leaves an unset
-  # placeholder verbatim, which would give a cdp_url of "${HAA_CDP_URL}".
   cdp_url: http://127.0.0.1:9222
   engine: chrome
-  # "off" forces the built-in tools (browser_navigate, browser_snapshot,
-  # browser_click, browser_scroll, browser_vision, ...).
-  #
-  # This is NOT selector-driven. browser_snapshot returns the live
-  # accessibility tree with ref IDs (@e1, @e7) that are re-derived on every
-  # snapshot; the agent picks which element to act on each time. Nothing is
-  # hardcoded, so a redesigned UI does not break anything.
-  #
-  # Trade-off: "browser-use" instead lets the agent write Python against the
-  # page -- more expressive for unusual flows (drag, wait-for-network, iterate
-  # over N rows), but it is arbitrary code execution on the host and the steps
-  # stop being individually loggable. Hermes gates browser_exec behind the
-  # `browser-use` toolset AND this key, so it stays off unless you opt in here.
-  # Verified in tools/browser_use_cli.py::is_browser_use_cli_mode.
-  backend: "off"
-  # Launches a real visible Chrome window and skips per-turn cleanup so it
-  # persists between turns. The visible window is how the operator takes over
-  # for a CAPTCHA or MFA prompt, so this is not optional.
+  backend: 'off'
   headed: true
-  # dApp pages are slow: 15 min idle before the session closes, 90s per
-  # command, so a heavy claim page is not cut off mid-flow.
   inactivity_timeout: 900
   command_timeout: 90
-  # Session recordings become part of the evidence trail.
   record_sessions: true
-# Multi-agent coordination. The dispatcher runs INSIDE the gateway process
-# (kanban.dispatch_in_gateway, the Hermes default) and ticks every 60s,
-# spawning whichever profile a ready task is assigned to -- so you start one
-# gateway (worker-orchestrator) and the workers come up on demand.
-# Verified against website/docs/user-guide/features/kanban.md.
 kanban:
   dispatch_in_gateway: true
   dispatch_interval_seconds: 60
-  # The agent that filed a task gets notified when it completes, instead of
-  # polling -- this is what carries results back to your Telegram thread.
   auto_subscribe_on_create: true
-  # Tasks in the review column are picked up automatically.
   review_dispatch: true
-
 compression:
   enabled: true
-  threshold: 0.50
-  target_ratio: 0.20
+  threshold: 0.5
+  target_ratio: 0.2
   protect_last_n: 20
   progress_notices: true
-
 approvals:
   mode: smart
   timeout: 300
-  # Unattended runs must NOT be able to run a dangerous command with nobody
-  # watching. deny, not approve.
   cron_mode: deny
   single_query_mode: deny
-  # Hard blocklist — refused even under mode: off / --yolo.
   deny:
-    - "*cast send*"
-    - "*cast wallet*"
-    - "*cast keystore*"
-    - "*solana transfer*"
-    - "*solana keygen*"
-    - "*cleos*transfer*"
-    - "*--private-key*"
-    - "*--private_key*"
-    - "*PRIVATE_KEY*"
-    - "*mnemonic*"
-    - "*seed phrase*"
-
+  - '*cast send*'
+  - '*cast wallet*'
+  - '*cast keystore*'
+  - '*solana transfer*'
+  - '*solana keygen*'
+  - '*cleos*transfer*'
+  - '*--private-key*'
+  - '*--private_key*'
+  - '*PRIVATE_KEY*'
+  - '*mnemonic*'
+  - '*seed phrase*'
+  - '*google-chrome*'
+  - '*google-chrome-stable*'
+  - '*chromium*'
+  - '*chromium-browser*'
+  - '*firefox*'
+  - '*brave-browser*'
+  - '*microsoft-edge*'
+  - '*--remote-debugging-port*'
+  - '*--remote-allow-origins*'
+  - '*Xvfb*'
+  - '*xvfb-run*'
+  - '*playwright*'
+  - '*puppeteer*'
+  - '*selenium*'
+  - '*pkill*'
+  - '*killall*'
 security:
   redact_secrets: true
   allow_private_urls: false
-
 memory:
   memory_enabled: true
   user_profile_enabled: true
   memory_char_limit: 2200
   user_char_limit: 1375
   nudge_interval: 10
-
 skills:
   creation_nudge_interval: 15
-
 cron:
-  # Pin the cron fleet's model so switching your chat model cannot silently
-  # reroute unattended spend.
   model: ${HAA_CRON_MODEL}
   model_drift_guard: true
   preflight: true
-  max_parallel_jobs: 1   # one GUI browser; parallel workers would fight over it
-
+  max_parallel_jobs: 1
 session_reset:
   mode: daily
   at_hour: 4
-
 display:
   skin: default
   tool_progress: all
   show_reasoning: false
   timestamps: true
-
 runtime:
   nofile_soft_limit: 4096
-
 database:
   journal_mode: wal
-
 tool_loop_guardrails:
   warnings_enabled: true
   hard_stop_enabled: true

@@ -1,89 +1,73 @@
-# ---------------------------------------------------------------------------
-# worker-daily — the 09:00 check-in run. Cheap model, tight budget.
-# Installs to ~/.hermes/profiles/worker-daily/config.yaml
-# ---------------------------------------------------------------------------
 model:
   provider: ${HAA_MODEL_PROVIDER}
   base_url: ${CUSTOM_BASE_URL}
   default: ${HAA_MODEL_DEFAULT}
   context_length: ${HAA_CONTEXT_LENGTH}
-
 agent:
-  max_turns: 120                    # a check-in is short; a long run means lost
+  max_turns: 120
   reasoning_effort: medium
   stall_guards: true
   verify_guidance: true
-
 toolsets:
-  - hermes-cli
-  - browser          # 100% of the work is clicking a dApp front-end
-  - file
-  - skills
-  - kanban             # create / claim / complete / block tasks
-
+- hermes-cli
+- browser
+- file
+- skills
+- kanban
 terminal:
   backend: local
   cwd: ${HAA_PROJECT_DIR}
   timeout: 120
-
 browser:
-  # Attach to a real Chrome running on this machine with remote debugging on.
-  # Launch it with ./scripts/start-browser.sh.
-  #
-  # Precedence (verified in tools/browser_cdp_tool.py::_resolve_cdp_endpoint):
-  #   1. BROWSER_CDP_URL env var  (live override, e.g. from /browser connect)
-  #   2. browser.cdp_url below
-  # Hardcoded rather than ${HAA_CDP_URL} on purpose: Hermes leaves an unset
-  # placeholder verbatim, which would give a cdp_url of "${HAA_CDP_URL}".
   cdp_url: http://127.0.0.1:9222
   engine: chrome
-  # "off" forces the built-in tools (browser_navigate, browser_click, ...).
-  # Pages come back as accessibility trees with ref IDs -- enough for an LLM,
-  # and every step is a discrete, loggable action. Set to "browser-use" to let
-  # the agent drive the page by writing Python instead.
-  backend: "off"
-  # Launches a real visible Chrome window and skips per-turn cleanup so it
-  # persists between turns. The visible window is how the operator takes over
-  # for a CAPTCHA or MFA prompt, so this is not optional.
+  backend: 'off'
   headed: true
-  # dApp pages are slow: 15 min idle before the session closes, 90s per
-  # command, so a heavy claim page is not cut off mid-flow.
   inactivity_timeout: 900
   command_timeout: 90
-  # Session recordings become part of the evidence trail.
   record_sessions: true
 approvals:
   mode: smart
-  # Unattended. Anything risky is refused rather than escalated to nobody.
   cron_mode: deny
   single_query_mode: deny
   deny:
-    - "*cast send*"
-    - "*cast wallet*"
-    - "*solana transfer*"
-    - "*--private-key*"
-    - "*--private_key*"
-    - "*PRIVATE_KEY*"
-    - "*mnemonic*"
-
+  - '*cast send*'
+  - '*cast wallet*'
+  - '*solana transfer*'
+  - '*--private-key*'
+  - '*--private_key*'
+  - '*PRIVATE_KEY*'
+  - '*mnemonic*'
+  - '*google-chrome*'
+  - '*google-chrome-stable*'
+  - '*chromium*'
+  - '*chromium-browser*'
+  - '*firefox*'
+  - '*brave-browser*'
+  - '*microsoft-edge*'
+  - '*--remote-debugging-port*'
+  - '*--remote-allow-origins*'
+  - '*Xvfb*'
+  - '*xvfb-run*'
+  - '*playwright*'
+  - '*puppeteer*'
+  - '*selenium*'
+  - '*pkill*'
+  - '*killall*'
 security:
   redact_secrets: true
   allow_private_urls: false
-
 compression:
   enabled: true
-  threshold: 0.50
+  threshold: 0.5
   protect_last_n: 10
-
 memory:
   memory_enabled: true
-  user_profile_enabled: false      # a check-in needs no opinion of you
+  user_profile_enabled: false
   nudge_interval: 0
-
 session_reset:
   mode: daily
   at_hour: 4
-
 tool_loop_guardrails:
   hard_stop_enabled: true
   warn_after:

@@ -162,20 +162,39 @@ else
 fi
 
 # ============================================================== 4. chrome ===
-step "4/10  Chromium-family browser (CDP target)"
-find_browser() {
+step "4/10  Browser: your real Chrome, via CDP"
+# The airdrop flow leans on wallet-as-extension (MetaMask/Phantom/Rabby), which
+# lives in the operator's real Chrome profile. A bare apt Chromium does not
+# carry those extensions, so Chrome is the required default and Chromium only
+# via explicit HAA_ALLOW_CHROMIUM=1. CDP works with either; the PROFILE is what
+# matters. See scripts/start-browser.sh for the full rationale.
+find_chrome() {
   local c
-  for c in google-chrome google-chrome-stable chromium chromium-browser brave-browser microsoft-edge; do
+  for c in google-chrome google-chrome-stable google-chrome-beta google-chrome-dev; do
     have "$c" && { echo "$c"; return 0; }
   done
-  for c in /usr/bin/google-chrome /usr/bin/chromium /opt/google/chrome/google-chrome \
-           /snap/bin/chromium /opt/brave-bin/brave-browser \
+  for c in /usr/bin/google-chrome /opt/google/chrome/google-chrome \
            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"; do
     [[ -x "$c" ]] && { echo "$c"; return 0; }
   done
   return 1
 }
-BROWSER="$(find_browser || true)"
+find_chromium() {
+  local c
+  for c in chromium chromium-browser brave-browser microsoft-edge; do
+    have "$c" && { echo "$c"; return 0; }
+  done
+  for c in /usr/bin/chromium /snap/bin/chromium /opt/brave-bin/brave-browser; do
+    [[ -x "$c" ]] && { echo "$c"; return 0; }
+  done
+  return 1
+}
+pick_browser() {
+  if [[ -n "${HAA_BROWSER_BIN:-}" ]]; then echo "$HAA_BROWSER_BIN"; return 0; fi
+  local g; g="$(find_chrome || true)"; [[ -n "$g" ]] && { echo "$g"; return 0; }
+  if [[ "${HAA_ALLOW_CHROMIUM:-0}" == "1" ]]; then find_chromium || true; fi
+}
+BROWSER="$(pick_browser || true)"
 if (( SKIP_CHROME )); then
   info "skipped (--skip-chrome)"
 elif [[ -n "$BROWSER" ]]; then
@@ -183,18 +202,15 @@ elif [[ -n "$BROWSER" ]]; then
 elif [[ "$PKG" == "brew" ]]; then
   info "installing Google Chrome via Homebrew cask"
   run brew install --cask google-chrome
-elif [[ "$PKG" == "apt" ]]; then
-  info "installing Chromium from the distro repository"
-  pkg_install chromium chromium chromium chromium chromium \
-    || pkg_install chromium-browser chromium-browser chromium-browser chromium-browser chromium-browser \
-    || warn "could not install a browser — install Google Chrome manually, then re-run with --skip-chrome"
 else
-  pkg_install chromium chromium chromium chromium chromium \
-    || warn "could not install a browser — install Google Chrome manually, then re-run with --skip-chrome"
+  warn "Google Chrome not found."
+  warn "This flow uses your real Chrome so wallet extensions carry over."
+  warn "Install it from google.com/chrome, or with: brew install --cask google-chrome"
+  warn "Chromium fallback (no extensions): HAA_ALLOW_CHROMIUM=1 ./install.sh"
 fi
-BROWSER="$(find_browser || true)"
+BROWSER="$(pick_browser || true)"
 [[ -n "$BROWSER" ]] && ok "browser ready: $BROWSER" \
-                    || warn "no browser yet — ./scripts/start-browser.sh will explain what to install"
+                    || warn "no browser yet — ./scripts/start-browser.sh will explain"
 
 # =============================================================== 5. hermes ===
 step "5/10  Hermes Agent framework"

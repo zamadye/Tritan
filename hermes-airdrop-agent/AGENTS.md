@@ -270,6 +270,38 @@ agent lain — 7/7 commit milik saya, nol file Tritan (`agent/`, `web/`,
 `main.py`, `requirements.txt`) tersentuh. Satu-satunya file di luar
 subdirektori adalah `.gitignore` root (perbaikan anchor `skills/`).
 
+### Audit 2026-08-27 — tidak ada komplikasi setup lama + browser & terminal aman
+
+User minta audit: jangan ada setup lama yang nempel (skill/memory/knowledge/
+prompt), browser harus Chrome CDP (bukan Chromium, karena extension), profile
+browser agent harus sama dengan yang dipakai, dan agent TIDAK boleh akses
+terminal (biar tidak buka browser lewat command).
+
+Temuan kunci:
+- **\`hermes-cli\` mem-bundel \`terminal\`+\`process\`** (lihat \`_HERMES_CORE_TOOLS\`
+  di toolsets.py). Jadi menghapus toolset \`terminal\` TIDAK menghilangkan shell.
+  Konsekuensinya: deny dijalankan lewat \`approvals.deny\`, bukan lewat toolset.
+- **\`approvals.deny\` diperluas di 8 config**: \`*google-chrome*\`, \`*chromium*\`,
+  \`*--remote-debugging-port*\`, \`*Xvfb*\`, \`*playwright*\`, \`*puppeteer*\`,
+  \`*selenium*\`, \`*pkill*\`, \`*killall*\` — agent tidak bisa spawn browser/
+  virtual display sendiri, persis bahaya yang disebut user.
+- **Grant \`terminal\` eksplisit dihapus** dari worker-quests & worker-monitor
+  (redundan lewat hermes-cli, tapi lebih bersih tanpa grant eksplisit).
+- **Chrome-first** di install.sh & start-browser.sh: \`find_chrome\` dulu;
+  chromium hanya lewat \`HAA_ALLOW_CHROMIUM=1\` dengan warning bahwa wallet-as-
+  extension tidak ikut. Alasan didokumentasi: extension wallet hidup di profil
+  Chrome asli operator.
+- **Konsistensi profile**: \`--user-data-dir="$PROFILE_DIR"\` = \`HAA_CHROME_PROFILE\`
+  yang ditulis install.sh ke .env. Agent menempel ke CDP port yang dibuka script
+  yang sama, jadi profilnya pasti sama dengan yang di-login operator.
+- Pesan menyesatkan dibuang: "install chromium" default & "gunakan container
+  VNC" dihapus.
+- Test: \`TestBrowserLaunchIsBlockedForAgents\` — deny di tiap config, tanpa grant
+  terminal eksplisit, chrome sebelum chromium, profil ikut env.
+
+Sisa VNC hanya 3 komentar penjelasan (bukan kode), sudah dibersihkan yang
+menyesatkan.
+
 ### Masih terbuka
 
 - Alur Telegram end-to-end belum diuji terhadap Hermes sungguhan. **Bukan**

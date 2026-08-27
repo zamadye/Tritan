@@ -288,3 +288,49 @@ class TestExtractStandalone:
         # Only reads the parent repo and creates a branch; never rewrites it.
         for forbidden in ("filter-branch", "rebase", "git push --force"):
             assert forbidden not in text
+
+class TestBrowserLaunchIsBlockedForAgents:
+    """The agent's browser must be the one managed CDP instance, not one it
+    spawns itself. `hermes-cli` bundles a terminal by default, so shell access
+    cannot be removed by dropping a toolset -- the launch commands must be
+    denied instead. These pin that guard into every config."""
+
+    LAUNCH_PATTERNS = ["*google-chrome*", "*chromium*", "*--remote-debugging-port*",
+                       "*Xvfb*", "*pkill*"]
+
+    def _configs(self):
+        import yaml
+        yield ROOT / "config" / "hermes" / "config.yaml"
+        yield from sorted((ROOT / "config" / "hermes" / "profiles").glob("*/config.yaml"))
+
+    def test_every_config_denies_browser_launch(self):
+        import yaml
+        for f in self._configs():
+            deny = yaml.safe_load(f.read_text()).get("approvals", {}).get("deny", [])
+            missing = [x for x in self.LAUNCH_PATTERNS if x not in deny]
+            assert not missing, f"{f.name} does not deny browser launch: {missing}"
+
+    def test_no_profile_explicitly_grants_terminal(self):
+        import yaml
+        for f in sorted((ROOT / "config" / "hermes" / "profiles").glob("*/config.yaml")):
+            ts = yaml.safe_load(f.read_text()).get("toolsets", [])
+            assert "terminal" not in ts, f"{f.parent.name} explicitly grants terminal"
+
+    def test_chromium_is_not_the_default_browser(self):
+        for script in ("install.sh", "scripts/start-browser.sh"):
+            text = (ROOT / script).read_text(encoding="utf-8")
+            # Chrome detection must come before any chromium fallback.
+            assert text.index("find_chrome") < text.index("find_chromium")
+            # Chromium must sit behind the explicit opt-in, not run silently.
+            assert "HAA_ALLOW_CHROMIUM" in text
+
+    def test_no_silent_chromium_install_message(self):
+        text = (ROOT / "install.sh").read_text(encoding="utf-8")
+        assert "installing Chromium from the distro repository" not in text
+
+    def test_start_browser_profile_follows_env(self):
+        """The launched --user-data-dir must equal HAA_CHROME_PROFILE so the
+        agent runs in the same profile the operator logged into."""
+        text = (ROOT / "scripts" / "start-browser.sh").read_text(encoding="utf-8")
+        assert 'HAA_CHROME_PROFILE' in text
+        assert "--user-data-dir=\"$PROFILE_DIR\"" in text
