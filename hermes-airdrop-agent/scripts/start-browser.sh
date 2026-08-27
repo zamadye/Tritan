@@ -44,14 +44,40 @@ ok()   { printf '  \033[0;32m✓\033[0m %s\n' "$*"; }
 info() { printf '  → %s\n' "$*"; }
 err()  { printf '  \033[0;31m✗\033[0m %s\n' "$*" >&2; }
 
-# ------------------------------------------------------- already running? ---
+# ------------------------------------------------------- args / helpers ----
+RESTART=0
+[[ "${1:-}" == "--restart" ]] && RESTART=1
+
 cdp_up() { curl -fsS -m 3 "$CDP_URL/json/version" >/dev/null 2>&1; }
+
+open_tabs() { curl -fsS -m 3 "$CDP_URL/json/list" 2>/dev/null | python3 -c \
+    'import json,sys; print(len(json.load(sys.stdin)))' 2>/dev/null || echo 0; }
+
+kill_port() {  # lepaskan port CDP dari Chrome lama yang tak berjendela
+  if command -v fuser >/dev/null 2>&1; then fuser -k "$1/tcp" 2>/dev/null || true
+  elif command -v lsof >/dev/null 2>&1; then lsof -ti tcp:"$1" 2>/dev/null | xargs -r kill 2>/dev/null || true
+  fi
+  sleep 1
+}
+
+# ------------------------------------------------------- already running? ---
+if (( RESTART )); then
+  info "--restart: melepaskan port $CDP_PORT dari Chrome lama (jika ada)"
+  kill_port "$CDP_PORT"
+fi
 
 if cdp_up; then
   ok "Chrome CDP already listening on $CDP_URL"
   curl -fsS -m 3 "$CDP_URL/json/version" | python3 -c \
     'import json,sys; d=json.load(sys.stdin); print("    browser:", d.get("Browser","?"))' 2>/dev/null || true
   info "profile: $PROFILE_DIR"
+  # Proses Chrome bisa tetap hidup TANPA jendela (Anda menutupnya). Agent lalu
+  # mengendalikan browser tak terlihat. Paksa satu tab agar window muncul.
+  if [[ "$(open_tabs)" == "0" ]]; then
+    info "tidak ada tab terbuka — membuka satu agar window muncul"
+    curl -fsS -m 3 -X PUT "$CDP_URL/json/new?about:blank" >/dev/null 2>&1 || true
+  fi
+  info "jika window tetap tidak terlihat: ./scripts/start-browser.sh --restart"
   exit 0
 fi
 

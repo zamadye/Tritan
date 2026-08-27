@@ -489,3 +489,21 @@ class TestPerAgentDebugRoster:
     def test_roster_doc_exists(self):
         t = (ROOT/"docs"/"agents-roster.md").read_text()
         assert "debug per-agent" in t and "research.md" in t
+
+class TestStartBrowserHandlesWindowlessChrome:
+    """The reported bug: CDP already listening but no window (process alive,
+    window closed), so the script exited and the agent drove an invisible
+    browser. The script must offer --restart and force a tab open."""
+
+    @pytest.fixture
+    def text(self):
+        return (ROOT / "scripts" / "start-browser.sh").read_text(encoding="utf-8")
+
+    def test_restart_flag_supported(self, text):
+        assert '--restart' in text and "RESTART=1" in text
+
+    def test_forces_a_tab_when_none_open(self, text):
+        assert "open_tabs" in text and "/json/new" in text
+
+    def test_can_kill_stale_port(self, text):
+        assert "kill_port" in text and ("fuser" in text or "lsof" in text)
