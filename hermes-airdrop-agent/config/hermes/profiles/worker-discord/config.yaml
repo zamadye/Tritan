@@ -1,0 +1,70 @@
+model:
+  provider: ${HAA_MODEL_PROVIDER}
+  base_url: ${CUSTOM_BASE_URL}
+  # Key dibaca dari .env (CUSTOM_API_KEY). Untuk provider direct
+  # (anthropic/openrouter) kosongkan baris ini dan isi *_API_KEY di .env.
+  api_key: ${CUSTOM_API_KEY}
+  default: ${HAA_MODEL_DEFAULT}
+  context_length: ${HAA_CONTEXT_LENGTH}
+agent:
+  max_turns: 80
+  reasoning_effort: medium
+  stall_guards: true
+toolsets:
+- hermes-cli
+- browser
+- file
+- skills
+- kanban
+terminal:
+  backend: local
+  cwd: ${HAA_PROJECT_DIR}
+  timeout: 120
+browser:
+  cdp_url: http://127.0.0.1:9222
+  engine: chrome
+  backend: 'off'
+  headed: true
+  inactivity_timeout: 900
+  command_timeout: 90
+  record_sessions: true
+approvals:
+  mode: smart
+  cron_mode: deny
+  single_query_mode: deny
+  deny:
+  - '*cast send*'
+  - '*--private-key*'
+  - '*PRIVATE_KEY*'
+  - '*google-chrome*'
+  - '*google-chrome-stable*'
+  - '*chromium*'
+  - '*chromium-browser*'
+  - '*firefox*'
+  - '*brave-browser*'
+  - '*microsoft-edge*'
+  - '*--remote-debugging-port*'
+  - '*--remote-allow-origins*'
+  - '*Xvfb*'
+  - '*xvfb-run*'
+  - '*playwright*'
+  - '*puppeteer*'
+  - '*selenium*'
+  - '*pkill*'
+  - '*killall*'
+security:
+  redact_secrets: true
+  allow_private_urls: false
+compression:
+  enabled: true
+  threshold: 0.5
+  protect_last_n: 15
+session_reset:
+  mode: daily
+  at_hour: 4
+tool_loop_guardrails:
+  hard_stop_enabled: true
+  warn_after:
+    same_tool_failure: 3
+  hard_stop_after:
+    same_tool_failure: 5

@@ -1,0 +1,55 @@
+# --------------------------------------------------------------------------
+# Secrets — never commit these, ever.
+# --------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+keystore*.json
+
+# --------------------------------------------------------------------------
+# Runtime data: campaign records, evidence ledger, screenshots.
+# This is your audit trail. Back it up yourself; don't put it in git.
+# --------------------------------------------------------------------------
+data/campaigns/*
+data/logs/*
+data/screenshots/*
+data/wallets.json
+!data/**/.gitkeep
+
+# --------------------------------------------------------------------------
+# Browser profiles hold live login sessions — committing one leaks accounts.
+# --------------------------------------------------------------------------
+browser-profiles/*
+!browser-profiles/.gitkeep
+
+# --------------------------------------------------------------------------
+# Python
+# --------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+
+# --------------------------------------------------------------------------
+# Node / editor / OS
+# --------------------------------------------------------------------------
+node_modules/
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# ---------------------------------------------------------------------------
+# ACTIVITY LOG — JANGAN di-gitignore.
+# Operator meminta seluruh aktivitas framework tercatat DI DALAM framework dan
+# ter-commit, supaya saat di-push agent bisa membaca letak error.
+# ---------------------------------------------------------------------------
+!activity/
+!activity/**
